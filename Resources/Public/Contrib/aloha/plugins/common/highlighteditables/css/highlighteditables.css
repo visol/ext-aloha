@@ -1,0 +1,14 @@
+/*!
+* Aloha Editor
+* Author & Copyright (c) 2010 Gentics Software GmbH
+* aloha-sales@gentics.com
+* Licensed unter the terms of http://www.aloha-editor.com/license.html
+*/
+
+.aloha-editable-highlight {
+	outline: #D9E273 solid 2px !important;
+}
+
+.aloha-editable-active, .aloha-editable-active[contenteditable=true]:focus {
+	outline: #47CBD1 solid 2px !important;
+}

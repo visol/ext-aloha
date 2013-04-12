@@ -1,0 +1,50 @@
+# Remove header link
+lib.stdheader.10.setCurrent.typolink >
+
+#header
+lib.stdheader.10.1.stdWrapProcess = Tx_Aloha_hooks_editicons->render
+lib.stdheader.10.1.alohaProcess = 1
+lib.stdheader.10.1.alohaProcess {
+	tag = div
+	field = header
+	allow = edit
+	class = heading
+}
+lib.stdheader.10.2.stdWrapProcess < lib.stdheader.10.1.stdWrapProcess
+lib.stdheader.10.3.stdWrapProcess < lib.stdheader.10.1.stdWrapProcess
+lib.stdheader.10.4.stdWrapProcess < lib.stdheader.10.1.stdWrapProcess
+lib.stdheader.10.5.stdWrapProcess < lib.stdheader.10.1.stdWrapProcess
+lib.stdheader.10.2.alohaProcess < lib.stdheader.10.1.alohaProcess
+lib.stdheader.10.3.alohaProcess < lib.stdheader.10.1.alohaProcess
+lib.stdheader.10.4.alohaProcess < lib.stdheader.10.1.alohaProcess
+lib.stdheader.10.5.alohaProcess < lib.stdheader.10.1.alohaProcess
+
+lib.stdheader.default.stdWrap.editIcons.beforeLastTag = -1
+
+
+lib.stdheader.default.10.2.aloha < lib.stdheader.default.10.1.aloha
+
+
+tt_content.text.20.editIcons.beforeLastTag = 0
+tt_content.text.20.alohaProcess = 1
+tt_content.text.20.alohaProcess {
+	field = bodytext
+	allow = all
+}
+
+
+# content element "bullets"
+tt_content.bullets.20.editIcons >
+tt_content.bullets.20.alohaPostProcess = 1
+tt_content.bullets.20.alohaPostProcess {
+	field = bodytext
+	allow = all
+}
+
+# content element "table"
+tt_content.table.20.stdWrap.editIcons >
+tt_content.table.20.stdWrap.alohaPostProcess = 1
+tt_content.table.20.stdWrap.alohaPostProcess {
+	field = bodytext
+	allow = all
+}
