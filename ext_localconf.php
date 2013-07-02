@@ -13,7 +13,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_adminpanel.php']['e
 	'EXT:aloha/Classes/Hooks/Adminpanel.php:&Tx_Aloha_Hooks_Adminpanel';
 
 	// XCLASS for < 4.6.0 to integrate missing hook
-if(t3lib_div::int_from_ver(TYPO3_version) < t3lib_div::int_from_ver('4.6.0')) {
+if( t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) <  t3lib_utility_VersionNumber::convertVersionNumberToInteger('4.6.0')) {
 	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/sysext/cms/tslib/class.tslib_adminpanel.php'] =
 		t3lib_extMgm::extPath($_EXTKEY) . 'Classes/Xclass/Adminpanel.php';
 }
