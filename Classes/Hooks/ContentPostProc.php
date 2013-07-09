@@ -99,12 +99,15 @@ class Tx_Aloha_Hooks_ContentPostProc {
 							'<span id="count" class="' . ($countOfElements > 0 ? 'tobesaved' : '') . '">' . $countOfElements . '</span>'
 						);
 
-		$content = '<div id="alohaeditor-welcome" class="welcome">
+		/*$content = '<div id="alohaeditor-welcome" class="welcome">
 						<div id="alohaeditor-icon"><span class="user"><img src="typo3conf/ext/aloha/Resources/Public/Images/user-backend.png" /></span></div>
 						<div id="alohaeditor-info" style="display:none;"><div>
 							' . $this->getDropdownMenu() . '
 						</div></div>
-					</div>';
+					</div>';*/
+
+		$content = '<div id="alohaeditor-welcome" class="welcome">' . $this->getMenu() . '</div>';
+
 
 			// Output depends on selected save method
 		if ($this->configuration['saveMethod'] === 'intermediate') {
@@ -234,6 +237,32 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		if (!empty($content)) {
 			$content = '<ul>' . $content . '</ul>';
 		}
+
+		return $content;
+	}
+
+	/**
+	 * 
+	 * @return string
+	 * @todo make items configurable by TsConfig
+	 */
+
+	public function getMenu() {
+		$content = '';
+
+		//Logout
+		$logoutUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . 'logout.php?redirect=' . rawurlencode(t3lib_div::getIndpEnv('TYPO3_REQUEST_URL'));
+		$content .= '<a href="' . htmlspecialchars($logoutUrl) . '" class="btn btn-success">' . $this->sL('LLL:EXT:lang/locallang_common.xml:logout') . '</a>';
+
+		//Open Backend
+		$backendUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir;
+		$content .= '<a target="_blank" href="' . htmlspecialchars($backendUrl) . '" class="btn btn-success">' . $this->sL('LLL:EXT:lang/locallang_login.xml:interface.backend') . '</a>';
+
+		
+
+		/*if(!empty($content)) {
+			$content = '<div class="btn-group">' . $content . '</div>';
+		}*/
 
 		return $content;
 	}

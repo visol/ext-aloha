@@ -133,10 +133,12 @@ html {
 .aloha-warning {
 	color:#d38200;
 	color:#DC4C42;
+	display: none;
 }
 
 .aloha-warning strong {
 	color:#ff0000;
+	display: none;
 }
 
 #aloha-topbar-inner a {
@@ -144,8 +146,21 @@ html {
 	text-decoration: none;
 }
 
+#aloha-topbar-inner a.btn {
+	margin-left: 10px;
+	padding: 2px 5px;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+#aloha-topbar-inner a.btn-success {
+	background: none;
+	background-color: #C9D15A;
+}
+
 #aloha-topbar-inner a:hover {
-	color:#ccc;
+	color:#f2f2f2;
 }
 
 #aloha-topbar-inner .aloha-top-bar-right a {
