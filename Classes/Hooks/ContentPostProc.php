@@ -256,7 +256,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 
 		//Open Backend
 		$backendUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir;
-		$content .= '<a target="_blank" href="' . htmlspecialchars($backendUrl) . '" class="btn btn-success">' . $this->sL('LLL:EXT:lang/locallang_login.xml:interface.backend') . '</a>';
+		$content .= '<a target="_top" href="' . htmlspecialchars($backendUrl) . '" class="btn btn-success">' . $this->sL('LLL:EXT:lang/locallang_login.xml:interface.backend') . '</a>';
 
 		
 
