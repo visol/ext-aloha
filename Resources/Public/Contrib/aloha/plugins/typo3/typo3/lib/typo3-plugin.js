@@ -1,11 +1,27 @@
-define(
-['aloha/plugin', 'aloha/floatingmenu', 'i18n!typo3/nls/i18n', 'i18n!aloha/nls/i18n', 'css!typo3/css/typo3.css'],
-function(Plugin, FloatingMenu, i18n, i18nCore) {
+define([
+	'aloha',
+	'jquery',
+	'aloha/plugin',
+	'ui/ui',
+	'ui/scopes',
+	'ui/button',
+	'i18n!typo3/nls/i18n',
+	'i18n!aloha/nls/i18n',
+	'css!typo3/css/typo3.css'],
+function(
+	Aloha,
+	jQuery,
+	Plugin,
+	Ui,
+	Scopes,
+	Button,
+	i18n,
+	i18nCore
+) {
 	"use strict";
 	var
-		jQuery = window.alohaQuery || window.jQuery, $ = jQuery,
-		GENTICS = window.GENTICS,
-		Aloha = window.Aloha;
+		$ = jQuery,
+		GENTICS = window.GENTICS;
 
 	/**
 	 * register the plugin with unique name
@@ -69,10 +85,11 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 						break;
 				}
 
-				that.buttons[button] = new Aloha.ui.Button({
-					'iconClass' : 'GENTICS_button button_' + button,
-					'size' : size,
-					'onclick' : function () {
+				that.buttons[button] = Ui.adopt(button, Button, {
+					tooltip: i18n.t('button.' + button),
+					icon: 'button_' + button,
+					size : size,
+					click: function() {
 						var split = Aloha.activeEditable.getId().split('--');
 						var customCloseUrl =  typo3BackendUrl + '../typo3conf/ext/aloha/Resources/Public/Contrib/shadowbox/close.html';
 						var generalUrl = typo3BackendUrl + 'alt_doc.php?noView=1&returnUrl=' + customCloseUrl + '&';
@@ -97,11 +114,9 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 								that.ajaxRequest(button);
 							}
 						}
-					},
-					'tooltip' :  i18n.t('button.' + button)
+					}
 				});
 
-				FloatingMenu.addButton('Aloha.continuoustext',that.buttons[button],menuTab,position);
 			});
 
 		},

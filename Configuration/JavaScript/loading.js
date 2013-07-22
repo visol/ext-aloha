@@ -1,12 +1,11 @@
-require(["aloha/jquery"],
-	function(aQuery) {
+window.Aloha.ready( function() {
 
-		require.ready(function() {
+		//require.ready(function() {
 			// Prepare
-			var $ = aQuery,
-			$body = $('body');
+			var $ = Aloha.jQuery;
+			//$body = $('body');
 			// Bind to Aloha Ready Event
-			$body.bind('aloha',function() {
+			//$body.bind('aloha',function() {
 				$('.alohaeditable').aloha();
 				$('#aloha-not-loaded').hide();
 				$('#aloha-top-bar').show();
@@ -66,8 +65,8 @@ require(["aloha/jquery"],
 				});
 
 
-			});
+			//});
 
-		});
+		//});
 
-	});
+	}); //)( window.jQuery);//

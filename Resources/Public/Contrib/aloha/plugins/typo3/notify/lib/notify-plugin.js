@@ -5,11 +5,10 @@
 * License: GPL v3
 * www.the-ghost.com
 */
-//var jQuery = window.jQuery
 
 (function($) {
 	$.fn.el7r_notify = function(options) {
-/*
+
 		var text = options['text'];
 		if(options['place_h']) { var place_h = options['place_h']; } else { var place_h = 'left'; }
 		if(options['place_v']) { var place_v = options['place_v']; } else { var place_v = 'top'; }
@@ -51,7 +50,7 @@
 		},function() {
 			$(this).css("opacity","1");
 		});
-*/
+
 	};
 
-})( window.alohaQuery);
+})( window.Aloha.jQuery || window.jQuery);

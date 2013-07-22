@@ -249,6 +249,12 @@ html {
 	opacity: 0.7;
 }
 
+/* Try not to affect original style */
+.aloha-editable {
+	display: inline;
+}
+
+/* If editable element is inside <p> we use span */
 span.aloha-editable {
 	display: block;
 }
@@ -261,7 +267,10 @@ span.aloha-editable {
 	outline: #B7D6FA solid 5px !important;
 }
 
-
+/* Needs higher z-index than toolbar */
+#sb-container {
+	z-index: 10110;
+}
 
 /*******************************
  * Notification bubble
@@ -271,20 +280,24 @@ span.aloha-editable {
 }
 #el7r_notify_top_right {
 	position:fixed;
+	z-index: 9000;
 	right:10px;
 }
 #el7r_notify_top_left {
 	position:fixed;
+	z-index: 9000;
 	left:10px;
 	top:40px;
 }
 #el7r_notify_bottom_right {
 	position:fixed;
+	z-index: 9000;
 	bottom:10px;
 	right:10px;
 }
 #el7r_notify_bottom_left {
 	position:fixed;
+	z-index: 9000;
 	bottom:10px;
 	left:10px;
 }

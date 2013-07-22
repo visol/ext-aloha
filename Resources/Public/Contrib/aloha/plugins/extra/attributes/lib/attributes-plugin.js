@@ -1,23 +1,41 @@
-/*!
-* Aloha Editor
-* Author & Copyright (c) 2010 Gentics Software GmbH
-* aloha-sales@gentics.com
-* Licensed unter the terms of http://www.aloha-editor.com/license.html
-*/
+/* attributes-plugin.js is part of Aloha Editor project http://aloha-editor.org
+ *
+ * Aloha Editor is a WYSIWYG HTML5 inline editing library and editor. 
+ * Copyright (c) 2010-2012 Gentics Software GmbH, Vienna, Austria.
+ * Contributors http://aloha-editor.org/contribution.php 
+ * 
+ * Aloha Editor is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or any later version.
+ *
+ * Aloha Editor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As an additional permission to the GNU GPL version 2, you may distribute
+ * non-source (e.g., minimized or compacted) forms of the Aloha-Editor
+ * source code without the copy of the GNU GPL normally required,
+ * provided you include this license notice and a URL through which
+ * recipients can access the Corresponding Source.
+ */
 define(
-['aloha/plugin', 'aloha/floatingmenu', 'i18n!attributes/nls/i18n', 'i18n!aloha/nls/i18n', 'css!attributes/css/attributes.css'],
-function(Plugin, FloatingMenu, i18n, i18nCore) {
+['aloha','aloha/plugin', 'aloha/floatingmenu', 'i18n!attributes/nls/i18n', 'i18n!aloha/nls/i18n', 'css!attributes/css/attributes.css'],
+function(Aloha, Plugin, FloatingMenu, i18n, i18nCore) {
 	"use strict";
 
 	var
-		jQuery = window.alohaQuery || window.jQuery, $ = jQuery,
+		jQuery = Aloha.jQuery,
+		$ = jQuery,
 		GENTICS = window.GENTICS,
 		Aloha = window.Aloha;
 	
-	
-	
-	
-     return Plugin.create('attributes', {
+    return Plugin.create('attributes', {
 		_constructor: function(){
 			this._super('attributes');
 		},
@@ -116,7 +134,9 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 			if ( typeof this.settings.activeOn !== 'undefined') {
 				this.activeOn = this.settings.activeOn;
 			}
-			jQuery('body').bind('aloha', function (ev, sidebars) { that.initSidebar(Aloha.Sidebars.right); });
+			Aloha.ready( function (ev, sidebars) { 
+				that.initSidebar(Aloha.Sidebar.right); 
+			});
 		},
 				
 		getSidebarContent: function() {
@@ -212,7 +232,6 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
                     }
                     
                 });
-			sidebar.show().open();
 		}
 	});
 });

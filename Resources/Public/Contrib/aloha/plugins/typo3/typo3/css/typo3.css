@@ -1,31 +1,31 @@
-button.button_edit {
+.button_edit {
 	background: url(../resources/button_edit.png) no-repeat center center !important;
 }
-button.button_up {
+.button_up {
 	background: url(../resources/button_up.png) no-repeat center center !important;
 }
-button.button_down {
+.button_down {
 	background: url(../resources/button_down.png) no-repeat center center !important;
 }
-button.button_move {
+.button_move {
 	background: url(../resources/button_move.png) no-repeat center center !important;
 }
-button.button_hide {
+.button_hide {
 	background: url(../resources/button_hide.png) no-repeat center center !important;
 }
-button.button_unhide {
+.button_unhide {
 	background: url(../resources/button_unhide.png) no-repeat center center !important;
 }
-button.button_delete {
+.button_delete {
 	background: url(../resources/button_delete.png) no-repeat center center !important;
 }
-button.button_newContentElementBelow {
+.button_newContentElementBelow {
 	background: url(../resources/button_newContentElementBelow.png) no-repeat center center !important;
 }
-button.button_link {
+.button_link {
 	background: url(../resources/button_link.gif) no-repeat center center !important;
 }
-button.hide {
+.hide {
 	display: none !important;
 }
 

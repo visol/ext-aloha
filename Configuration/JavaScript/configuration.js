@@ -1,13 +1,14 @@
 (function(window, undefined) {
-	var jQuery = window.jQuery
-	if (window.Aloha === undefined || window.Aloha === null) {
-		window.Aloha = {};
-	}
+	window.Aloha = window.Aloha || {};
+	// Manually set the version of jQuery for aloha and free the namespace
+	var jQuery = window.jQuery.noConflict(true);
 	window.Aloha.settings = {
+		jQuery: jQuery,
 		logLevels: {
-			'error': false,
-			'warn': false,
-			'info': false,
+			'error': true,
+			'warn': true,
+			'info': true,
+			'deprecated': true,
 			'debug': false
 		},
 		errorhandling : false,
@@ -23,6 +24,22 @@
 			// "acceptLanguage": 'de-de,de;q=0.8,it;q=0.6,en-us;q=0.7,en;q=0.2'
 			// or set current on server side to be in sync with your backend system
 			"current": "en"
+		},
+		toolbar: {
+			tabs: [
+				{
+					label: 'tab.format.label'
+				},
+				{
+					label: 'tab.insert.label'
+				},
+				{
+					label: 'Typo3',
+					components: [ 
+						[ 'up', 'down', 'edit', 'hide', 'unhide', 'newContentElementBelow', 'move', 'link', 'delete' ]
+					]
+				}
+			]
 		},
 		"plugins": {
 			"format": {
@@ -61,6 +78,7 @@
 				objectTypeFilter: ['website'],
 				// handle change of href
 				onHrefChange: function( obj, href, item ) {
+					var jQuery = Aloha.jQuery;
 					if ( item ) {
 						jQuery(obj).attr('data-name', item.name);
 					}
@@ -76,41 +94,30 @@
 				},
 				// [{name:'green', text:'Green', tooltip:'Green is cool', iconClass:'GENTICS_table GENTICS_button_green', cssClass:'green'}]
 				tableConfig : [
-				{
-					name:'hor-minimalist-a'
-				},
-
-				{
-					name:'box-table-a'
-				},
-
-				{
-					name:'hor-zebra'
-				},
+					{ name:'hor-minimalist-a' },
+					{ name:'box-table-a' },
+					{ name:'hor-zebra' },
 				],
 				columnConfig : [
-				{
-					name:'bigbold',
-					iconClass:'GENTICS_button_col_bigbold'
-				},
-
-				{
-					name:'redwhite',
-					iconClass:'GENTICS_button_col_redwhite'
-				}
+					{
+						name:'bigbold',
+						iconClass:'GENTICS_button_col_bigbold'
+					},
+					{
+						name:'redwhite',
+						iconClass:'GENTICS_button_col_redwhite'
+					}
 				],
 				rowConfig : [
-				{
-					name:'bigbold',
-					iconClass:'GENTICS_button_row_bigbold'
-				},
-
-				{
-					name:'redwhite',
-					iconClass:'GENTICS_button_row_redwhite'
-				}
+					{
+						name:'bigbold',
+						iconClass:'GENTICS_button_row_bigbold'
+					},
+					{
+						name:'redwhite',
+						iconClass:'GENTICS_button_row_redwhite'
+					}
 				]
-
 			}
 		}
 	};

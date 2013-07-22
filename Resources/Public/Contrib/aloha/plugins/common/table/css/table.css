@@ -1,50 +1,72 @@
-/**
- * Hide the border for contenteditables
- */
-.aloha-table-cell-editable,
-.aloha-table-wrapper {
+/* reset */
+.aloha-table tr.aloha-table-selectcolumn {
+	line-height: 0.01em;
+	height: 12px !important;
+}
+.aloha-table td.aloha-table-selectrow {
+	width: 25px !important;
+}
+.aloha-editable div.aloha-table-wrapper, .aloha-table-wrapper div.aloha-table-cell-editable, 
+.aloha-table-wrapper .aloha-table-leftuppercorner div, .aloha-table-wrapper tr.aloha-table-selectcolumn td,
+.aloha-table-wrapper td.aloha-table-selectrow , .aloha-table-wrapper div.aloha-editable-caption { 
+	margin:0; 
+	padding:0;
+	border:none; 
+	background:none;
 	outline: 0px solid transparent;
+	zoom:1;
 }
 
-/* :tODO: make custom cursors visible in IE */
-.aloha-table tr.aloha-table-selectcolumn td.aloha-table-leftuppercorner,
-.aloha-table tr.aloha-table-selectcolumn td.aloha-table-leftuppercorner:hover {
-	cursor: default;
-	background-color: transparent;
+/* editable wrappers in cells */
+div.aloha-table-cell-editable {
+	height: 100%;
+	min-height: 100%;
+	width: 100%;
+	z-index: 99999;
 }
 
+/* only show controls when in active state */
 tr.aloha-table-selectcolumn td,
 td.aloha-table-selectrow {
 	visibility: hidden;
 }
-
 .aloha-editable-active tr.aloha-table-selectcolumn td,
 .aloha-editable-active td.aloha-table-selectrow {
 	visibility: visible;
 }
 
-.aloha-table tr.aloha-table-selectcolumn {
-	height: 10px;
+/* selection and hover */
+.aloha-cell-selected {
+	background-color: #80B5F2 !important;
+	color: #FFF;
+}
+.aloha-table td.aloha-table-selectrow,
+.aloha-table tr.aloha-table-selectcolumn td {
+	background-color: #D0D0D0;
+}
+.aloha-table td.aloha-table-selectrow:hover,
+.aloha-table tr.aloha-table-selectcolumn td:hover {
+	background-color: #FFE767;
 }
 
+
+/* TODO make custom cursors visible in IE */
+.aloha-table tr.aloha-table-selectcolumn td.aloha-table-leftuppercorner,
+.aloha-table tr.aloha-table-selectcolumn td.aloha-table-leftuppercorner:hover {
+	cursor: default;
+	background-color: transparent;
+}
 .aloha-table td .aloha-table-cell-editable {
 	cursor: text !important;
 }
-
 .aloha-table tr.aloha-table-selectcolumn td {
-	cursor: url(../img/down.cur),default;
+	cursor: url(../img/down.cur),s-resize;
 }
-
-/* :tODO: make custom cursors visible in IE */
 .aloha-table td.aloha-table-selectrow {
-	cursor: url(../img/left.cur),default;
+	cursor: url(../img/left.cur),e-resize;
 }
-.aloha-editable div.aloha-table-wrapper, .aloha-table-wrapper div.aloha-table-cell-editable, 
-.aloha-table-wrapper .aloha-table-leftuppercorner div, .aloha-table-wrapper tr.aloha-table-selectcolumn td,
-.aloha-table-wrapper td.aloha-table-selectrow , .aloha-table-wrapper div.aloha-editable-caption
-{ margin:0; border:none; background:none; padding:0; }
 
-
+/* wai indicator */
 .aloha-table-wrapper div.aloha-wai-red {
 	background-image: url(../img/wai-red.png);
 }
@@ -57,23 +79,7 @@ td.aloha-table-selectrow {
 	cursor: pointer !important;
 }
 
-.aloha-table td.aloha-table-selectrow,
-.aloha-table tr.aloha-table-selectcolumn td {
-	border: 0;
-	margin:0;
-	padding:0;
-	background-color: #D0D0D0;
-	font-size: 0.01em;
-}
-
-.aloha-table td.aloha-table-selectrow:hover,
-.aloha-table tr.aloha-table-selectcolumn td:hover {
-	background-color: #c0c0c0;
-}
-
-/**
- * create dialog
-*/
+/* create dialog */
 .aloha-table-createdialog {
 	z-index: 99999;
 	position: absolute;
@@ -102,16 +108,18 @@ td.aloha-table-selectrow {
 	text-align: center;
 	font-size: 0.8em;
 }
-.aloha-cell-selected {
-	background-color: #3399FF !important;
-	color: #FFF;
+
+.aloha-table-textarea {
+	width:90%;
+	height:100px;
+	margin-left:5px;
+	margin-right:5px;
 }
-div.aloha-table-cell-editable {
-	height: 100%;
-	min-height: 100%;
-	width: 100%;
-	z-index: 99999;
+
+.aloha-table-label {
+	margin-left:5px;
 }
-button.aloha-button-table-caption {
-	background-position: -320px 0px !important;
+
+.aloha .ui-state-default .aloha-icon-table-naturalfit {
+	background-position: -432px 0px;
 }

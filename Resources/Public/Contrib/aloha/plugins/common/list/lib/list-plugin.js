@@ -1,29 +1,105 @@
-/*!
-* Aloha Editor
-* Author & Copyright (c) 2010 Gentics Software GmbH
-* aloha-sales@gentics.com
-* Licensed unter the terms of http://www.aloha-editor.com/license.html
-*/
+/* list-plugin.js is part of Aloha Editor project http://aloha-editor.org
+ *
+ * Aloha Editor is a WYSIWYG HTML5 inline editing library and editor. 
+ * Copyright (c) 2010-2012 Gentics Software GmbH, Vienna, Austria.
+ * Contributors http://aloha-editor.org/contribution.php 
+ * 
+ * Aloha Editor is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or any later version.
+ *
+ * Aloha Editor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As an additional permission to the GNU GPL version 2, you may distribute
+ * non-source (e.g., minimized or compacted) forms of the Aloha-Editor
+ * source code without the copy of the GNU GPL normally required,
+ * provided you include this license notice and a URL through which
+ * recipients can access the Corresponding Source.
+ */
+define([
+	'aloha',
+	'jquery',
+	'aloha/plugin',
+	'ui/ui',
+	'ui/scopes',
+	'ui/button',
+	'ui/toggleButton',
+	'i18n!list/nls/i18n',
+	'i18n!aloha/nls/i18n',
+	'aloha/engine',
+	'PubSub'
+], function(
+	Aloha,
+	jQuery,
+	Plugin,
+	Ui,
+	Scopes,
+	Button,
+	ToggleButton,
+	i18n,
+	i18nCore,
+	Engine,
+	PubSub
+) {
+	'use strict';
 
-define(
-['aloha/plugin', 'aloha/floatingmenu', 'i18n!list/nls/i18n', 'i18n!aloha/nls/i18n'],
-function(Plugin, FloatingMenu, i18n, i18nCore) {
-	"use strict";
+	var GENTICS = window.GENTICS;
+	
+	/**
+	 * Transforms the given list element and its sub elements (if they are in the selection) into
+	 * the given transformTo target.
+	 * @param domToTransform - The list object that should be transformed
+	 * @param transformTo - Transformationtarget e.g. 'ul' / 'ol'
+	 */
+	function transformExistingListAndSubLists (domToTransform, transformTo) {
+		// find and transform sublists if they are in the selection
+		jQuery(domToTransform).find(domToTransform.nodeName).each(function(){
+			if (isListInSelection(this)) {
+				Aloha.Markup.transformDomObject(this, transformTo, Aloha.Selection.rangeObject);
+			}
+		});
 
-	var
-		jQuery = window.alohaQuery || window.jQuery, $ = jQuery,
-		GENTICS = window.GENTICS,
-		Aloha = window.Aloha;
+		// the element itself
+		Aloha.Markup.transformDomObject(domToTransform, transformTo, Aloha.Selection.rangeObject);
+	}
+
+	/**
+	 * Checks if a dom element is in the given Slectiontree.
+	 * @param needle - the searched element
+	 * @return returns true if the needle is found in the current selection tree.
+	 */
+	function isListInSelection(needle) {
+		var selectionTree = Aloha.Selection.getSelectionTree();
+		return checkSelectionTreeEntryForElement(selectionTree, needle);
+	}
+
+	/**
+	 * Checks if the given needle is in the given treeElement or in one of its sub elements.
+	 * @param treeElement - the tree element to be searched in
+	 * @param needle - the searched element
+	 */
+	function checkSelectionTreeEntryForElement(treeElementArray, needle) {
+		var found = false;
+		jQuery.each(treeElementArray, function(index, element){
+			if ((element.domobj === needle && element.selection !== "none") || checkSelectionTreeEntryForElement(element.children, needle)) {
+				found = true;
+			}
+		});
+		return found;
+	}
 
 	/**
 	 * Register the ListPlugin as Aloha.Plugin
 	 */
-	return Plugin.create('list', {
-		/**
-		 * Configure the available languages
-		 */
-		languages: ['en', 'de', 'fr', 'eo', 'fi', 'ru', 'it'],
-
+	var ListPlugin = Plugin.create('list', {
 		/**
 		 * default button configuration
 		 */
@@ -41,65 +117,77 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 
 			var that = this;
 
-			// the 'create unordered list' button
-			this.createUnorderedListButton = new Aloha.ui.Button({
-				'iconClass' : 'aloha-button aloha-button-ul',
-				'size' : 'small',
-				'tooltip' : i18n.t('button.createulist.tooltip'),
-				'toggle' : true,
-				'onclick' : function (element, event) {
-					that.transformList(false);
-				}
-			});
-			// add to floating menu
-			FloatingMenu.addButton(
-				'Aloha.continuoustext',
-				this.createUnorderedListButton,
-				i18nCore.t('floatingmenu.tab.format'),
-				1
-			);
-
-			// the 'create ordered list' button
-			this.createOrderedListButton = new Aloha.ui.Button({
-				'iconClass' : 'aloha-button aloha-button-ol',
-				'size' : 'small',
-				'tooltip' : i18n.t('button.createolist.tooltip'),
-				'toggle' : true,
-				'onclick' : function (element, event) {
+			this._orderedListButton = Ui.adopt("orderedList", ToggleButton, {
+				tooltip: i18n.t("button.createolist.tooltip"),
+				icon: "aloha-icon aloha-icon-orderedlist",
+				scope: 'Aloha.continuoustext',
+				click: function(){
 					that.transformList(true);
 				}
 			});
-			// add to floating menu
-			FloatingMenu.addButton(
-				'Aloha.continuoustext',
-				this.createOrderedListButton,
-				i18nCore.t('floatingmenu.tab.format'),
-				1
-			);
 
-			// add the event handler for selection change
-			Aloha.bind('aloha-selection-changed', function(event, rangeObject) {
-				var i, effectiveMarkup;
+			this._unorderedListButton = Ui.adopt("unorderedList", ToggleButton, {
+				tooltip: i18n.t("button.createulist.tooltip"),
+				icon: "aloha-icon aloha-icon-unorderedlist",
+				scope: 'Aloha.continuoustext',
+				click: function(){
+					that.transformList(false);
+				}
+			});
 
-				that.createUnorderedListButton.setPressed(false);
-				that.createOrderedListButton.setPressed(false);
+			this._indentListButton = Ui.adopt("indentList", Button, {
+				tooltip: i18n.t('button.indentlist.tooltip'),
+				icon: 'aloha-icon aloha-icon-indent',
+				scope: 'Aloha.continuoustext',
+				click: function() {
+					that.indentList();
+				}
+			});
+
+			this._outdentListButton = Ui.adopt("outdentList", Button, {
+				tooltip: i18n.t('button.outdentlist.tooltip'),
+				icon: 'aloha-icon aloha-icon-outdent',
+				scope: 'Aloha.continuoustext',
+				click: function() {
+					that.outdentList();
+				}
+			});
+
+			Scopes.createScope('Aloha.List', 'Aloha.continuoustext');
+
+			// add the event handler for context selection change
+			PubSub.sub('aloha.selection.context-change', function(message){
+				var i,
+					effectiveMarkup,
+					rangeObject = message.range;
+				
+				// Hide all buttons in the list tab will make the list tab disappear
+				that._outdentListButton.show(false);
+				that._indentListButton.show(false);
+				that._unorderedListButton.setState(false);
+				that._orderedListButton.setState(false);
+				
 				for ( i = 0; i < rangeObject.markupEffectiveAtStart.length; i++) {
 					effectiveMarkup = rangeObject.markupEffectiveAtStart[ i ];
-					if (Aloha.Selection.standardTextLevelSemanticsComparator(effectiveMarkup, jQuery('<ul></ul>'))) {
-						that.createUnorderedListButton.setPressed(true);
+					if (Aloha.Selection.standardTagNameComparator(effectiveMarkup, jQuery('<ul></ul>'))) {
+						that._unorderedListButton.setState(true);
+						// Show all buttons in the list tab
+						that._outdentListButton.show(true);
+						that._indentListButton.show(true);
 						break;
 					}
-					if (Aloha.Selection.standardTextLevelSemanticsComparator(effectiveMarkup, jQuery('<ol></ol>'))) {
-						that.createOrderedListButton.setPressed(true);
+					if (Aloha.Selection.standardTagNameComparator(effectiveMarkup, jQuery('<ol></ol>'))) {
+						that._orderedListButton.setState(true);
+						// Show all buttons in the list tab
+						that._outdentListButton.show(true);
+						that._indentListButton.show(true);
 						break;
 					}
 				}
+
 				if (Aloha.activeEditable) {
 					that.applyButtonConfig(Aloha.activeEditable.obj);
 				}
-
-				// TODO this should not be necessary here!
-				FloatingMenu.doLayout();
 			});
 
 			// add the key handler for Tab
@@ -114,25 +202,24 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 		 * @param {jQuery} obj jQuery object of the activated editable
 		 */
 		applyButtonConfig: function (obj) {
-
 			var config = this.getEditableConfig(obj);
 
 			if (Aloha.Selection.rangeObject.unmodifiableMarkupAtStart[0]) {
 				// show/hide them according to the config
 				if (jQuery.inArray('ul', config) != -1 && Aloha.Selection.canTag1WrapTag2(Aloha.Selection.rangeObject.unmodifiableMarkupAtStart[0].nodeName, "ul") != -1) {
-					this.createUnorderedListButton.show();
+					this._unorderedListButton.show(true);
 				} else {
-					this.createUnorderedListButton.hide();
+					this._unorderedListButton.show(false);
 				}
 
 				if (jQuery.inArray('ol', config) != -1 && Aloha.Selection.canTag1WrapTag2(Aloha.Selection.rangeObject.unmodifiableMarkupAtStart[0].nodeName, "ol") != -1) {
-					this.createOrderedListButton.show();
+					this._orderedListButton.show(true);
 				} else {
-					this.createOrderedListButton.hide();
+					this._orderedListButton.show(false);
 				}
+
 			}
 		},
-
 
 		/**
 		 * Process Tab and Shift-Tab pressed in lists
@@ -193,6 +280,9 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 				lastLi, i, jqNewLi, jqList, selectedSiblings, jqParentList,
 				newPara, jqToTransform, nodeName;
 
+			// visible is set to true, but the button is not visible
+			this._outdentListButton.show(true);
+			this._indentListButton.show(true);
 
 			if (!domToTransform) {
 				// wrap a paragraph around the selection
@@ -200,9 +290,35 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 				domToTransform = this.getStartingDomObjectToTransform();
 
 				if (!domToTransform) {
+					if ( Aloha.Selection.rangeObject.startContainer.contentEditable ) {
+						// create a new list with an empty item
+						jqList = ordered ? jQuery('<ol></ol>') : jQuery('<ul></ul>');
+						jqNewLi = jQuery('<li></li>');
+						jqList.append(jqNewLi);
+						
+						var li = jqNewLi.get(0);
+						var editable = Aloha.getActiveEditable().obj;
+						//IE7 requires an (empty or non-empty) text node
+						//inside the li for the selection to work.
+						li.appendChild(document.createTextNode(""));
+
+						editable.append(jqList);
+						editable.focus();
+
+						var range = Aloha.createRange();
+						var selection = Aloha.getSelection();
+						range.setStart( li.firstChild, 0 );
+						range.setEnd( li.firstChild, 0 );
+						selection.removeAllRanges();
+						selection.addRange( range );
+						Aloha.Selection.updateSelection();
+						
+						return;
+					} else {
 					Aloha.Log.error(this, 'Could not transform selection into a list');
 					return;
 				}
+			}
 			}
 
 			// check the dom object
@@ -217,16 +333,26 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 						&& GENTICS.Utils.Dom.isListElement(jqParentList.get(0))) {
 					// when the list is nested into another, our list items will be
 					// added to the list items of the outer list
-					jqList.children().unwrap();
+
+					// find the place where to put the children of the inner list
+					if (jqParentList.get(0).nodeName.toLowerCase() === 'li') {
+						// inner table is nested in a li (this conforms to the html5 spec)
+						jqParentList.after(jqList.children());
+						jqList.remove();
+					} else {
+						// inner table is nested in the outer list directly (this violates the html5 spec)
+						jqList.children().unwrap();
+					}
 				} else {
 					// we are in an unordered list and shall transform it to paragraphs
 
 					// transform all li into p
 					jqToTransform = jQuery(domToTransform);
 					jQuery.each(jqToTransform.children('li'), function(index, li) {
-						newPara = Aloha.Markup.transformDomObject(li, 'p');
+						newPara = Aloha.Markup.transformDomObject(li, 'p', Aloha.Selection.rangeObject);
 						// if any lists are in the paragraph, move the to after the paragraph
 						newPara.after(newPara.children('ol,ul'));
+						Engine.ensureContainerEditable(newPara.get(0));
 					});
 
 					// unwrap the li (remove the enclosing ul)
@@ -236,15 +362,15 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 				// we are in an unordered list and shall transform it to an ordered list
 
 				// transform the ul into an ol
-				Aloha.Markup.transformDomObject(domToTransform, 'ol');
-
+				transformExistingListAndSubLists(domToTransform, 'ol');
+				
 				// merge adjacent lists
 				this.mergeAdjacentLists(jQuery(domToTransform));
 			} else if (nodeName == 'ol' && !ordered) {
 				// we are in an ordered list and shall transform it to an unordered list
 
 				// transform the ol into an ul
-				Aloha.Markup.transformDomObject(domToTransform, 'ul');
+				transformExistingListAndSubLists(domToTransform, 'ul');
 
 				// merge adjacent lists
 				this.mergeAdjacentLists(jQuery(domToTransform));
@@ -257,16 +383,26 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 						&& GENTICS.Utils.Dom.isListElement(jqParentList.get(0))) {
 					// when the list is nested into another, our list items will be
 					// added to the list items of the outer list
-					jqList.children().unwrap();
+
+					// find the place where to put the children of the inner list
+					if (jqParentList.get(0).nodeName.toLowerCase() === 'li') {
+						// inner table is nested in a li (this conforms to the html5 spec)
+						jqParentList.after(jqList.children());
+						jqList.remove();
+					} else {
+						// inner table is nested in the outer list directly (this violates the html5 spec)
+						jqList.children().unwrap();
+					}
 				} else {
 					// we are in an unordered list and shall transform it to paragraphs
 
 					// transform all li into p
 					jqToTransform = jQuery(domToTransform);
 					jQuery.each(jqToTransform.children('li'), function(index, li) {
-						newPara = Aloha.Markup.transformDomObject(li, 'p');
+						newPara = Aloha.Markup.transformDomObject(li, 'p', Aloha.Selection.rangeObject);
 						// if any lists are in the paragraph, move the to after the paragraph
 						newPara.after(newPara.children('ol,ul'));
+						Engine.ensureContainerEditable(newPara.get(0));
 					});
 
 					// unwrap the li (remove the enclosing ul)
@@ -289,6 +425,14 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 				// replace the old dom element with the new list
 				jQuery(domToTransform).replaceWith(jqList);
 
+				// update the selection range
+				if (Aloha.Selection.rangeObject.startContainer == domToTransform) {
+					Aloha.Selection.rangeObject.startContainer = jqNewLi.get(0);
+				}
+				if (Aloha.Selection.rangeObject.endContainer == domToTransform) {
+					Aloha.Selection.rangeObject.endContainer = jqNewLi.get(0);
+				}
+
 				var lastAppendedLi = jqNewLi;
 
 				// now also transform all siblings
@@ -301,7 +445,7 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 							}
 
 							// transform the block level element
-							jqNewLi = Aloha.Markup.transformDomObject(selectedSiblings[i], 'li');
+							jqNewLi = Aloha.Markup.transformDomObject(selectedSiblings[i], 'li', Aloha.Selection.rangeObject);
 							jqList.append(jqNewLi);
 							lastAppendedLi = jqNewLi;
 						} else {
@@ -322,19 +466,26 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 				// merge adjacent lists
 				this.mergeAdjacentLists(jqList);
 
-				//use rangy to change the selection
+				//use rangy to change the selection to the contents of
+				//the last li that was appended to the list
 				var li = lastAppendedLi.get(0);
-				var range = window.rangy.createRange();
-				li.appendChild(document.createTextNode(""));
-				range.selectNodeContents(li);
-				window.rangy.getSelection().setSingleRange(range);
-				//let Aloha know about the selection change we did through rangy
-				Aloha.Selection.updateSelection();
+				if (GENTICS.Utils.Dom.isEmpty(li)) {
+					var range = Aloha.createRange();
+					var selection = Aloha.getSelection();
+					//IE7 requires an (empty or non-empty) text node
+					//inside the li for the selection to work.
+					li.appendChild(document.createTextNode(""));
+					range.selectNodeContents( li.lastChild );
+					selection.removeAllRanges();
+					selection.addRange( range );
+					Aloha.Selection.updateSelection();
+				}
 			}
 
 			// refresh the selection
 			this.refreshSelection();
 		},
+
 
 		/**
 		 * Indent the selected list items by moving them into a new created, nested list
@@ -355,7 +506,6 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 
 				// get the also selected siblings of the dom object
 				selectedSiblings = Aloha.Selection.rangeObject.getSelectedSiblings(listItem);
-
 
 				// create the new list element by cloning the selected list element's parent
 				jqNewList = jQuery(listItem).parent().clone(false).empty();
@@ -422,13 +572,11 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 					if (lastSelected.nextAll('li').length > 0) {
 						jqNewPostList = jqList.clone(false).empty();
 						jqNewPostList.append(lastSelected.nextAll());
+						lastSelected.append(jqNewPostList);
 					}
 
 					// now move all selected li's into the higher list
 					if (wrappingLi.length > 0) {
-						if (typeof jqNewPostList !== 'undefined') {
-							jqListItem.append(jqNewPostList);
-						}
 						wrappingLi.after(jqListItem);
 					} else {
 						jqList.before(jqListItem);
@@ -466,9 +614,6 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 		 * Refresh the current selection and set to focus to the current editable again
 		 */
 		refreshSelection: function () {
-			if (Aloha.activeEditable) {
-				Aloha.activeEditable.obj[0].focus();
-			}
 			Aloha.Selection.rangeObject.update();
 			Aloha.Selection.rangeObject.select();
 			Aloha.Selection.updateSelection();
@@ -527,4 +672,207 @@ function(Plugin, FloatingMenu, i18n, i18nCore) {
 			}
 		}
 	});
+
+	/**
+	 * 
+	 */
+	Engine.commands['insertorderedlist'] = {
+		action: function(value, range) {
+			ListPlugin.transformList(true);
+			if (range && Aloha.Selection.rangeObject) {
+				range.startContainer = Aloha.Selection.rangeObject.startContainer;
+				range.startOffset = Aloha.Selection.rangeObject.startOffset;
+				range.endContainer = Aloha.Selection.rangeObject.endContainer;
+				range.endOffset = Aloha.Selection.rangeObject.endOffset;
+			}
+		},
+		indeterm: function() {
+			// TODO
+		},
+		state: function() {
+			for ( i = 0; i < rangeObject.markupEffectiveAtStart.length; i++) {
+				effectiveMarkup = rangeObject.markupEffectiveAtStart[ i ];
+				if (Aloha.Selection.standardTagNameComparator(effectiveMarkup, jQuery('<ul></ul>'))) {
+					return false;
+				}
+				if (Aloha.Selection.standardTagNameComparator(effectiveMarkup, jQuery('<ol></ol>'))) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+	};
+
+	Engine.commands['insertunorderedlist'] = {
+		action: function(value, range) {
+			ListPlugin.transformList(false);
+			if (range && Aloha.Selection.rangeObject) {
+				range.startContainer = Aloha.Selection.rangeObject.startContainer;
+				range.startOffset = Aloha.Selection.rangeObject.startOffset;
+				range.endContainer = Aloha.Selection.rangeObject.endContainer;
+				range.endOffset = Aloha.Selection.rangeObject.endOffset;
+			}
+		},
+		indeterm: function() {
+			// TODO
+		},
+		state: function() {
+			for ( i = 0; i < rangeObject.markupEffectiveAtStart.length; i++) {
+				effectiveMarkup = rangeObject.markupEffectiveAtStart[ i ];
+				if (Aloha.Selection.standardTagNameComparator(effectiveMarkup, jQuery('<ul></ul>'))) {
+					return true;
+				}
+				if (Aloha.Selection.standardTagNameComparator(effectiveMarkup, jQuery('<ol></ol>'))) {
+					return false;
+				}
+			}
+
+			return false;
+		}
+	};
+
+	Engine.commands['indent'] = {
+		action: function(value, range) {
+			ListPlugin.indentList();
+			if (range && Aloha.Selection.rangeObject) {
+				range.startContainer = Aloha.Selection.rangeObject.startContainer;
+				range.startOffset = Aloha.Selection.rangeObject.startOffset;
+				range.endContainer = Aloha.Selection.rangeObject.endContainer;
+				range.endOffset = Aloha.Selection.rangeObject.endOffset;
+			}
+		},
+		indeterm: function() {
+			// TODO
+		},
+		state: function() {
+			// TODO
+			return false;
+		}
+	};
+
+	Engine.commands['outdent'] = {
+		action: function(value, range) {
+			ListPlugin.outdentList();
+			if (range && Aloha.Selection.rangeObject) {
+				range.startContainer = Aloha.Selection.rangeObject.startContainer;
+				range.startOffset = Aloha.Selection.rangeObject.startOffset;
+				range.endContainer = Aloha.Selection.rangeObject.endContainer;
+				range.endOffset = Aloha.Selection.rangeObject.endOffset;
+			}
+		},
+		indeterm: function() {
+			// TODO
+		},
+		state: function() {
+			// TODO
+			return false;
+		}
+	};
+
+	/**
+	 * A key handler that should be run as a keyup handler for the
+	 * backspace and del keys. keyup fires after the browser has already
+	 * performed the delete - this handler will perform a cleanup if
+	 * necessary.
+	 *
+	 * Will work around an IE bug which breaks nested lists in the
+	 * following situation, where [] is the selection, if backspace is
+	 * pressed (same goes for the del key if the selection is at the end
+	 * of the li that occurs before the selection):
+	 *
+	 * <ul>
+	 *  <li>one</li>
+	 *  <li><ul><li>two</li></ul></li>
+	 * </ul>
+	 * <p>[]</p>
+	 *
+	 * The browser behaviour, if one would presses backspace, results in
+	 * the following:
+	 *
+	 * <ul>
+	 *  <li>one</li>
+	 *  <ul><li>two</li></ul>
+	 * </ul>
+	 *
+	 * which is invalid HTML since the <ul>s are nested directly inside
+	 * each other.
+	 *
+	 * Also, the following situation will cause the kind of invalid HTML
+	 * as above.
+	 * <ul>
+	 *   <li>one</li>
+	 *   <li><ul><li>two</li></ul></li>
+	 *   <li>[]three</li>
+	 * </ul>
+	 *
+	 * Also, the following situtation:
+	 * <ul>
+	 *   <li>one</li>
+	 *   <li><ul><li>two</li></ul>
+	 *       <p>[]three</p>
+	 *       <li>four</li>
+	 *   </li>
+	 * </ul>
+	 *
+	 * And similar situations, some of which are not so easy to reproduce.
+	 * 
+	 * @param event a jQuery key event
+	 * @return false if no action needed to be taken, true if cleanup has been performed
+	 */
+	function deleteWorkaroundHandler(event) {
+		if (8/*backspace*/ != event.keyCode && 46/*del*/ != event.keyCode) {
+			return false;
+		}
+
+		var rangeObj = Aloha.getSelection().getRangeAt(0);
+		var startContainer = rangeObj.startContainer;
+
+		//the hack is only relevant if after the deletion has been
+		//performed we are inside a li of a nested list
+		var $nestedList = jQuery(startContainer).closest('ul, ol');
+		if ( ! $nestedList.length ) {
+			return false;
+		}
+		var $parentList = $nestedList.parent().closest('ul, ol');
+		if ( ! $parentList.length ) {
+			return false;
+		}
+
+		var ranges = Aloha.getSelection().getAllRanges();
+
+		var actionPerformed = false;
+		$parentList.each(function(){
+			actionPerformed = actionPerformed || fixListNesting(jQuery(this));
+		});
+
+		if (actionPerformed) {
+			Aloha.getSelection().setRanges(ranges);
+			for (var i = 0; i < ranges.length; i++) {
+				ranges[i].detach();
+			}
+		}
+
+		return actionPerformed;
+	}
+
+	/**
+	 * If uls or ols are nested directly inside the given list (invalid
+	 * HTML), they will be cleaned up by being appended to the preceding
+	 * li.
+	 */
+	function fixListNesting($list) {
+		var actionPerformed = false;
+		$list.children('ul, ol').each(function(){
+			Aloha.Log.debug("performing list-nesting cleanup");
+			if ( ! jQuery(this).prev('li').append(this).length ) {
+				//if there is no preceding li, create a new one and append to that
+				jQuery(this).parent().prepend(document.createElement('li')).append(this);
+			}
+			actionPerformed = true;
+		});
+		return actionPerformed;
+	}
+
+	return ListPlugin;
 });

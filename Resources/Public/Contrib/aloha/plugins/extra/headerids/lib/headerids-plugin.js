@@ -1,21 +1,48 @@
-/*!
-* Aloha Editor
-* Author & Copyright (c) 2010 Gentics Software GmbH
-* aloha-sales@gentics.com
-* Licensed unter the terms of http://www.aloha-editor.com/license.html
-*/
-define(
-['aloha/jquery','aloha/plugin', 'aloha/floatingmenu', 'i18n!headerids/nls/i18n', 'i18n!aloha/nls/i18n', 'css!headerids/css/headerids.css'],
-function(jQuery, Plugin, FloatingMenu, i18n, i18nCore) {
-	"use strict";
+/* headerids-plugin.js is part of Aloha Editor project http://aloha-editor.org
+ *
+ * Aloha Editor is a WYSIWYG HTML5 inline editing library and editor. 
+ * Copyright (c) 2010-2012 Gentics Software GmbH, Vienna, Austria.
+ * Contributors http://aloha-editor.org/contribution.php 
+ * 
+ * Aloha Editor is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or any later version.
+ *
+ * Aloha Editor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As an additional permission to the GNU GPL version 2, you may distribute
+ * non-source (e.g., minimized or compacted) forms of the Aloha-Editor
+ * source code without the copy of the GNU GPL normally required,
+ * provided you include this license notice and a URL through which
+ * recipients can access the Corresponding Source.
+ */
+define([
+	'aloha',
+	'jquery',
+	'PubSub',
+	'aloha/plugin',
+	'util/html',
+	'i18n!headerids/nls/i18n'
+], function (
+	Aloha,
+	jQuery,
+	PubSub,
+	Plugin,
+	html,
+	i18n
+) {
+	'use strict';
 
-	var
-		$ = jQuery,
-		GENTICS = window.GENTICS,
-		Aloha = window.Aloha;
-	
-	
-	
+	var $ = jQuery;
+
 	// namespace prefix for this plugin
     var ns = 'aloha-headerids';
     
@@ -28,22 +55,59 @@ function(jQuery, Plugin, FloatingMenu, i18n, i18nCore) {
     function nsSel () {
         var strBldr = [], prx = ns;
         $.each(arguments, function () { strBldr.push('.' + (this == '' ? prx : prx + '-' + this)); });
-        return strBldr.join(' ').trim();
-    };
+        return jQuery.trim(strBldr.join(' '));
+    }
     
     // Creates string with this component's namepsace prefixed the each classname
     function nsClass () {
         var strBldr = [], prx = ns;
         $.each(arguments, function () { strBldr.push(this == '' ? prx : prx + '-' + this); });
-        return strBldr.join(' ').trim();
-    };
-    
-    
-    
+        return jQuery.trim(strBldr.join(' '));
+    }
 
+	/**
+	 * Returns a jQuery collection of all heading elements in the given editable
+	 * which are safe to have their ids automatically set.
+	 *
+	 * Do not include heading elements which are annotated with the class
+	 * "aloha-customized" because these have had their ids manually set.
+	 *
+	 * Do not include heading elements which are Aloha editables or blocks because
+	 * implementations often use the ids of these elements to track them in the
+	 * DOM.
+	 *
+	 * @param {jQuery.<HTMLElement>} $editable
+	 * @return {jQuery.<HTMLHeadingElement>} A jQuery container with a
+	 *                                       collection of zero or more heading
+	 *                                       elements.
+	 */
+	function getHeadingElements($editable) {
+		return (
+			$editable.find('h1,h2,h3,h4,h5,h6')
+			        .not('.aloha-customized,.aloha-editable,.aloha-block')
+		);
+	}
 	
+	/**
+	 * Check in the entire document if has a element with the same ID, and try 
+	 * to get an unique ID
+	 * 
+	 * @param {String} proposedID ID to check, uses this as base and concatenate
+	 *                 a dangling with a number
+	 * 
+	 * @return {String}
+	 */
+	function checkDuplicatedID(proposedID){
+		var baseID = proposedID, i = 1;
+		
+		while($('#' + proposedID).length > 0){
+			proposedID = baseID + '_' + ( ++i ).toString();
+		}
+		
+		return proposedID;
+	}
 	
-     return Plugin.create('headerids', {
+	return Plugin.create('headerids', {
 		_constructor: function(){
 			this._super('headerids');
 		},
@@ -54,36 +118,87 @@ function(jQuery, Plugin, FloatingMenu, i18n, i18nCore) {
 		 * Initialize the plugin
 		 */
 		init: function () {
-			var that = this;
-	
+			var plugin = this,
+				invokeCheck = function(msg){
+					var $editable = msg.data.obj || msg.data.editable.obj;
+					plugin.check($editable);
+				}
+			;
+			
+			
+			
+			PubSub.sub('aloha.editable.created', invokeCheck);
+
 			// mark active Editable with a css class
-			Aloha.bind("aloha-editable-activated", function(jEvent, params) { that.check(params.editable.obj); });
-			Aloha.bind("aloha-editable-deactivated", function(jEvent, params) { that.check(params.editable.obj); });
-			jQuery('body').bind('aloha', function (ev) { that.initSidebar(Aloha.Sidebars.right.show()); });
-		},
-		
-		check: function(editable) {
-			var that = this;
-			var config = that.getEditableConfig(editable);
-			if(jQuery.inArray('true',config) == -1) {
-				// Return if the plugin should do nothing in this editable
-				return;
-			}		
-			jQuery(editable).find('h1, h2, h3, h4, h5, h6').not('.aloha-customized').each(function(){ 
-				that.processH(this); 
+			PubSub.sub('aloha.editable.activated', invokeCheck);
+			PubSub.sub('aloha.editable.deactivated', invokeCheck);
+
+			Aloha.bind('aloha-plugins-loaded', function (ev) {
+				plugin.initSidebar(Aloha.Sidebar.right);
 			});
 		},
-		
-		processH: function(h) {
-			var that = this;
-			jQuery(h).attr('id',that.sanitize(jQuery(h).text()));
+
+		/**
+		 * Automatically sets the id attribute of heading elements in the given
+		 * editable element wherever it is safe to do so.
+		 *
+		 * @TODO: This function should be removed from being a plugin method and
+		 *        made a local closure function.
+		 *
+		 * @TODO: Rename to setHeadingIds()
+		 *
+		 * @param {jQuery.<HTMLElement>} $editable
+		 */
+		check: function($editable) {
+			var plugin = this;
+			if($.inArray('true', plugin.getEditableConfig($editable)) > -1) {
+				getHeadingElements($editable).each(function (i, heading) {
+					plugin.processH(heading);
+				});
+			}
 		},
-				
-		sanitize: function(str) {
-			return (str.replace(/[^a-z0-9]+/gi,'_'));
+
+		/**
+		 * Automatically sets the id of the given heading element to a sanitized
+		 * version of the element's content text string.
+		 *
+		 * @TODO: Rename to setHeadingId()
+		 *
+		 * @TODO: Make this function a local closure function rather than a
+		 *        plugin method.
+		 *
+		 * @param {HTMLHeadingElement} heading One of the six HTML heading
+		 *                                     elements.
+		 */
+		processH: function (heading) {
+			if(!heading.id){
+				var $heading = $(heading),
+					ID = this.sanitize($heading.text());
+
+				ID = checkDuplicatedID(ID);
+
+				$heading.attr('id', ID);
+			}
 		},
-		
-		
+
+		/**
+		 * Tranforms the given string into a ideal HTMLElement id attribute
+		 * string by replacing non-alphanumeric characters with an underscore.
+		 *
+		 * @TODO: This method should be removed from being a plugin method and
+		 *        made into a local closure function.
+		 *
+		 * @TODO: The regular expression should be defined once (as a constant)
+		 *        outside of the scope of this function.
+		 *
+		 * @param {String} str
+		 * @return {String} Santized copy of `str`.
+		 */
+		sanitize: function (str) {
+			return html.trimWhitespaceCharacters(str)
+				.replace(/[^a-z0-9]+/gi, '_');
+		},
+
 		//ns = headerids
 		initSidebar: function(sidebar) {
 			var pl = this;
@@ -91,7 +206,7 @@ function(jQuery, Plugin, FloatingMenu, i18n, i18nCore) {
 			sidebar.addPanel({
                     
                     id         : nsClass('sidebar-panel'),
-                    title     : 'Sprungmarken',
+                    title     : i18n.t('internal_hyperlink'),
                     content     : '',
                     expanded : true,
                     activeOn : 'h1, h2, h3, h4, h5, h6',
@@ -121,7 +236,19 @@ function(jQuery, Plugin, FloatingMenu, i18n, i18nCore) {
                     }
                     
                 });
-			sidebar.show().open();
+			sidebar.show();
+		},
+		
+		/**
+		 * Make the given jQuery object (representing an editable) clean for saving
+		 * If the headerids plugin is active it checks the current editable and 
+		 * generates ids for headers.
+		 * 
+		 * @param {jQuery} obj jQuery object to make clean
+		 */
+		makeClean: function (obj) {
+			this.check(obj);
 		}
+		
 	});
 });

@@ -10,6 +10,7 @@
 			xhtml_cleaning = none
 			admPanel = 0
 			metaCharset = utf-8
+			no_cache = 1
 		}
 
 		includeLibs.aloha = EXT:aloha/Classes/Aloha/Save.php
