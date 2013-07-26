@@ -27,25 +27,49 @@
 		},
 		toolbar: {
 			tabs: [
+				// Format Tab
 				{
-					label: 'tab.format.label'
+					label: 'tab.format.label',
+					showOn: { scope: 'Aloha.continuoustext' },
+					components: [
+						[
+							'bold', 'strong', 'italic', 'emphasis', 'underline', '\n',
+							'subscript', 'superscript', 'strikethrough', 'quote', 'link'
+						], [
+							'formatLink', 'formatAbbr', 'formatNumeratedHeaders', 'toggleDragDrop', '\n',
+							'toggleMetaView', 'wailang', 'toggleFormatlessPaste'
+						], [
+							'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '\n',
+							'orderedList', 'unorderedList', 'indentList', 'outdentList', 'colorPicker'
+						], [
+							'formatBlock'
+						], [
+							'up', 'down', 'edit', '\n',
+							'hide', 'unhide', 'newContentElementBelow', 'delete'
+						]
+					]
 				},
+				// Insert Tab
+				/*
 				{
-					label: 'tab.insert.label'
-				},
-				{
-					label: 'Typo3',
-					components: [ 
-						[ 'up', 'down', 'edit', 'hide', 'unhide', 'newContentElementBelow', 'move', 'link', 'delete' ]
+					label: "tab.insert.label",
+					showOn: { scope: 'Aloha.continuoustext' },
+					components: [
+						[ "createTable", "characterPicker", "insertLink",
+						  "insertImage", "insertAbbr", "insertToc",
+						  "insertHorizontalRule", "insertTag"]
 					]
 				}
-			]
+				*/
+			],
+			exclude: [ 'tab.format.label', 'tab.insert.label' ]
 		},
 		"plugins": {
 			"format": {
 				//'h3' : ['fo', 'bar'],
 				// all elements with no specific configuration get this configuration
-				config : [ 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'p', 'edit', 'up', 'down', 'hide', 'unhide', 'newContentElementBelow', 'move','link','delete'],
+				//config : [ 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'p', 'edit', 'up', 'down', 'hide', 'unhide', 'newContentElementBelow', 'move','link','delete'],
+				config : [ 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'p' ],
 				editables : {
 					// no formatting allowed for title
 					'.nostyles'	: [ ],
@@ -61,7 +85,7 @@
 			},
 			"link": {
 				// all elements with no specific configuration may insert links
-				config : [ 'a' ],
+				config : [ ],
 				editables : {
 					'.nostyles'	: [ ]
 				},

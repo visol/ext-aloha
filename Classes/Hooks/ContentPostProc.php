@@ -9,6 +9,13 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	protected $tslib_fe = NULL;
 
 	/**
+	 * "Plugin" settings
+	 *
+	 * @var array
+	 */
+	protected $settings = array();
+
+	/**
 	 * Extension configuration
 	 *
 	 * @var array
@@ -30,6 +37,8 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		if (Tx_Aloha_Utility_Access::isEnabled() && $parentObject->type == 0) {
 //		if (TRUE && isset($GLOBALS['BE_USER']) && $parentObject->type == 0) {
 			$this->tslib_fe = $parentObject;
+
+			$this->settings = $this->tslib_fe->config['config']['tx_aloha.']['settings.'];
 
 				// Load head parts
 			$this->loadHeader();
@@ -166,7 +175,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		}
 
 			// @todo: add some permissions for that
-		if (TRUE) {
+		if (TRUE && (!$this->settings['pageEditButtons.']['history'])) {
 				// Record history
 			$url = TYPO3_mainDir . 'show_rechis.php?element=' . rawurlencode('pages:' . $id) . $this->getReturnUrl();
 
@@ -176,7 +185,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		}
 
 			// New record
-		if (($perms & 16) && $langAllowed) {
+		if (($perms & 16) && $langAllowed && (!$this->settings['pageEditButtons.']['newContentElement'])) {
 			$params = '';
 			if ($GLOBALS['TSFE']->sys_language_uid) {
 				$params = '&sys_language_uid=' . $GLOBALS['TSFE']->sys_language_uid;
@@ -188,7 +197,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		}
 
 			// Move
-		if (($perms & 2)) {
+		if (($perms & 2) && (!$this->settings['pageEditButtons.']['move'])) {
 			$url = TYPO3_mainDir . 'move_el.php?table=pages&uid=' . $GLOBALS['TSFE']->id . $this->getReturnUrl();
 
 			$content .= '<a onclick="' . $this->lightboxUrl($url) . '" href="' . htmlspecialchars($url) . '">
@@ -196,7 +205,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		}
 
 			// New Page
-		if (($perms & 8)) {
+		if (($perms & 8) && (!$this->settings['pageEditButtons.']['newPage'])) {
 			$url = TYPO3_mainDir . 'db_new.php?id=' . $id . '&pagesOnly=1' . $this->getReturnUrl();
 			$content .= '<a onclick="' . $this->lightboxUrl($url) . '" href="' . htmlspecialchars($url) . '">
 					<img ' . $this->getIcon('new_page.gif') . ' title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:newPage') . '" alt="" /></a>';

@@ -17,6 +17,12 @@
 			<label index="extmng.saveMethode.direct">Direct</label>
 			<label index="extmng.saveMethode.intermediate">Intermediate</label>
 
+			<label index="constants.pageEditButtons">Disable Topbar Page Buttons</label>
+			<label index="constants.pageEditButtons.history">Disable Page History Button</label>
+			<label index="constants.pageEditButtons.newContentElement">Disable New Content Element Button</label>
+			<label index="constants.pageEditButtons.move">Disable Move Page Button</label>
+			<label index="constants.pageEditButtons.newPage">Disable New Page Button</label>
+
 			<label index="aloha">Aloha Editor</label>
 			<label index="response.action.save">Changes have been saved!</label>
 			<label index="response.action.unhide">The record has been unhidden, reload to see the result.</label>

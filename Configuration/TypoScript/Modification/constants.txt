@@ -1,0 +1,13 @@
+# customsubcategory=pageEditButtons=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:constants.pageEditButtons
+tx_aloha.config {
+	pageEditButtons {
+		# cat=plugin.tx_aloha/pageEditButtons/aa; type=boolean; label=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:constants.pageEditButtons.history
+		history =
+		# cat=plugin.tx_aloha/pageEditButtons/ab; type=boolean; label=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:constants.pageEditButtons.newContentElement
+		newContentElement =
+		# cat=plugin.tx_aloha/pageEditButtons/ac; type=boolean; label=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:constants.pageEditButtons.move
+		move = 
+		# cat=plugin.tx_aloha/pageEditButtons/ad; type=boolean; label=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:constants.pageEditButtons.newPage
+		newPage = 
+	}
+}

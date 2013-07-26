@@ -43,7 +43,7 @@ html {
 #aloha-topbar-inner .aloha-top-bar-right {
 	display:inline;
 	float:right;
-	width:275px;
+	padding-right: 110px;
 	background:url(../Images/aloha_logo_small.png) no-repeat center right;
 }
 

@@ -1,3 +1,12 @@
+config.tx_aloha.settings {
+	pageEditButtons {
+		history = {$tx_aloha.config.pageEditButtons.history}
+		newContentElement = {$tx_aloha.config.pageEditButtons.newContentElement}
+		move = {$tx_aloha.config.pageEditButtons.move}
+		newPage = {$tx_aloha.config.pageEditButtons.newPage}
+	}
+}
+
 # Remove header link
 lib.stdheader.10.setCurrent.typolink >
 
