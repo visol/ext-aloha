@@ -17,11 +17,12 @@
 			<label index="extmng.saveMethode.direct">Direct</label>
 			<label index="extmng.saveMethode.intermediate">Intermediate</label>
 
-			<label index="constants.pageEditButtons">Disable Topbar Page Buttons</label>
-			<label index="constants.pageEditButtons.history">Disable Page History Button</label>
-			<label index="constants.pageEditButtons.newContentElement">Disable New Content Element Button</label>
-			<label index="constants.pageEditButtons.move">Disable Move Page Button</label>
-			<label index="constants.pageEditButtons.newPage">Disable New Page Button</label>
+			<label index="constants.disablePageButtons">Page Buttons Settings</label>
+			<label index="constants.topBar.pageButtons.edit.disable">Disable Page Edit Button</label>
+			<label index="constants.topBar.pageButtons.history.disable">Disable Page History Button</label>
+			<label index="constants.topBar.pageButtons.newContentElement.disable">Disable New Content Element Button</label>
+			<label index="constants.topBar.pageButtons.move.disable">Disable Move Page Button</label>
+			<label index="constants.topBar.pageButtons.newPage.disable">Disable New Page Button</label>
 
 			<label index="aloha">Aloha Editor</label>
 			<label index="response.action.save">Changes have been saved!</label>

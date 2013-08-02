@@ -47,11 +47,18 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			Tx_Aloha_Utility_Integration::removeStagedElements($GLOBALS['TSFE']->id);
 
 				// Generate output
-			$output = ' <div id="aloha-not-loaded"></div>
+			if (!$this->settings['topBar.']['disable']) {
+				$output = ' <div id="aloha-not-loaded"></div>
 						<div id="aloha-top-bar" style="display:none"><div id="aloha-topbar-inner">
 								<div class="aloha-top-bar-left">' . $this->getToolbarLeft() . '</div><!-- end ToolBarLeft -->
 								<div class="aloha-top-bar-right">' . $this->getToolbarRight() . '</div><!-- end ToolBarRight -->
 						</div></div>';
+			} else {
+				$needle = '<html';
+				$htmlTagStart = '<html style="margin-top:0px;"';
+				$pos = strpos($parentObject->content,$needle);
+			    $parentObject->content = substr_replace($parentObject->content,$htmlTagStart,$pos,strlen($needle));
+			}
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Aloha/Integration.php']['toolbarPostProcess'])) {
 				$finished = FALSE;
@@ -155,12 +162,12 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		$id = $GLOBALS['TSFE']->id;
 
 			// Edit page properties
-		if (($perms & 2)) {
+		if (($perms & 2) && (!$this->settings['topBar.']['pageButtons.']['edit.']['disable'])) {
 			$params = '&edit[pages][' . $GLOBALS['TSFE']->id . ']=edit&noView=1';
 			$url = TYPO3_mainDir . 'alt_doc.php?' . $params . $this->getReturnUrl();
 
 			$content .= '<a onclick="' . $this->lightboxUrl($url) . '" href="' . htmlspecialchars($url) . '">
-						<img ' . $this->getIcon('edit_page.gif') . 'title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:editPageProperties') . '" alt="" />
+						<img ' . $this->getIcon('edit_page.gif') . ' title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:editPageProperties') . '" alt="" />
 					</a>';
 
 			if (isset($this->tslib_fe->page['_PAGES_OVERLAY']) && isset($this->tslib_fe->page['_PAGES_OVERLAY_UID']) && $langAllowed) {
@@ -175,7 +182,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		}
 
 			// @todo: add some permissions for that
-		if (TRUE && (!$this->settings['pageEditButtons.']['history'])) {
+		if (TRUE && (!$this->settings['topBar.']['pageButtons.']['history.']['disable'])) {
 				// Record history
 			$url = TYPO3_mainDir . 'show_rechis.php?element=' . rawurlencode('pages:' . $id) . $this->getReturnUrl();
 
@@ -185,7 +192,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		}
 
 			// New record
-		if (($perms & 16) && $langAllowed && (!$this->settings['pageEditButtons.']['newContentElement'])) {
+		if (($perms & 16) && $langAllowed && (!$this->settings['topBar.']['pageButtons.']['newContentElement.']['disable'])) {
 			$params = '';
 			if ($GLOBALS['TSFE']->sys_language_uid) {
 				$params = '&sys_language_uid=' . $GLOBALS['TSFE']->sys_language_uid;
@@ -197,7 +204,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		}
 
 			// Move
-		if (($perms & 2) && (!$this->settings['pageEditButtons.']['move'])) {
+		if (($perms & 2) && (!$this->settings['topBar.']['pageButtons.']['move.']['disable'])) {
 			$url = TYPO3_mainDir . 'move_el.php?table=pages&uid=' . $GLOBALS['TSFE']->id . $this->getReturnUrl();
 
 			$content .= '<a onclick="' . $this->lightboxUrl($url) . '" href="' . htmlspecialchars($url) . '">
@@ -205,7 +212,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		}
 
 			// New Page
-		if (($perms & 8) && (!$this->settings['pageEditButtons.']['newPage'])) {
+		if (($perms & 8) && (!$this->settings['topBar.']['pageButtons.']['newPage.']['disable'])) {
 			$url = TYPO3_mainDir . 'db_new.php?id=' . $id . '&pagesOnly=1' . $this->getReturnUrl();
 			$content .= '<a onclick="' . $this->lightboxUrl($url) . '" href="' . htmlspecialchars($url) . '">
 					<img ' . $this->getIcon('new_page.gif') . ' title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:newPage') . '" alt="" /></a>';

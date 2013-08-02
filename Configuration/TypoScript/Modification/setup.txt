@@ -1,9 +1,13 @@
 config.tx_aloha.settings {
-	pageEditButtons {
-		history = {$tx_aloha.config.pageEditButtons.history}
-		newContentElement = {$tx_aloha.config.pageEditButtons.newContentElement}
-		move = {$tx_aloha.config.pageEditButtons.move}
-		newPage = {$tx_aloha.config.pageEditButtons.newPage}
+	topBar {
+		disable = 0
+		pageButtons {
+			edit.disable = {$tx_aloha.config.disablePageButtons.edit}
+			history.disable = {$tx_aloha.config.disablePageButtons.history}
+			newContentElement.disable = {$tx_aloha.config.disablePageButtons.newContentElement}
+			move.disable = {$tx_aloha.config.disablePageButtons.move}
+			newPage.disable = {$tx_aloha.config.disablePageButtons.newPage}
+		}
 	}
 }
 
