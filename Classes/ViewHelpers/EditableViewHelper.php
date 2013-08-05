@@ -61,7 +61,13 @@ class Tx_Aloha_ViewHelpers_EditableViewHelper extends Tx_Fluid_Core_ViewHelper_A
 				$finalConfiguration['alohaProcess.'][$key] = $value;
 			}
 
+			// Since some templates don't have allow set, for backward compatibilty defaultly set allow 
+			if (!isset($finalConfiguration['alohaProcess.']['allow'])) {
+				$finalConfiguration['alohaProcess.']['allow'] = 'all';
+			}
+
 				// @todo maybe a caching is good
+			var_dump($uid);
 			$record = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', $table, 'uid=' . (int)$uid);
 
 			$cObj = t3lib_div::makeInstance('tslib_cObj');
