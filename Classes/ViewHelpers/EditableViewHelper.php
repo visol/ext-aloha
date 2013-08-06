@@ -67,7 +67,6 @@ class Tx_Aloha_ViewHelpers_EditableViewHelper extends Tx_Fluid_Core_ViewHelper_A
 			}
 
 				// @todo maybe a caching is good
-			var_dump($uid);
 			$record = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', $table, 'uid=' . (int)$uid);
 
 			$cObj = t3lib_div::makeInstance('tslib_cObj');
