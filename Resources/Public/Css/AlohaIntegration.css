@@ -254,6 +254,10 @@ html {
 	display: inline;
 }
 
+.aloha-editable.aloha-editable-block {
+	display: block;
+}
+
 /* If editable element is inside <p> we use span */
 span.aloha-editable {
 	display: block;
