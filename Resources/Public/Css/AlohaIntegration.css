@@ -250,11 +250,11 @@ html {
 }
 
 /* Try not to affect original style */
-.aloha-editable {
+.alohaeditable {
 	display: inline;
 }
 
-.aloha-editable.aloha-editable-block {
+.alohaeditable.alohaeditable-block {
 	display: block;
 }
 

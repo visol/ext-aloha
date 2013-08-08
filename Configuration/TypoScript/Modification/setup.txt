@@ -41,7 +41,7 @@ lib.stdheader.default.10.2.aloha < lib.stdheader.default.10.1.aloha
 tt_content.text.20.editIcons.beforeLastTag = 0
 tt_content.text.20.alohaProcess = 1
 tt_content.text.20.alohaProcess {
-	class = aloha-editable-block
+	class = alohaeditable-block
 	field = bodytext
 	allow = all
 }
@@ -51,7 +51,7 @@ tt_content.text.20.alohaProcess {
 tt_content.bullets.20.editIcons >
 tt_content.bullets.20.alohaPostProcess = 1
 tt_content.bullets.20.alohaPostProcess {
-	class = aloha-editable-block
+	class = alohaeditable-block
 	field = bodytext
 	allow = all
 }
@@ -60,7 +60,7 @@ tt_content.bullets.20.alohaPostProcess {
 tt_content.table.20.stdWrap.editIcons >
 tt_content.table.20.stdWrap.alohaPostProcess = 1
 tt_content.table.20.stdWrap.alohaPostProcess {
-	class = aloha-editable-block
+	class = alohaeditable-block
 	field = bodytext
 	allow = all
 }
