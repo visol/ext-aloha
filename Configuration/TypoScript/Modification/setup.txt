@@ -1,6 +1,7 @@
-config.tx_aloha.settings {
+config.tx_aloha {
 	topBar {
 		disable = 0
+		warningMessage.disable = 0
 		pageButtons {
 			edit.disable = {$tx_aloha.config.disablePageButtons.edit}
 			history.disable = {$tx_aloha.config.disablePageButtons.history}
@@ -21,7 +22,7 @@ lib.stdheader.10.1.alohaProcess {
 	tag = div
 	field = header
 	allow = edit
-	class = heading
+	class = heading nostyles
 }
 lib.stdheader.10.2.stdWrapProcess < lib.stdheader.10.1.stdWrapProcess
 lib.stdheader.10.3.stdWrapProcess < lib.stdheader.10.1.stdWrapProcess

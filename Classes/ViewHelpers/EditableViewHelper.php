@@ -26,7 +26,7 @@
  * Viewhelper to enable aloha for records in fluid
  *
  * Example:
- * <aloha:editable table="tx_news_domain_model_news" field="teaser" uid="{newsItem.uid}" configuration="{nostyles: 1}">
+ * <aloha:editable table="tx_news_domain_model_news" field="teaser" uid="{newsItem.uid}" configuration="{allow:'edit,move',class:'alohaeditable-block',nostyles: 1}">
  *		{newsItem.teaser}
  *	</aloha:editable>
  *

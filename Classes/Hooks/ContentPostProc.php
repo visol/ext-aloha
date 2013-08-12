@@ -38,7 +38,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 //		if (TRUE && isset($GLOBALS['BE_USER']) && $parentObject->type == 0) {
 			$this->tslib_fe = $parentObject;
 
-			$this->settings = $this->tslib_fe->config['config']['tx_aloha.']['settings.'];
+			$this->settings = $this->tslib_fe->config['config']['tx_aloha.'];
 
 				// Load head parts
 			$this->loadHeader();
@@ -54,8 +54,8 @@ class Tx_Aloha_Hooks_ContentPostProc {
 								<div class="aloha-top-bar-right">' . $this->getToolbarRight() . '</div><!-- end ToolBarRight -->
 						</div></div>';
 			} else {
-				$needle = '<html';
-				$htmlTagStart = '<html style="margin-top:0px;"';
+				$needle = '<body';
+				$htmlTagStart = '<body style="margin-top:0px;"';
 				$pos = strpos($parentObject->content,$needle);
 			    $parentObject->content = substr_replace($parentObject->content,$htmlTagStart,$pos,strlen($needle));
 			}
@@ -115,15 +115,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 							'<span id="count" class="' . ($countOfElements > 0 ? 'tobesaved' : '') . '">' . $countOfElements . '</span>'
 						);
 
-		/*$content = '<div id="alohaeditor-welcome" class="welcome">
-						<div id="alohaeditor-icon"><span class="user"><img src="typo3conf/ext/aloha/Resources/Public/Images/user-backend.png" /></span></div>
-						<div id="alohaeditor-info" style="display:none;"><div>
-							' . $this->getDropdownMenu() . '
-						</div></div>
-					</div>';*/
-
 		$content = '<div id="alohaeditor-welcome" class="welcome">' . $this->getMenu() . '</div>';
-
 
 			// Output depends on selected save method
 		if ($this->configuration['saveMethod'] === 'intermediate') {
@@ -132,10 +124,10 @@ class Tx_Aloha_Hooks_ContentPostProc {
 						<span id="aloha-saveButton"  class="aloha-button save">' . $this->sL(self::ll . 'headerbar.save_button') . '</span>
 						<span id="aloha-discardButton" class="button discard">' . $this->sL(self::ll . 'headerbar.discard_button') . '</span>
 					</span>';
-		} elseif ($this->configuration['saveMethod'] === 'direct') {
+		} elseif (($this->configuration['saveMethod'] === 'direct') && (!$this->settings['topBar.']['warningMessage.']['disable'])) {
 			$content .= '<span class="aloha-warning">' . $this->sL(self::ll . 'headerbar.saveMethod.direct', FALSE) . '</span>';
 
-		} elseif ($this->configuration['saveMethod'] === 'none') {
+		} elseif (($this->configuration['saveMethod'] === 'none') && (!$this->settings['topBar.']['warningMessage.']['disable'])) {
 			$content .= '<span class="aloha-warning">' . $this->sL(self::ll . 'headerbar.saveMethod.none', FALSE) . '</span>';
 		}
 
@@ -230,34 +222,6 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	}
 
 	/**
-	 * Get dropdown menu
-	 *
-	 * @return string
-	 * @todo make items configurable by TsConfig
-	 */
-	public function getDropdownMenu() {
-		$content = '';
-
-			// Open Backend
-		$backendUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir;
-		$content .= '<li>
-						<a target="_blank" href="' . htmlspecialchars($backendUrl) . '">' . $this->sL('LLL:EXT:lang/locallang_login.xml:interface.backend') . '</a>
-					</li>';
-
-			// Logout
-		$logoutUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . 'logout.php?redirect=' . rawurlencode(t3lib_div::getIndpEnv('TYPO3_REQUEST_URL'));
-		$content .= '<li>
-						<a href="' . htmlspecialchars($logoutUrl) .'">' . $this->sL('LLL:EXT:lang/locallang_common.xml:logout') . '</a>
-					</li>';
-
-		if (!empty($content)) {
-			$content = '<ul>' . $content . '</ul>';
-		}
-
-		return $content;
-	}
-
-	/**
 	 * 
 	 * @return string
 	 * @todo make items configurable by TsConfig
@@ -274,11 +238,9 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		$backendUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir;
 		$content .= '<a target="_top" href="' . htmlspecialchars($backendUrl) . '" class="btn btn-success">' . $this->sL('LLL:EXT:lang/locallang_login.xml:interface.backend') . '</a>';
 
-		
-
-		/*if(!empty($content)) {
+		if(!empty($content)) {
 			$content = '<div class="btn-group">' . $content . '</div>';
-		}*/
+		}
 
 		return $content;
 	}
