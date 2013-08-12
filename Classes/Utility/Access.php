@@ -37,18 +37,22 @@ class Tx_Aloha_Utility_Access {
 	 * @return boolean
 	 */
 	public static function isEnabled() {
-			// aloha needs to be enabled also by admins
-			// this is the only way how to temporarly turn on/off the editor
-		if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['aloha']) || $GLOBALS['BE_USER']->uc['TSFE_adminConfig']['aloha'] != 1) {
-			return FALSE;
-		}
-
-
+		// aloha needs to be enabled also by admins
+		// this is the only way how to temporarly turn on/off the editor
 		if (isset($GLOBALS['BE_USER'])
 				&& $GLOBALS['BE_USER']->userTS['aloha'] == 1
 				&& $GLOBALS['TSFE']->config['config']['aloha'] == 1
 				) {
-			return TRUE;
+			// Defaultly allow aloha, only disable if user sets so
+			if (!isset($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['aloha'])) {
+				return TRUE;
+			} else {
+				if ($GLOBALS['BE_USER']->uc['TSFE_adminConfig']['aloha'] == 1) {
+					return TRUE;
+				} else {
+					return FALSE;
+				}
+			}
 		}
 
 		return FALSE;
