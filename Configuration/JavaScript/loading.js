@@ -1,5 +1,7 @@
 window.Aloha.ready( function() {
 	var $ = window.Aloha.jQuery;
+	// For back-compatibility
+	window.alohaQuery = $;
 
 	$('.alohaeditable').aloha();
 	$('#aloha-not-loaded').hide();	
