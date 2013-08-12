@@ -1,6 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
 
-html {
+body {
 	margin-top: 37px;
 }
 
@@ -126,12 +126,10 @@ html {
 .aloha-warning {
 	color:#d38200;
 	color:#DC4C42;
-	display: none;
 }
 
 .aloha-warning strong {
 	color:#ff0000;
-	display: none;
 }
 
 #aloha-topbar-inner a {
@@ -139,15 +137,20 @@ html {
 	text-decoration: none;
 }
 
-#aloha-topbar-inner a.btn {
-	margin-left: 10px;
+#aloha-topbar-inner .btn-group {
+	margin-left: 5px;
+	height: 36px;
+}
+
+#aloha-topbar-inner .btn {
+	margin-left: 3px;
 	padding: 2px 5px;
 	font-family: 'Open Sans', sans-serif;
 	font-weight: bold;
 	font-size: 12px;
 }
 
-#aloha-topbar-inner a.btn-success {
+#aloha-topbar-inner .btn-success {
 	background: none;
 	background: none;
 	background-color: #FF8700;
