@@ -2,6 +2,10 @@
 	window.Aloha = window.Aloha || {};
 	// Manually set the version of jQuery for aloha and free the namespace
 	var jQuery = window.jQuery.noConflict(true);
+	// Hack, so that page edit doesn't throw js error
+	window.TS = {
+		PATH_typo3: ' '
+	};
 	window.Aloha.settings = {
 		jQuery: jQuery,
 		logLevels: {
@@ -36,7 +40,7 @@
 							'bold', 'strong', 'italic', 'emphasis', 'underline', '\n',
 							'subscript', 'superscript', 'strikethrough', 'quote', 'link'
 						], [
-							'formatLink', 'formatAbbr', 'formatNumeratedHeaders', 'toggleDragDrop', '\n',
+							'formatAbbr', 'formatNumeratedHeaders', 'toggleDragDrop', '\n',
 							'toggleMetaView', 'wailang', 'toggleFormatlessPaste'
 						], [
 							'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '\n',
