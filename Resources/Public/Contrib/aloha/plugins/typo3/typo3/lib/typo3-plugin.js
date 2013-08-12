@@ -40,6 +40,7 @@ function(
 
 		/**
 		 * Create the buttons
+		 * @todo: Refactor
 		 */
 		createButtons: function () {
 			var that = this;
@@ -48,39 +49,16 @@ function(
 			var buttons = [ 'up', 'down', 'edit', 'hide', 'unhide', 'newContentElementBelow', 'move','link','delete'];
 
 			jQuery.each(buttons, function(j, button) {
-				var position = 99;
 				var askUserForAction = false;
 				var size = 'small';
 				var menuTab = 'Format';
 
 				switch (button) {
-					case 'edit':
-						menuTab = 'Advanced';
-						position = 2;
-						break;
 					case 'hide':
 					case 'unhide':
-						menuTab = 'Advanced';
-						position = 2;
 						askUserForAction = true;
 						break;
-					case 'up':
-					case 'down':
-						menuTab = 'Advanced';
-						position = 1;
-						break;
-					case 'move':
-						menuTab = 'Advanced';
-						position = 2;
-						break;
-					case 'newContentElementBelow':
-						position = 4;
-						break;
-					case 'link':
-						position = 1;
-						break;
 					case 'delete':
-						position = 4;
 						askUserForAction = true;
 						break;
 				}
@@ -104,11 +82,7 @@ function(
 							var url = typo3BackendUrl + 'move_el.php?returnUrl=' + customCloseUrl + '&' + 'table=' + split[0] + '&uid=' + split[2];
 							that.openLightbox(url);
 						} else if(button == 'link') {
-							var url = alohaUrl + '&rte=1';
-							var url = typo3BackendUrl + '../typo3conf/ext/aloha/Classes/BrowseLink/index.php'; //@todo: check that path
-							var vHWin = window.open(url,'FEquickEditWindow', 'width=690,height=500,status=0,menubar=0,scrollbars=1,resizable=1');
-							vHWin.focus()
-//							that.openLightbox(url);
+							that.newTypolink();
 						} else {
 							if (askUserForAction && (confirm(i18n.t('confirm.' + button))) || (!askUserForAction)) {
 								that.ajaxRequest(button);
@@ -119,6 +93,103 @@ function(
 
 			});
 
+		},
+
+		newTypolink: function ( ) {
+			// @todo: check this path
+			var url = typo3BackendUrl + '../typo3conf/ext/aloha/Classes/BrowseLink/browse_links.php?mode=rte&act=page',
+				range = Aloha.Selection.getRangeObject(),
+				link = this.findLinkMarkup( range );
+			
+			// If link exists sent curUrl
+			if ( link ) {
+				var additionalParameter = '&curUrl[href]=' + encodeURIComponent(link.getAttribute('href'));
+				if (link.target) additionalParameter += '&curUrl[target]=' + encodeURIComponent(link.target);
+				if (link.className) additionalParameter += '&curUrl[class]=' + encodeURIComponent(link.className);
+				if (link.title) additionalParameter += '&curUrl[title]=' + encodeURIComponent(link.title);
+				url += additionalParameter;
+			}
+
+			var vHWin = window.open(url,'FEquickEditWindow', 'width=690,height=500,status=0,menubar=0,scrollbars=1,resizable=1');
+			vHWin.focus();
+		},
+
+		/**
+		 * Insert a new link at the current selection. When the selection is
+		 * collapsed, the link will have a default link text, otherwise the
+		 * selected text will be the link text.
+		 */
+		insertTypolink: function ( linkAttr ) {
+			var that = this,
+			    range = Aloha.Selection.getRangeObject(),
+			    link = this.findLinkMarkup( range ),
+			    buildLink,
+			    linkText,
+			    newLink;
+			
+			if ( !( range.startContainer && range.endContainer ) ) {
+				return;
+			}
+
+			if ( link ) {
+				link.setAttribute('href', linkAttr['href']);
+				linkAttr['target'] ? link.setAttribute('target', linkAttr['target']) : link.removeAttribute('target');
+				linkAttr['class'] ? link.setAttribute('class', linkAttr['class']) : link.removeAttribute('class');
+				linkAttr['title'] ? link.setAttribute('title', linkAttr['title']) : link.removeAttribute('title');
+			} else {
+				GENTICS.Utils.Dom.extendToWord( range );
+				buildLink = '<a href="' + linkAttr['href'] + '"';
+				if (linkAttr['target']) buildLink += ' target="' + linkAttr['target'] + '"';
+				if (linkAttr['class']) buildLink += ' class="' + linkAttr['class'] + '"';
+				if (linkAttr['title']) buildLink += ' title="' + linkAttr['title'] + '"';
+				if ( range.isCollapsed() ) {
+					// insert a link with text here
+					linkText = i18n.t('newlink.defaulttext');
+					buildLink += '>' + linkText + '</a>';
+					newLink = jQuery(buildLink);
+					GENTICS.Utils.Dom.insertIntoDOM( newLink, range, jQuery( Aloha.activeEditable.obj ) );
+					range.startContainer = range.endContainer = newLink.contents().get( 0 );
+					range.startOffset = 0;
+					range.endOffset = linkText.length;
+				} else {
+					buildLink += '></a>';
+					newLink = jQuery(buildLink);
+					GENTICS.Utils.Dom.addMarkup( range, newLink, false );
+				}
+
+				range.select();
+
+				// because the Aloha Selection is deprecated I need to convert it to a range
+				var apiRange = Aloha.createRange();
+				apiRange.setStart(range.startContainer, range.startOffset);
+				apiRange.setEnd(range.endContainer, range.endOffset);
+			}
+		},
+
+		/**
+		 * Check whether inside a link tag
+		 * @param {GENTICS.Utils.RangeObject} range range where to insert the
+		 *			object (at start or end)
+		 * @return markup
+		 * @hide
+		 */
+		findLinkMarkup: function ( range ) {
+			if ( typeof range == 'undefined' ) {
+				range = Aloha.Selection.getRangeObject();
+			}
+			if ( Aloha.activeEditable ) {
+				// If the anchor element itself is the editable, we
+				// still want to show the link tab.
+				var limit = Aloha.activeEditable.obj;
+				if (limit[0] && limit[0].nodeName === 'A') {
+					limit = limit.parent();
+				}
+				return range.findMarkup(function () {
+					return this.nodeName == 'A';
+				}, limit);
+			} else {
+				return null;
+			}
 		},
 
 		/**
@@ -147,7 +218,12 @@ function(
 				}
 			);
 
-
+			Aloha.bind(
+				'aloha-typolink-created',
+				function (jEvent, args) {
+					that.insertTypolink(args['link']);
+				}
+			);
 		},
 
 		ajaxRequest: function (button) {
@@ -219,29 +295,3 @@ function(
 
 	});
 });
-
-
-
-function renderPopup_addLink2(theLink, cur_target, cur_class, cur_title) {
-	// current selection or cursor position
-	range = Aloha.Selection.getRangeObject();
-
-	// if selection is collapsed then extend to the word.
-	if (range.isCollapsed()) {
-		window.GENTICS.Utils.Dom.extendToWord(range);
-	}
-
-	if ( range.isCollapsed() ) {
-		// insert a link with text here
-		linkText = this.i18n('newlink.defaulttext');
-		newLink = window.alohaQuery('<a href="' + theLink + '">' + linkText + '</a>');
-		window.GENTICS.Utils.Dom.insertIntoDOM(newLink, range, jQuery(Aloha.activeEditable.obj));
-		range.startContainer = range.endContainer = newLink.contents().get(0);
-		range.startOffset = 0;
-		range.endOffset = linkText.length;
-	} else {
-		newLink = window.alohaQuery('<a href="' + theLink + '"></a>');
-		GENTICS.Utils.Dom.addMarkup(range, newLink, false);
-	}
-	range.select();
-}
