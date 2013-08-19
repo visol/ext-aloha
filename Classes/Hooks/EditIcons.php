@@ -23,7 +23,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(PATH_typo3 . '/sysext/cms/tslib/interfaces/interface.tslib_content_stdwraphook.php');
+require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('frontend') . 'Classes/ContentObject/ContentObjectStdWrapHookInterface.php';
 
 /**
  * Hook to enable additional stdWrap function "aloha"
