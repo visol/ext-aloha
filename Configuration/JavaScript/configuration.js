@@ -46,10 +46,8 @@
 							'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '\n',
 							'orderedList', 'unorderedList', 'indentList', 'outdentList', 'colorPicker'
 						], [
-							'formatBlock'
-						], [
-							'up', 'down', 'edit', '\n',
-							'hide', 'unhide', 'newContentElementBelow', 'delete'
+							'up', 'newContentElementBelow', 'edit', '\n',
+							'down', 'unhide', 'hide', 'delete'
 						]
 					]
 				},
