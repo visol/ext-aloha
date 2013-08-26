@@ -152,7 +152,6 @@ body {
 
 #aloha-topbar-inner .btn-success {
 	background: none;
-	background: none;
 	background-color: #FF8700;
 }
 
@@ -261,9 +260,8 @@ body {
 	display: block;
 }
 
-/* If editable element is inside <p> we use span */
-span.aloha-editable {
-	display: block;
+.alohaeditable.alohaeditable-inline-block {
+	display: inline-block;
 }
 
 .aloha-editable-highlight {
@@ -377,9 +375,9 @@ span.aloha-editable {
 	border-color:red;
 }
 
-.el7r_notify.darkblue {
+.el7r_notify.darkred {
 	border:1px solid #68697B;
-	background:#FFF url(../Contrib/notify/icons/darkblue_bg.jpg) bottom repeat-x;
+	background: darkred;
 	color:#FFF;
 	padding:10px;
 	width:240px;
@@ -391,7 +389,7 @@ span.aloha-editable {
 	margin-bottom:10px;
 	cursor:help;
 }
-.el7r_notify.darkblue span.ex {
+.el7r_notify.darkred span.ex {
 	float:right;
 	background:#898AA6;
 	text-align:center;
@@ -399,12 +397,12 @@ span.aloha-editable {
 	color:#FFF;
 	font-size:11px;
 	height:15px; width:15px;
-	border:1px solid darkblue;
+	border:1px solid darkred;
 	cursor:pointer;
 	border-radius:5px;
 	-moz-border-radius:5px;
 }
-.el7r_notify.darkblue span.ex:hover {
+.el7r_notify.darkred span.ex:hover {
 	background-color:#962127;
 	color:white;
 	border-color:red;

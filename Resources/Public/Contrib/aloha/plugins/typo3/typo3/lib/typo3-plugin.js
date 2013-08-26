@@ -246,7 +246,7 @@ function(
 				error: function(xhr){
 					$().el7r_notify({
 						'text':xhr.statusText,
-						'skin':'darkblue'
+						'skin':'darkred'
 					});
 				}
 			});
@@ -275,7 +275,7 @@ function(
 					error: function(xhr){
 						$().el7r_notify({
 							'text':xhr.responseText,
-							'skin':'darkblue'
+							'skin':'darkred'
 						});
 					}
 				});

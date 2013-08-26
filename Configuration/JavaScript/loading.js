@@ -26,7 +26,7 @@ window.Aloha.ready( function() {
 			error: function(xhr){
 				$().el7r_notify({
 					'text':xhr.responseText,
-					'skin':'darkblue'
+					'skin':'darkred'
 				});
 			}
 		});
@@ -50,7 +50,7 @@ window.Aloha.ready( function() {
 			error: function(xhr){
 				$().el7r_notify({
 					'text':xhr.responseText,
-					'skin':'darkblue'
+					'skin':'darkred'
 				});
 			}
 		});
