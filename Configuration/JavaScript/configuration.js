@@ -43,8 +43,10 @@
 							'formatAbbr', 'formatNumeratedHeaders', 'toggleDragDrop', '\n',
 							'toggleMetaView', 'wailang', 'toggleFormatlessPaste'
 						], [
-							'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '\n',
-							'orderedList', 'unorderedList', 'indentList', 'outdentList', 'colorPicker'
+							'orderedList', 'unorderedList', 'alignCenter', 'alignJustify', '\n',
+							'indentList', 'outdentList', 'alignLeft', 'alignRight', 'colorPicker'
+						], [
+							'formatBlock'
 						], [
 							'up', 'newContentElementBelow', 'edit', '\n',
 							'down', 'unhide', 'hide', 'delete'
@@ -80,7 +82,7 @@
 			},
 			"list": {
 				// all elements with no specific configuration get an UL, just for fun :)
-				config : [ 'ul' ],
+				config : [ 'ul', 'ol' ],
 				editables : {
 					'.nostyles'	: [ ]
 				}
