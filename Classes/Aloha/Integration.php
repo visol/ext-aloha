@@ -47,7 +47,10 @@ class Tx_Aloha_Aloha_Integration {
 				if (empty($content)) {
 					$alohaConfig['class'] .= 'aloha-empty-content';
 				}
-
+				if ($this->dataArray['hidden'] == 1) {
+					$alohaConfig['class'] .= ' aloha-preview-content';
+				}
+				
 				$classList = array('alohaeditable');
 				$this->getAllowedActions($alohaConfig, $classList);
 

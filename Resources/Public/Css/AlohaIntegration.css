@@ -272,6 +272,13 @@ body {
 	outline: #B7D6FA solid 5px !important;
 }
 
+.aloha-editable-highlight.aloha-preview-content {
+	outline: #ff8b67 solid 5px !important;
+}
+.aloha-editable-active.aloha-preview-content, .aloha-editable-active.aloha-preview-content[contenteditable=true]:focus {
+	outline: #ff8b67 solid 5px !important;
+}
+
 /* Needs higher z-index than toolbar */
 #sb-container {
 	z-index: 10110;
