@@ -274,7 +274,34 @@ window.alohaQuery("#aloha-saveButton").show();
 			}
 		}
 
+		/*
+		Aloha automatically encodes entities, but typo3 automatically encodes them too,
+		so we have to decode them from Aloha otherwise we would encode twice.
+		CHANGED from html_entity_decode to urldecode, after problem with encoding on some servers which broke content and flexform.
+		*/
+		$htmlEntityDecode = true;
+
 		$request['content'] = Tx_Aloha_Utility_Integration::rteModification($this->table, $this->field, $this->uid, $GLOBALS['TSFE']->id, $request['content']);
+
+		// in case we want to write to flexform
+		$fields = explode('-', $this->field, 2);
+		if ($this->table == 'tt_content' && $fields[0] == 'pi_flexform' && !is_null($fields[1]))
+		{
+			$this->field = 'pi_flexform';
+			$request['content'] = $this->processFlexform($request,$fields);
+		}
+
+		// in case we changed header
+		if ($this->table == 'tt_content' && $this->field == 'header' && substr( $request['content'], 0, 2 ) === "<h")
+		{
+			$request['content'] = $this->processHeader($request);
+		}
+
+		if ($htmlEntityDecode) {
+			$request['content'] = urldecode($request['content']);
+				// Try to remove invalid utf-8 characters so content won't break if there are invalid characters in content
+			$request['content'] = iconv("UTF-8", "UTF-8//IGNORE", $request['content']);
+		}
 
 		if (!empty($request)) {
 			$data = array(
@@ -285,6 +312,8 @@ window.alohaQuery("#aloha-saveButton").show();
 				)
 			);
 		}
+
+
 
 		$this->tce->start($data, array());
 		$this->tce->process_datamap();
@@ -358,6 +387,55 @@ window.alohaQuery("#aloha-saveButton").show();
 	 */
 	public function getRecord() {
 		return $this->record;
+	}
+
+	private function processFlexform($request,$fields) {
+		$xml = new SimpleXMLElement($this->record['pi_flexform']);
+
+			// @TODO: Maybe give possibility for fields to have html tags
+		$fieldAllowedTags = '<sup><sub>';
+		foreach ($xml->xpath('//T3FlexForms/data/sheet/language/field[@index = "'.$fields[1].'"]') as $entry) {
+			$content = trim($request['content']);
+			$content = strip_tags(urldecode($content), $fieldAllowedTags);
+
+				// Try to remove invalid characters so save won't break xml if there are invalid characters in string
+			$content = iconv("UTF-8", "UTF-8//IGNORE", $content);
+
+			$node = dom_import_simplexml($entry->value);
+			$node->nodeValue = "";
+			$node->appendChild($node->ownerDocument->createCDATASection($content));
+		}
+
+		$request['content'] = $xml->saveXml();
+
+		return $request['content'];
+	}
+
+	private function processHeader($request) {
+		$content = urldecode(strip_tags($request['content']));
+		switch (substr( $request['content'], 0, 4 ))
+		{
+			case '<h1>':
+				$request['content'] = 1;
+				break;
+			case '<h2>':
+				$request['content'] = 2;
+				break;
+			case '<h3>':
+				$request['content'] = 3;
+				break;
+			case '<h4>':
+				$request['content'] = 4;
+				break;
+			default:
+				$request['content'] = 0;
+				break;
+		}
+		$request['identifier'] = $this->table . '--header_layout--' . $this->uid;
+		$this->directSave($request,TRUE);
+		$this->field = 'header';
+
+		return $content;
 	}
 }
 
