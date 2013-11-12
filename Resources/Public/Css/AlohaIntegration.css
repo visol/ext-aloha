@@ -432,3 +432,108 @@ ul.aloha-multisplit button.h3-bar {
 	background-image:url(../Images/h3-b.png) !important;
 	background-position: center center !important;
 }
+
+/* Additional css for top panel */
+body {
+	margin-top: 47px;
+}
+
+#aloha-topbar-inner .aloha-viewpage-controls {
+	display: inline-block;
+	font-size: 22px;
+	position: relative;
+	top: 5px;
+	padding-left: 5px;
+}
+
+#tx_pxafoundation_viewpage_iframe {
+	display:block;
+	margin:0 auto;
+	box-shadow:0 0 6px #666;
+	width:100%;
+	height:100%;
+}
+
+#aloha-not-loaded {
+	height: 47px;
+}
+
+#aloha-top-bar {
+	height: 47px;
+}
+
+.aloha .aloha-ui-toolbar {
+    text-align: left;
+    width: auto;
+    min-width: 483px;
+}
+
+.alohaeditable-inline-block {
+	max-width: 100%;
+}
+
+#el7r_notify_top_left {
+	top:50px;
+}
+
+#TSFE_ADMIN_PANEL_FORM tr.typo3-adminPanel-section-title .typo3-adminPanel-section-open, #TSFE_ADMIN_PANEL_FORM tr.typo3-adminPanel-section-title .typo3-adminPanel-section-closed {
+	display: block !important;
+	width: auto !important;
+}
+
+.aloha-paste-handler {
+	width: 0px !important;
+	height: 0px !important;
+}
+
+#aloha-topbar-inner {
+	height: 40px;
+	background-image: url('../Images/bar-bg.png');
+}
+
+#aloha-topbar-inner a i {
+	color: #fff;
+}
+
+#aloha-topbar-inner a i:hover {
+	color: #626262;
+	-webkit-transition: color 0.1s linear;  
+    -moz-transition: color 0.1s linear;
+    -o-transition: color 0.1s linear;
+    transition: color 0.1s linear;
+}
+
+#aloha-topbar-inner a.btn-success {
+	background-color: #66bc29;
+
+}
+
+#aloha-topbar-inner .aloha-menu-wrap {
+	display: inline;
+}
+
+#aloha-topbar-inner a.btn-success:hover {
+	background-color: #51a351;
+	color: #fff;
+	-webkit-transition: background-color 0.1s linear;  
+    -moz-transition: background-color 0.1s linear;
+    -o-transition: background-color 0.1s linear;
+    transition: background-color 0.1s linear;
+}
+
+#aloha-topbar-inner a.btn-danger i {
+	color: #fff;
+}
+
+#aloha-topbar-inner .aloha-top-bar-right {
+	background-image: url('../Images/typo3logo_white.png');
+	padding-right: 90px;
+}
+
+#aloha-topbar-inner .aloha-top-bar-right .page-edit-buttons img {
+	padding-top: 11px;
+}
+
+#aloha-topbar-inner .page-edit-header {
+	line-height: 38px;
+}

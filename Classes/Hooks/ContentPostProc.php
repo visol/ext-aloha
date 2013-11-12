@@ -96,6 +96,21 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			$styles .= t3lib_div::getUrl($configurationArray['headerTemplate']);
 		}
 
+		$styles .= '
+			<script type="text/javascript">
+				(function( p, undefined ) {
+				    (function( v, undefined ) {
+						v.styleDesktop = "' . ($this->settings['responsiveView.']['buttons.']['desktop.']['minWidth'] ? 'min-width:'.$this->settings['responsiveView.']['buttons.']['desktop.']['minWidth'].';' : '' ) . ($this->settings['responsiveView.']['buttons.']['desktop.']['maxWidth'] ? 'max-width:'.$this->settings['responsiveView.']['buttons.']['desktop.']['maxWidth'].';' : '' ) .'";
+						v.styleLaptop = "' . ($this->settings['responsiveView.']['buttons.']['laptop.']['minWidth'] ? 'min-width:'.$this->settings['responsiveView.']['buttons.']['laptop.']['minWidth'].';' : '' ) . ($this->settings['responsiveView.']['buttons.']['laptop.']['maxWidth'] ? 'max-width:'.$this->settings['responsiveView.']['buttons.']['laptop.']['maxWidth'].';' : '' ) .'";
+						v.styleTablet = "' . ($this->settings['responsiveView.']['buttons.']['tablet.']['minWidth'] ? 'min-width:'.$this->settings['responsiveView.']['buttons.']['tablet.']['minWidth'].';' : '' ) . ($this->settings['responsiveView.']['buttons.']['tablet.']['maxWidth'] ? 'max-width:'.$this->settings['responsiveView.']['buttons.']['tablet.']['maxWidth'].';' : '' ) .'";
+						v.styleMobile = "' . ($this->settings['responsiveView.']['buttons.']['mobile.']['minWidth'] ? 'min-width:'.$this->settings['responsiveView.']['buttons.']['mobile.']['minWidth'].';' : '' ) . ($this->settings['responsiveView.']['buttons.']['mobile.']['maxWidth'] ? 'max-width:'.$this->settings['responsiveView.']['buttons.']['mobile.']['maxWidth'].';' : '' ) .'";
+					}( p.viewpage = p.viewpage || {} ));
+				}( window.pxa = window.pxa || {} ));
+			</script>
+			';
+		$styles .= '
+			<script type="text/javascript" src="typo3conf/ext/aloha/Resources/Public/js/viewpage.js"></script>';
+
 			// Wrap it all in a comment for infos when looking at sources
 		$styles = LF . '<!-- Begin Aloha Files -->' . LF . $styles . LF . '<!-- End Aloha Files -->' . LF . LF;
 
@@ -116,6 +131,9 @@ class Tx_Aloha_Hooks_ContentPostProc {
 						);
 
 		$content = '<div id="alohaeditor-welcome" class="welcome">' . $this->getMenu() . '</div>';
+
+		// Get responsive buttons
+		$content .= $this->getResponsiveButtons();
 
 			// Output depends on selected save method
 		if ($this->configuration['saveMethod'] === 'intermediate') {
@@ -222,6 +240,33 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	}
 
 	/**
+	 * Get responsive control buttons
+	 *
+	 * @return string
+	 */
+	public function getResponsiveButtons() {
+		$responsiveItemsControlArray = array('desktop','laptop','tablet','mobile');
+
+		$output = '';
+
+		foreach ($responsiveItemsControlArray as $key => $button) {
+			if (!$this->settings['responsiveView.']['buttons.'][$button.'.']['disable']) {
+				$classOfButton = $button == 'mobile' ? 'mobile-phone' : $button;
+				$output .= '
+					<a title="'.ucfirst($button).' view" onclick="pxa.aloha.resizeViewFrame(\''.$button.'\'); return false;" href="#">
+						<i class="icon-'.$classOfButton.' icon-large"></i>
+					</a>';
+			}
+		}
+
+		if (!empty($output)) {
+			$output = '<div class="aloha-viewpage-controls">' . $output . '</div>';
+		}
+
+		return $output;
+	}
+
+	/**
 	 * 
 	 * @return string
 	 * @todo make items configurable by TsConfig
@@ -232,14 +277,14 @@ class Tx_Aloha_Hooks_ContentPostProc {
 
 		//Logout
 		$logoutUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . 'logout.php?redirect=' . rawurlencode(t3lib_div::getIndpEnv('TYPO3_REQUEST_URL'));
-		$content .= '<a href="' . htmlspecialchars($logoutUrl) . '" class="btn btn-success">' . $this->sL('LLL:EXT:lang/locallang_common.xml:logout') . '</a>';
+		$content .= '<a href="' . htmlspecialchars($logoutUrl) . '" class="btn btn-danger"><i class="icon-off"></i></a>';
 
 		//Open Backend
 		$backendUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir;
 		$content .= '<a target="_top" href="' . htmlspecialchars($backendUrl) . '" class="btn btn-success">' . $this->sL('LLL:EXT:lang/locallang_login.xml:interface.backend') . '</a>';
 
 		if(!empty($content)) {
-			$content = '<div class="btn-group">' . $content . '</div>';
+			$content = '<div class="aloha-menu-wrap">' . $content . '</div>';
 		}
 
 		return $content;
