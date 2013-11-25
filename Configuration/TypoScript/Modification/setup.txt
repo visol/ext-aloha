@@ -1,7 +1,7 @@
 config.tx_aloha {
 	topBar {
 		disable = 0
-		warningMessage.disable = 0
+		warningMessage.disable = 1
 		pageButtons {
 			edit.disable = {$tx_aloha.config.disablePageButtons.edit}
 			history.disable = {$tx_aloha.config.disablePageButtons.history}
