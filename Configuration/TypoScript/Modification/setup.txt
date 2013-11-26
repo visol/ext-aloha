@@ -25,6 +25,10 @@ config.tx_aloha {
 	}
 }
 
+[globalVar = GP:aloha_topBar_disable = 1]
+	config.tx_aloha.topBar.disable = 1
+[global]
+
 # Remove header link
 lib.stdheader.10.setCurrent.typolink >
 
