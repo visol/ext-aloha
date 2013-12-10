@@ -50,7 +50,7 @@ class Tx_Aloha_Aloha_Integration {
 				if ($this->dataArray['hidden'] == 1) {
 					$alohaConfig['class'] .= ' aloha-preview-content';
 				}
-				
+
 				$classList = array('alohaeditable');
 				$this->getAllowedActions($alohaConfig, $classList);
 
@@ -66,8 +66,6 @@ class Tx_Aloha_Aloha_Integration {
 			$errorMsg = sprintf('Error with AlohaEditor: %s', $e->getMessage());
 			$content .= '<div style="color:red;padding:2px;margin:2px;font-weight:bold;">' . htmlspecialchars($errorMsg) . '</div>';
 		}
-
-
 
 		return $content;
 	}
