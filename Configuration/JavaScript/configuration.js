@@ -38,7 +38,7 @@
 					components: [
 						[
 							'bold', 'strong', 'italic', 'emphasis', 'underline', '\n',
-							'subscript', 'superscript', 'strikethrough', 'quote', 'link'
+							'subscript', 'superscript', 'strikethrough', 'quote'
 						], [
 							'formatAbbr', 'formatNumeratedHeaders', 'toggleDragDrop', '\n',
 							'toggleMetaView', 'wailang', 'toggleFormatlessPaste'
@@ -48,8 +48,8 @@
 						], [
 							'formatBlock'
 						], [
-							'up', 'newContentElementBelow', 'edit', '\n',
-							'down', 'unhide', 'hide', 'delete'
+							'newContentElementBelow', 'edit', '\n',
+							'unhide', 'hide', 'delete'
 						]
 					]
 				},
@@ -77,16 +77,17 @@
 				editables : {
 					// no formatting allowed for title
 					'.nostyles'	: [ ],
-					'.heading'	: [ 'h1', 'h2', 'h3', 'h4' ]
+					'.heading'	: [ 'h1', 'h2', 'h3', 'h4', 'h5' ]
 				}
 			},
 			"list": {
 				// all elements with no specific configuration get an UL, just for fun :)
-				config : [ 'ul', 'ol' ],
+				config : [],
 				editables : {
-					'.nostyles'	: [ ]
+					'.nostyles'	: [ ],
 				}
 			},
+			/*
 			"link": {
 				// all elements with no specific configuration may insert links
 				config : [ ],
@@ -114,17 +115,26 @@
 			},
 			"table": {
 				// all elements with no specific configuration are not allowed to insert tables
-				config : [ ],
-				editables : {
+		        config : [ 'table' ],
+ 				editables : {
 					// Allow insert tables only into .article
 					'.article'	: [ 'table' ],
 					'.nostyles'	: [ ]
 				},
 				// [{name:'green', text:'Green', tooltip:'Green is cool', iconClass:'GENTICS_table GENTICS_button_green', cssClass:'green'}]
 				tableConfig : [
-					{ name:'hor-minimalist-a' },
-					{ name:'box-table-a' },
-					{ name:'hor-zebra' },
+					{ 
+						name:'table' ,
+						cssClass:'table',
+						text:'Table',
+						tooltip:'Table default style'
+					},
+					{ 	name:'table table-striped',
+						cssClass:'table table-striped',
+						text:'Striped table',
+						tooltip:'A striped table'
+					},
+					
 				],
 				columnConfig : [
 					{
@@ -139,14 +149,17 @@
 				rowConfig : [
 					{
 						name:'bigbold',
-						iconClass:'GENTICS_button_row_bigbold'
+						iconClass:'GENTICS_button_row_bigbold',
+						text:'BigBold Something'
 					},
 					{
 						name:'redwhite',
-						iconClass:'GENTICS_button_row_redwhite'
+						iconClass:'GENTICS_button_row_redwhite',
+						text:'RedWhite Something'
 					}
 				]
 			}
+			*/
 		}
 	};
 })(window);
