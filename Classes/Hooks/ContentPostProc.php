@@ -109,7 +109,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			</script>
 			';
 		$styles .= '
-			<script type="text/javascript" src="typo3conf/ext/aloha/Resources/Public/js/viewpage.js"></script>';
+			<script type="text/javascript" src="/typo3conf/ext/aloha/Resources/Public/js/viewpage.js"></script>';
 
 			// Wrap it all in a comment for infos when looking at sources
 		$styles = LF . '<!-- Begin Aloha Files -->' . LF . $styles . LF . '<!-- End Aloha Files -->' . LF . LF;
@@ -310,8 +310,8 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 * @todo do it correctly
 	 */
 	public function getIcon($icon) {
-		return t3lib_iconWorks::skinImg(TYPO3_mainDir, 'sysext/t3skin/icons/gfx/' . $icon, 'width="16" height="16"');
-		return t3lib_iconWorks::skinImg(TYPO3_mainDir, 'gfx/' . $icon, 'width="11" height="12"');
+		return t3lib_iconWorks::skinImg('/' . TYPO3_mainDir, 'sysext/t3skin/icons/gfx/' . $icon, 'width="16" height="16"');
+		return t3lib_iconWorks::skinImg('/' . TYPO3_mainDir, 'gfx/' . $icon, 'width="11" height="12"');
 	}
 
 	/**
