@@ -1,5 +1,3 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
-
 body {
 	margin-top: 37px;
 }
@@ -176,8 +174,7 @@ body {
 }
 
 #aloha-topbar-inner .aloha-top-bar-right .page-edit-buttons img {
-	padding-top: 8px;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 #aloha-topbar-inner .button-holder {
@@ -528,10 +525,6 @@ body {
 #aloha-topbar-inner .aloha-top-bar-right {
 	background-image: url('../Images/typo3logo_white.png');
 	padding-right: 90px;
-}
-
-#aloha-topbar-inner .aloha-top-bar-right .page-edit-buttons img {
-	padding-top: 11px;
 }
 
 #aloha-topbar-inner .page-edit-header {
