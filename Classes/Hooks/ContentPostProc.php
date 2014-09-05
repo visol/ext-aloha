@@ -254,7 +254,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 				$classOfButton = $button == 'mobile' ? 'mobile-phone' : $button;
 				$output .= '
 					<a title="'.ucfirst($button).' view" onclick="pxa.aloha.resizeViewFrame(\''.$button.'\'); return false;" href="#">
-						<i class="icon-'.$classOfButton.' icon-large"></i>
+						<i class="alohaicon-'.$classOfButton.' alohaicon-large"></i>
 					</a>';
 			}
 		}
@@ -277,7 +277,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 
 		//Logout
 		$logoutUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . 'logout.php?redirect=' . rawurlencode(t3lib_div::getIndpEnv('TYPO3_REQUEST_URL'));
-		$content .= '<a href="' . htmlspecialchars($logoutUrl) . '" class="btn btn-danger"><i class="icon-off"></i></a>';
+		$content .= '<a href="' . htmlspecialchars($logoutUrl) . '" class="btn btn-danger"><i class="alohaicon-power-off"></i></a>';
 
 		//Open Backend
 		$backendUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir;
