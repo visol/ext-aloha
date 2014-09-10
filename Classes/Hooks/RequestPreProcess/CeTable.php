@@ -52,7 +52,7 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeTable implements Tx_Aloha_Interfaces_Re
 			$finished = TRUE;
 
 			$domDocument = new DOMDocument();
-			$domDocument->loadHTML($request['content']);
+			$domDocument->loadHTML('<?xml encoding="utf-8" ?>' . $request['content']);
 
 			$xPath = new DOMXpath($domDocument);
 
