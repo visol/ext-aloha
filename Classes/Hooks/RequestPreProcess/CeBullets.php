@@ -52,12 +52,12 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeBullets implements Tx_Aloha_Interfaces_
 			$finished = TRUE;
 
 			$domDocument = new DOMDocument();
-			$domDocument->loadHTML($request['content']);
+			$domDocument->loadHTML('<?xml encoding="utf-8" ?>' . $request['content']);
 
-			$xPath = new DOMXpath($domDocument);
+			// $xPath = new DOMXpath($domDocument);
+			// $liCollection = $xPath->query('//ul/li');
 
-			$liCollection = $xPath->query('//ul/li');
-
+			$liCollection = $domDocument->getElementsByTagName('li');
 			$tempLiElements = array();
 			foreach ($liCollection as $class) {
 				$value = trim($class->nodeValue);
