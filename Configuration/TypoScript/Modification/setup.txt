@@ -39,7 +39,7 @@ lib.stdheader.10.1.alohaProcess {
 	tag = div
 	field = header
 	allow = edit
-	class = heading nostyles
+	class = alohaeditable-header
 }
 lib.stdheader.10.2.stdWrapProcess < lib.stdheader.10.1.stdWrapProcess
 lib.stdheader.10.3.stdWrapProcess < lib.stdheader.10.1.stdWrapProcess
@@ -61,7 +61,7 @@ tt_content.text.20.alohaProcess = 1
 tt_content.text.20.alohaProcess {
 	class = alohaeditable-block
 	field = bodytext
-	allow = all
+	allow = edit
 }
 
 
@@ -69,9 +69,9 @@ tt_content.text.20.alohaProcess {
 tt_content.bullets.20.editIcons >
 tt_content.bullets.20.alohaPostProcess = 1
 tt_content.bullets.20.alohaPostProcess {
-	class = alohaeditable-block
+	class = alohaeditable-list
 	field = bodytext
-	allow = all
+	allow = edit
 }
 
 # content element "table"
@@ -80,5 +80,5 @@ tt_content.table.20.stdWrap.alohaPostProcess = 1
 tt_content.table.20.stdWrap.alohaPostProcess {
 	class = alohaeditable-block
 	field = bodytext
-	allow = all
+	allow = edit
 }
