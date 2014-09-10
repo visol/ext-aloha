@@ -138,12 +138,14 @@ class Tx_Aloha_Aloha_Integration {
 	private function init(tslib_cObj $parentObject, array $alohaConfig) {
 		list($table, $id) = t3lib_div::trimExplode(':', $parentObject->currentRecord);
 		$currentRecord = $parentObject->data;
+		
+		if ( empty($parentObject->currentRecord) ) {
+			return false;
+		}
 
 		if(isset($currentRecord['_LOCALIZED_UID']))	{
 			$id = $currentRecord['_LOCALIZED_UID'];
 		}
-
-
 		if (empty($table)) {
 			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.integration.table'));
 		} elseif (empty($id)) {
