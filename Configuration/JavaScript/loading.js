@@ -21,7 +21,7 @@ window.Aloha.ready( function() {
 					'text':xhr,
 					'skin':'silver'
 				});
-				that.changeSaveButton();
+				$('#aloha-saveButton').hide();
 			},
 			error: function(xhr){
 				$().el7r_notify({
@@ -45,7 +45,7 @@ window.Aloha.ready( function() {
 					'text':xhr,
 					'skin':'silver'
 				});
-				that.changeSaveButton();
+				$('#aloha-saveButton').hide();
 			},
 			error: function(xhr){
 				$().el7r_notify({
