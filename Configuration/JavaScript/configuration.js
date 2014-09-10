@@ -98,33 +98,32 @@
 					'.alohaeditable-simplehtml'	: [ ], 
 					'.alohaeditable-block'		: [ 'ul', 'ol', 'dl' ],
 					'.alohaeditable-list'		: [ ]
-				}
-				/*
+				},
+				
 				// Could enable this in bootstrap if aloha is available
 				templates: {
 					ul: {
-						classes: [ '', 'list-unstyled', 'list-inline' ],
+						classes: [ ],
 						template: '<ul><li>${first}<ul><li>${second}<ul><li>${third}</li></ul></li></ul></li></ul>',
 						locale: {
 							fallback: {first: 'first layer', second: 'second layer', third: 'third layer'}
 						}
 					},
 					ol: {
-						classes: [ '', 'list-unstyled', 'list-inline' ],
+						classes: [ ],
 						template: '<ul><li>${first}<ul><li>${second}<ul><li>${third}</li></ul></li></ul></li></ul>',
 						locale: {
 							fallback: {first: 'first layer', second: 'second layer', third: 'third layer'}
 						}
 					},
 					dl: {
-						classes: [ '', 'dl-horizontal' ],
+						classes: [ ],
 						template: '<ul><li>${first}<ul><li>${second}<ul><li>${third}</li></ul></li></ul></li></ul>',
 						locale: {
 							fallback: {first: 'first item', second: 'second item', third: 'third layer'}
 						}
 					},
 				}
-				*/
 			}
 		}
 	};
