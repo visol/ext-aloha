@@ -56,7 +56,7 @@ class Tx_Aloha_Hooks_RequestPreProcess_Cleanup implements Tx_Aloha_Interfaces_Re
 	private function modifyContent($content) {
 		$content = trim($content);
 		$lengthOfContent = strlen($content);
-		$cleanUpWords = array('<br />', '<br>', '<br/>');
+		$cleanUpWords = array('<br />', '<br>', '<br/>', '<br style="">');
 
 		foreach($cleanUpWords as $cleanupWord) {
 			$length = strlen($cleanupWord);
