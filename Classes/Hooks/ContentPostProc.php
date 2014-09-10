@@ -140,7 +140,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			$content .= '<span class="count-holder">' . $countMessage . '</span>
 					<span class="button-holder">
 						<span id="aloha-saveButton"  class="aloha-button save">' . $this->sL(self::ll . 'headerbar.save_button') . '</span>
-						<span id="aloha-discardButton" class="button discard">' . $this->sL(self::ll . 'headerbar.discard_button') . '</span>
+						<span id="aloha-discardButton" class="aloha-button discard">' . $this->sL(self::ll . 'headerbar.discard_button') . '</span>
 					</span>';
 		} elseif (($this->configuration['saveMethod'] === 'direct') && (!$this->settings['topBar.']['warningMessage.']['disable'])) {
 			$content .= '<span class="aloha-warning">' . $this->sL(self::ll . 'headerbar.saveMethod.direct', FALSE) . '</span>';
