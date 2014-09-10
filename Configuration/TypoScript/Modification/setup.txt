@@ -78,7 +78,7 @@ tt_content.bullets.20.alohaPostProcess {
 tt_content.table.20.stdWrap.editIcons >
 tt_content.table.20.stdWrap.alohaPostProcess = 1
 tt_content.table.20.stdWrap.alohaPostProcess {
-	class = alohaeditable-block
+	class = alohaeditable-plaintext
 	field = bodytext
 	allow = edit
 }
