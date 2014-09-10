@@ -60,6 +60,10 @@ class Tx_Aloha_Utility_Access {
 
 
 	public static function checkAccess($table, array $dataArray, $config) {
+		if ( empty($table) || empty($dataArray) || empty($config) ) {
+			return FALSE;
+		}
+		
 		if (!isset($GLOBALS['BE_USER'])) {
 			return FALSE;
 		}
