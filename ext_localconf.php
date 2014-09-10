@@ -39,5 +39,14 @@ $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess
 	// Save core content element "Table"
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-cobjtable'] =
 	'EXT:aloha/Classes/Hooks/RequestPreProcess/CeTable.php:&Tx_Aloha_Hooks_RequestPreProcess_CeTable';
-
+	// Save core content special element "Plaintext"
+	// Activated by setting field to to bodytext-plaintext, which in hook will be restored to bodytext
+$GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-Plaintext'] =
+	'EXT:aloha/Classes/Hooks/RequestPreProcess/Plaintext.php:&Tx_Aloha_Hooks_RequestPreProcess_Plaintext';
+	// Save fluidcontent , field is targeted by pi_flexform-flexformfieldname
+$GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeFluidContent'] =
+	'EXT:aloha/Classes/Hooks/RequestPreProcess/CeFluidContent.php:&Tx_Aloha_Hooks_RequestPreProcess_CeFluidContent';
+	// Save headers, field header, will also affect field header_layout
+$GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeHeader'] =
+	'EXT:aloha/Classes/Hooks/RequestPreProcess/CeHeader.php:&Tx_Aloha_Hooks_RequestPreProcess_CeHeader';
 ?>
