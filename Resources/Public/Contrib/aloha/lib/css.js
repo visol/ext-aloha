@@ -9,7 +9,7 @@
  */
 
 (function (global) {
-"use strict";
+
 
 /*
  * AMD css! plugin

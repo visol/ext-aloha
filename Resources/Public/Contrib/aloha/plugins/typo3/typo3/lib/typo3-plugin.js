@@ -253,7 +253,7 @@ function(
 		},
 
 		saveEditable:function(editable) {
-			if (editable.isModified()) {
+			if (editable.isModified()) {				
 				var that = this;
 				$.ajax({
 					url: alohaUrl,

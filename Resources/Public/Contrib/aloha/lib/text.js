@@ -18,7 +18,7 @@
         defaultPort = hasLocation && (location.port || undefined),
         buildMap = [];
 
-    define(function () {
+    define([],function () {
         var text, get, fs;
 
         if (typeof window !== "undefined" && window.navigator && window.document) {

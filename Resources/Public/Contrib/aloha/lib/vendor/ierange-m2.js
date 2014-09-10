@@ -1,5 +1,5 @@
 (function (window, undefined) {
-	"use strict";
+	
 	var jQuery = window.alohaQuery || window.jQuery,
 		$ = jQuery,
 		//		GENTICS = window.GENTICS,
