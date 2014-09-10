@@ -1,4 +1,5 @@
 (function(window, undefined) {
+
 	window.Aloha = window.Aloha || {};
 	// Manually set the version of jQuery for aloha and free the namespace
 	var jQuery = window.jQuery.noConflict(true);
@@ -6,6 +7,7 @@
 	window.TS = {
 		PATH_typo3: ' '
 	};
+	
 	window.Aloha.settings = {
 		jQuery: jQuery,
 		logLevels: {
@@ -48,8 +50,8 @@
 						], [
 							'formatBlock'
 						], [
-							'newContentElementBelow', 'edit', '\n',
-							'unhide', 'hide', 'delete'
+							'up','newContentElementBelow', 'edit', '\n',
+							'down','unhide', 'hide', 'delete'
 						]
 					]
 				},
@@ -73,93 +75,57 @@
 				//'h3' : ['fo', 'bar'],
 				// all elements with no specific configuration get this configuration
 				//config : [ 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'p', 'edit', 'up', 'down', 'hide', 'unhide', 'newContentElementBelow', 'move','link','delete'],
-				config : [ 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'p' ],
+				config : [ ],
 				editables : {
 					// no formatting allowed for title
-					'.nostyles'	: [ ],
-					'.heading'	: [ 'h1', 'h2', 'h3', 'h4', 'h5' ]
+					'.nostyles'					: [ ],
+					'.alohaeditable-header'		: [ 'h1', 'h2', 'h3', 'h4' ],
+					'.alohaeditable-text'		: [ 'b', 'i', 'sub', 'sup' ],
+					'.alohaeditable-plaintext'	: [ ],
+					'.alohaeditable-simplehtml'	: [ 'b', 'i', 'sub', 'sup' ], 
+					'.alohaeditable-block'		: [ 'b', 'i', 'edit', 'sub', 'sup' ],
+					'.alohaeditable-list'		: [ 'b', 'i', 'edit', 'sub', 'sup' ]
 				}
 			},
 			"list": {
 				// all elements with no specific configuration get an UL, just for fun :)
-				config : [],
-				editables : {
-					'.nostyles'	: [ ],
-				}
-			},
-			/*
-			"link": {
-				// all elements with no specific configuration may insert links
 				config : [ ],
 				editables : {
-					'.nostyles'	: [ ]
-				},
-				// all links that match the targetregex will get set the target
-				// e.g. ^(?!.*aloha-editor.com).* matches all href except aloha-editor.com
-				targetregex : '^(?!.*aloha-editor.com).*',
-				// this target is set when either targetregex matches or not set
-				// e.g. _blank opens all links in new window
-				target : '_blank',
-				// the same for css class as for target
-				cssclassregex : '^(?!.*aloha-editor.com).*',
-				cssclass : 'aloha',
-				// use all resources of type website for autosuggest
-				objectTypeFilter: ['website'],
-				// handle change of href
-				onHrefChange: function( obj, href, item ) {
-					var jQuery = Aloha.jQuery;
-					if ( item ) {
-						jQuery(obj).attr('data-name', item.name);
-					}
+					'.nostyles'					: [ ],
+					'.alohaeditable-header'		: [ ],
+					'.alohaeditable-text'		: [ ],
+					'.alohaeditable-plaintext'	: [ ],
+					'.alohaeditable-simplehtml'	: [ ], 
+					'.alohaeditable-block'		: [ 'ul', 'ol', 'dl' ],
+					'.alohaeditable-list'		: [ ]
 				}
-			},
-			"table": {
-				// all elements with no specific configuration are not allowed to insert tables
-		        config : [ 'table' ],
- 				editables : {
-					// Allow insert tables only into .article
-					'.article'	: [ 'table' ],
-					'.nostyles'	: [ ]
-				},
-				// [{name:'green', text:'Green', tooltip:'Green is cool', iconClass:'GENTICS_table GENTICS_button_green', cssClass:'green'}]
-				tableConfig : [
-					{ 
-						name:'table' ,
-						cssClass:'table',
-						text:'Table',
-						tooltip:'Table default style'
+				/*
+				// Could enable this in bootstrap if aloha is available
+				templates: {
+					ul: {
+						classes: [ '', 'list-unstyled', 'list-inline' ],
+						template: '<ul><li>${first}<ul><li>${second}<ul><li>${third}</li></ul></li></ul></li></ul>',
+						locale: {
+							fallback: {first: 'first layer', second: 'second layer', third: 'third layer'}
+						}
 					},
-					{ 	name:'table table-striped',
-						cssClass:'table table-striped',
-						text:'Striped table',
-						tooltip:'A striped table'
+					ol: {
+						classes: [ '', 'list-unstyled', 'list-inline' ],
+						template: '<ul><li>${first}<ul><li>${second}<ul><li>${third}</li></ul></li></ul></li></ul>',
+						locale: {
+							fallback: {first: 'first layer', second: 'second layer', third: 'third layer'}
+						}
 					},
-					
-				],
-				columnConfig : [
-					{
-						name:'bigbold',
-						iconClass:'GENTICS_button_col_bigbold'
+					dl: {
+						classes: [ '', 'dl-horizontal' ],
+						template: '<ul><li>${first}<ul><li>${second}<ul><li>${third}</li></ul></li></ul></li></ul>',
+						locale: {
+							fallback: {first: 'first item', second: 'second item', third: 'third layer'}
+						}
 					},
-					{
-						name:'redwhite',
-						iconClass:'GENTICS_button_col_redwhite'
-					}
-				],
-				rowConfig : [
-					{
-						name:'bigbold',
-						iconClass:'GENTICS_button_row_bigbold',
-						text:'BigBold Something'
-					},
-					{
-						name:'redwhite',
-						iconClass:'GENTICS_button_row_redwhite',
-						text:'RedWhite Something'
-					}
-				]
+				}
+				*/
 			}
-			*/
 		}
 	};
 })(window);
