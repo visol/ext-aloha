@@ -100,7 +100,7 @@
             if (iframe) {
                 p.viewpage.resizeViewFrame(type, a.viewFrameId);
             } else {
-                $('body').children().not('#aloha-top-bar, #sb-container').remove();
+                $('body').children().not('#aloha-top-bar, #sb-container, #aloha-resources').remove();
                 $('body').prepend('<div style="height:' + (window.innerHeight - (parseInt($('body').css('marginTop'))) || 0) + 'px;"><iframe height="100%" id="' + a.viewFrameId + '" src="' + p.addUrlParameter(window.location.href, 'aloha_topBar_disable', '1') + '" onload="pxa.aloha.onLoadViewFrame(event); return false;"></iframe></div>');
                 p.viewpage.resizeViewFrame(type, a.viewFrameId);
             }

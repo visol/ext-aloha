@@ -41,7 +41,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			$this->settings = $this->tslib_fe->config['config']['tx_aloha.'];
 
 				// Load head parts
-			$this->loadHeader();
+			$this->loadResources();
 
 				// Clear staged elements
 			Tx_Aloha_Utility_Integration::removeStagedElements($GLOBALS['TSFE']->id);
@@ -79,11 +79,11 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	}
 
 	/**
-	 * Load needed js & css files into header
+	 * Load needed js & css files before the end of the body tag
 	 *
 	 * @return void
 	 */
-	private function loadHeader() {
+	private function loadResources() {
 			// Needed variables for ajax requests
 		$styles = '<script type="text/javascript">' . LF .
 			TAB . 'var alohaUrl = "' . t3lib_div::getIndpEnv('TYPO3_SITE_URL') . 'index.php?id=' . $this->tslib_fe->id . '&type=661' . '";' . LF .
@@ -112,9 +112,10 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			<script type="text/javascript" src="/typo3conf/ext/aloha/Resources/Public/js/viewpage.js"></script>';
 
 			// Wrap it all in a comment for infos when looking at sources
-		$styles = LF . '<!-- Begin Aloha Files -->' . LF . $styles . LF . '<!-- End Aloha Files -->' . LF . LF;
+			// #aloha-resources is used in pxa.aloha.resizeViewFrame so it doesn't remove the resources when changing preview resolutions
+		$styles = LF . '<!-- Begin Aloha Files --><div id="aloha-resources">' . LF . $styles . LF . '</div><!-- End Aloha Files -->' . LF . LF;
 
-		$this->tslib_fe->content = str_ireplace('</head>', $styles . '</head>', $this->tslib_fe->content);
+		$this->tslib_fe->content = str_ireplace('</body>', $styles . '</body>', $this->tslib_fe->content);
 	}
 
 	/**
