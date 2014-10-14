@@ -49,4 +49,7 @@ $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess
 	// Save headers, field header, will also affect field header_layout
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeHeader'] =
 	'EXT:aloha/Classes/Hooks/RequestPreProcess/CeHeader.php:&Tx_Aloha_Hooks_RequestPreProcess_CeHeader';
+	// Check link params in rte of text and textpic content elements
+$GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeRteLinks'] =
+	'EXT:aloha/Classes/Hooks/RequestPreProcess/CeRteLinks.php:&Tx_Aloha_Hooks_RequestPreProcess_CeRteLinks';
 ?>
