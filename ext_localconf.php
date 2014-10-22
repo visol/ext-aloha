@@ -8,16 +8,6 @@ if (!defined("TYPO3_MODE")) {
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['stdWrap'][$_EXTKEY] =
 	'EXT:aloha/Classes/Hooks/EditIcons.php:&Tx_Aloha_Hooks_Editicons';
 
-	// Extend admin panel to add extra option
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_adminpanel.php']['extendAdminPanel'][$_EXTKEY] =
-	'EXT:aloha/Classes/Hooks/Adminpanel.php:&Tx_Aloha_Hooks_Adminpanel';
-
-	// XCLASS for < 4.6.0 to integrate missing hook
-if( t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) <  t3lib_utility_VersionNumber::convertVersionNumberToInteger('4.6.0')) {
-	$GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['typo3/sysext/cms/tslib/class.tslib_adminpanel.php'] =
-		t3lib_extMgm::extPath($_EXTKEY) . 'Classes/Xclass/Adminpanel.php';
-}
-
 	// Override locallang file of admin panel to get own elements into it
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']['EXT:lang/locallang_tsfe.php'][$_EXTKEY] =
 	'EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml';
@@ -52,4 +42,8 @@ $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess
 	// Check link params in rte of text and textpic content elements
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeRteLinks'] =
 	'EXT:aloha/Classes/Hooks/RequestPreProcess/CeRteLinks.php:&Tx_Aloha_Hooks_RequestPreProcess_CeRteLinks';
+
+function isAlohaEnabledForUser() {
+	return \Pixelant\Aloha\UserFunc\AlohaUserFunc::isAlohaEnabledForUser();
+}
 ?>
