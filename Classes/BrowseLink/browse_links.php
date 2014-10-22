@@ -129,7 +129,7 @@ class BrowseLinks extends \TYPO3\CMS\Recordlist\Controller\ElementBrowserControl
 
 // Make instance:
 $SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('BrowseLinks');
-$SOBE->init();
+// $SOBE->init();
 $SOBE->main();
 $SOBE->addJsWrap();
 $SOBE->printContent();
