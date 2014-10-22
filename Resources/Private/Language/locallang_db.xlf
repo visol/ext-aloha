@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" product-name="aloha" date="2014-06-20T01:00:11+01:01">
+        <header/>
+        <body>
+            <trans-unit id="be_users.tx_aloha_enable" xml:space="preserve">
+                <source>Enable Aloha Eitor in Frontend</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

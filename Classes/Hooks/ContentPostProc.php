@@ -34,8 +34,9 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 * @return void
 	 */
 	public function main(array $params, tslib_fe $parentObject) {
-		if (Tx_Aloha_Utility_Access::isEnabled() && $parentObject->type == 0) {
-//		if (TRUE && isset($GLOBALS['BE_USER']) && $parentObject->type == 0) {
+	
+		if ( Tx_Aloha_Utility_Access::isEnabled() && $parentObject->type == 0 && !$this->httpRefererIsFromT3BackendViewModule() ) {
+
 			$this->tslib_fe = $parentObject;
 
 			$this->settings = $this->tslib_fe->config['config']['tx_aloha.'];
@@ -349,6 +350,18 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		return '&returnUrl=' . TYPO3_mainDir . '../../typo3conf/ext/aloha/Resources/Public/Contrib/shadowbox/close.html';
 	}
 
+	/** 
+	* Determine if page is loaded from BE
+	* 
+	* @return bool
+	*/
+	protected function httpRefererIsFromT3BackendViewModule() {
+
+		$parsedReferer = parse_url($_SERVER['HTTP_REFERER']);
+		$pathArray = explode("/" , $parsedReferer['path']);
+		$viewPageView = preg_match("/web_ViewpageView/i", $parsedReferer['query']);
+		return ( strtolower($pathArray[1]) == "typo3" && $viewPageView );
+	}
 }
 
 ?>

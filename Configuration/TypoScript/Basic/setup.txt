@@ -19,5 +19,20 @@
 			userFunc = Tx_Aloha_Aloha_Save->start
 		}
 	}
+[global]
+
+
+# Check if aloha is enabled, need to make some changes in ts
+[globalVar = TSFE : beUserLogin > 0] && [userFunc = isAlohaEnabledForUser]
+
+	# Disable realurl we don't break links in bodytext
+	# TODO: see if we can disable realurl only for rtehtmlarea when aloha edit is enabled
+	config.tx_realurl_enable = 0
+		
+	# Make sure no_cache is set
+	config.no_cache = 1
+	
+	# Disable spamProtectEmailAddresses so we don't break email links
+	config.spamProtectEmailAddresses = 0
 
 [global]
