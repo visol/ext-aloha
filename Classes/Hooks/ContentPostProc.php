@@ -48,18 +48,11 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			Tx_Aloha_Utility_Integration::removeStagedElements($GLOBALS['TSFE']->id);
 
 				// Generate output
-			if (!$this->settings['topBar.']['disable']) {
-				$output = ' <div id="aloha-not-loaded"></div>
+			$output = ' <div id="aloha-not-loaded" style="display:none"></div>
 						<div id="aloha-top-bar" style="display:none"><div id="aloha-topbar-inner">
 								<div class="aloha-top-bar-left">' . $this->getToolbarLeft() . '</div><!-- end ToolBarLeft -->
 								<div class="aloha-top-bar-right">' . $this->getToolbarRight() . '</div><!-- end ToolBarRight -->
 						</div></div>';
-			} else {
-				$needle = '<body';
-				$htmlTagStart = '<body style="margin-top:0px;"';
-				$pos = strpos($parentObject->content,$needle);
-			    $parentObject->content = substr_replace($parentObject->content,$htmlTagStart,$pos,strlen($needle));
-			}
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Aloha/Integration.php']['toolbarPostProcess'])) {
 				$finished = FALSE;

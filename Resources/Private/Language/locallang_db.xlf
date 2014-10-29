@@ -4,7 +4,7 @@
         <header/>
         <body>
             <trans-unit id="be_users.tx_aloha_enable" xml:space="preserve">
-                <source>Enable Aloha Eitor in Frontend</source>
+                <source>Enable Aloha Editor in Frontend</source>
             </trans-unit>
         </body>
     </file>

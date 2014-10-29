@@ -81,7 +81,7 @@ class Tx_Aloha_Aloha_Save {
 
 			// aborting save
 		if ($this->saveMethod === 'none') {
-			return 'This is like saving';
+			return Tx_Aloha_Utility_Helper::ll('response.action.save-method-none');
 		}
 
 		try {
@@ -92,6 +92,8 @@ class Tx_Aloha_Aloha_Save {
 				$response = $this->discardSavings();
 			} elseif($request['action'] === 'commitSavings') {
 				$response = $this->commitSavings();
+			} elseif($request['action'] === 'updateSaveState') {
+				$response =  $this->updateSaveState();
 			} else {
 				$this->init($request);
 
@@ -141,8 +143,9 @@ class Tx_Aloha_Aloha_Save {
 
 	private function commitSavings() {
 		$elements = $GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id];
+
 		if (!is_array($elements) || count($elements) == 0) {
-			$response = 'nothing to be saved';
+			$response = Tx_Aloha_Utility_Helper::ll('response.action.nothing-to-save');
 		} else {
 
 			foreach($elements as $element) {
@@ -152,12 +155,25 @@ class Tx_Aloha_Aloha_Save {
 			$GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id] = array();
 			$GLOBALS['BE_USER']->writeUC();
 
-			$response = 'all done
+			$response = Tx_Aloha_Utility_Helper::ll('response.action.save') . '
 						<script>
 							window.alohaQuery("#count").text("0").removeClass("tobesaved");
+							window.parent.alohaQuery("#count").text("0").removeClass("tobesaved");
 						</script>';
 		}
 
+		return $response;
+	}
+
+	private function updateSaveState() {
+
+		$countOfElements = Tx_Aloha_Utility_Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
+		$response = '<script>
+						window.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
+						window.alohaQuery("#aloha-saveButton").show();
+						window.parent.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
+						window.parent.alohaQuery("#aloha-saveButton").show();
+					</script>';
 		return $response;
 	}
 
@@ -168,17 +184,20 @@ class Tx_Aloha_Aloha_Save {
 
 		$countOfElements = Tx_Aloha_Utility_Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
 
-		$response = 'Press Save button for a real save. <script>
-window.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
-window.alohaQuery("#aloha-saveButton").show();
-</script>';
+		$response = Tx_Aloha_Utility_Helper::ll('response.action.intermediate-save') .
+			'<script>
+				window.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
+				window.alohaQuery("#aloha-saveButton").show();
+				window.parent.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
+				window.parent.alohaQuery("#aloha-saveButton").show();
+			</script>';
 		return $response;
 	}
 
 	private function discardSavings() {
 		$elements = $GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id];
 		if (!is_array($elements) || count($elements) == 0) {
-			$response = 'No staged changes, nothing to do. you are fine!';
+			$response = Tx_Aloha_Utility_Helper::ll('response.action.discard-savings-nothing-to-save');
 		} else {
 
 			$GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id] = array();
@@ -186,8 +205,9 @@ window.alohaQuery("#aloha-saveButton").show();
 
 			$this->forceReload = TRUE;
 
-			$response = 'Changes have been discard<script>
+			$response = Tx_Aloha_Utility_Helper::ll('response.action.discard-savings') . '<script>
 							window.alohaQuery("#count").text("0").removeClass("tobesaved");
+							window.parent.alohaQuery("#count").text("0").removeClass("tobesaved");
 							</script>';
 		}
 

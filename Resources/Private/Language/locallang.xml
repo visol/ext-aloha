@@ -26,11 +26,17 @@
 
 			<label index="aloha">Aloha Editor</label>
 			<label index="response.action.save">Changes have been saved!</label>
+			<label index="response.action.save-method-none">This is like saving (No save method choosen)</label>
 			<label index="response.action.unhide">The record has been unhidden, reload to see the result.</label>
 			<label index="response.action.hide">The record has been hidden, reload to see the result.</label>
 			<label index="response.action.delete">The record has been deleted, reload to see the result.</label>
 			<label index="response.action.moveUp">The record has been moved up, reload to see the result.</label>
 			<label index="response.action.moveDown">The record has been moved down, reload to see the result.</label>
+			<label index="response.action.nothing-to-save">Nothing to be saved</label>
+			<label index="response.action.intermediate-save">Press Save button for a real save</label>
+			<label index="response.action.discard-savings-nothing-to-save">No staged changes, nothing to discard.</label>
+			<label index="response.action.discard-savings">Changes have been discarded</label>
+
 			<label index="error.response-action">Response action "%s" not supported!</label>
 			<label index="error.move-action.wrong-direction">The direction "%s" is not supported for moving the record.</label>
 			<label index="error.request.no-post">No post request found. This is needed to save anything.</label>

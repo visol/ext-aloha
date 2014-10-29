@@ -268,7 +268,7 @@ function(
 					success: function(xhr){
 						$().el7r_notify({
 							'text':xhr,
-							'skin':'silver'
+							'skin':'success'
 						});
 						editable.setUnmodified();
 					},
@@ -284,9 +284,11 @@ function(
 
 		enableSaveButton:function() {
 			jQuery('#aloha-saveButton').show();
+			window.parent.alohaQuery("#aloha-saveButton").show();
 		},
 		disableSaveButton:function() {
 			jQuery('#aloha-saveButton').hide();
+			window.parent.alohaQuery("#aloha-saveButton").hide();
 		},
 
 		openLightbox:function(url) {
