@@ -46,4 +46,8 @@ $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess
 function isAlohaEnabledForUser() {
 	return \Pixelant\Aloha\UserFunc\AlohaUserFunc::isAlohaEnabledForUser();
 }
+
+// Add our user ts config
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:aloha/Configuration/TypoScript/userTsConfig.ts">');
+
 ?>
