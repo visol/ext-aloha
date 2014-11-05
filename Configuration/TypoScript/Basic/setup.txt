@@ -35,4 +35,13 @@
 	# Disable spamProtectEmailAddresses so we don't break email links
 	config.spamProtectEmailAddresses = 0
 
+	# Tell browser to not cache if alohaEdit is set
+	page.headerData.2014 = TEXT
+	page.headerData.2014.value (\r\n
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+	)
+	
+
 [global]
