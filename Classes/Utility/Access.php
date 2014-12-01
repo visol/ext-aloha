@@ -83,6 +83,7 @@ class Tx_Aloha_Utility_Access {
 		// Unless permissions specifically allow it, editing is not allowed.
 		$mayEdit = FALSE;
 
+		// Basic check if use is allowed to edit a record of this kind (based on TCA configuration)
 		if ($checkEditAccessInternals) {
 			$editAccessInternals = $GLOBALS['BE_USER']->recordEditAccessInternals($table, $dataArray, FALSE, FALSE);
 		} else {
@@ -102,9 +103,9 @@ class Tx_Aloha_Utility_Access {
 					$mayEdit = TRUE;
 				}
 			} else {
+				// neither page nor content
 				$mayEdit = TRUE;
 			}
-
 
 			if (!$conf['onlyCurrentPid'] || ($dataArray['pid'] == $GLOBALS['TSFE']->id)) {
 
@@ -123,16 +124,17 @@ class Tx_Aloha_Utility_Access {
 					}
 				} else {
 
-					#	if ($table != 'tt_content') {
-					#	t3lib_div::print_array($allow);
-					#	}
-
 					if ($table === 'tt_content') {
-						$mayEdit = count($allow) && ($perms & 1);
+						// user may edit the content if he has an allowed edit action and if the permission for the content is odd and not 1
+						// explanation of permissions: show=1,edit=2,delete=4,new=8,editcontent=16
+						// assuming that show must be set to have content editable, each permission is odd, but show itself isn't sufficient
+						$mayEdit = count($allow) && ($perms & 1 && $perms !== 1) ? TRUE : FALSE;
 					} else {
-						$mayEdit = ($perms & 1);
+						// user may edit the content if he has an allowed edit action and if the permission for the content is odd and not 1
+						// explanation of permissions: show=1,edit=2,delete=4,new=8,editcontent=16
+						// assuming that show must be set to have content editable, each permission is odd, but show itself isn't sufficient
+						$mayEdit = ($perms & 1 && $perms !== 1);
 					}
-
 
 				}
 			}
