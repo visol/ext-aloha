@@ -43,8 +43,10 @@ $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeRteLinks'] =
 	'EXT:aloha/Classes/Hooks/RequestPreProcess/CeRteLinks.php:&Tx_Aloha_Hooks_RequestPreProcess_CeRteLinks';
 
-function isAlohaEnabledForUser() {
-	return \Pixelant\Aloha\UserFunc\AlohaUserFunc::isAlohaEnabledForUser();
+if(!function_exists('isAlohaEnabledForUser')) {
+	function isAlohaEnabledForUser() {
+		return \Pixelant\Aloha\UserFunc\AlohaUserFunc::isAlohaEnabledForUser();
+	}
 }
 
 // Add our user ts config
