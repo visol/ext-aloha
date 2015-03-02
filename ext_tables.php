@@ -7,8 +7,8 @@ if (!defined('TYPO3_MODE')) {
 /* * *************
  * TypoScript Files
  */
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Basic', 'Aloha Basic');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Modification', 'Aloha Modification');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Basic', 'Aloha Basic');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Modification', 'Aloha Modification');
 
 // Add BE User setting
 $GLOBALS['TYPO3_USER_SETTINGS']['columns']['tx_aloha_enable'] = array(

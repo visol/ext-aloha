@@ -31,19 +31,19 @@ require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fronte
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Hooks_Editicons implements tslib_content_stdWrapHook {
+class Tx_Aloha_Hooks_Editicons implements \TYPO3\CMS\Frontend\ContentObject\ContentObjectStdWrapHookInterface {
 
 	/**
 	 * Implement a new stdWrap function to get aloha icons
 	 *
 	 * @param string $content
 	 * @param array $configuration
-	 * @param tslib_cObj $parentObject
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject
 	 * @return string
 	 */
 	public function stdWrapProcess($content, array $configuration, \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
 		if ($configuration['alohaProcess'] == 1 && Tx_Aloha_Utility_Access::isEnabled()) {
-			$alohaIntegration = t3lib_div::makeInstance('Tx_Aloha_Aloha_Integration');
+			$alohaIntegration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Aloha_Aloha_Integration');
 			$content = $alohaIntegration->start($content, $configuration['alohaProcess.'], $parentObject);
 		}
 
@@ -56,7 +56,7 @@ class Tx_Aloha_Hooks_Editicons implements tslib_content_stdWrapHook {
 	 *
 	 * @param string $content
 	 * @param array $configuration
-	 * @param tslib_cObj $parentObject
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject
 	 * @return string
 	 */
 	public function stdWrapPreProcess($content, array $configuration, \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
@@ -68,7 +68,7 @@ class Tx_Aloha_Hooks_Editicons implements tslib_content_stdWrapHook {
 	 *
 	 * @param string $content
 	 * @param array $configuration
-	 * @param tslib_cObj $parentObject
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject
 	 * @return string
 	 */
 	public function stdWrapOverride($content, array $configuration, \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
@@ -80,12 +80,12 @@ class Tx_Aloha_Hooks_Editicons implements tslib_content_stdWrapHook {
 	 *
 	 * @param string $content
 	 * @param array $configuration
-	 * @param tslib_cObj $parentObject
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject
 	 * @return string
 	 */
 	public function stdWrapPostProcess($content, array $configuration, \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
 		if ($configuration['alohaPostProcess'] == 1 && Tx_Aloha_Utility_Access::isEnabled()) {
-			$alohaIntegration = t3lib_div::makeInstance('Tx_Aloha_Aloha_Integration');
+			$alohaIntegration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Aloha_Aloha_Integration');
 			$content = $alohaIntegration->start($content, $configuration['alohaPostProcess.'], $parentObject);
 		}
 		return $content;

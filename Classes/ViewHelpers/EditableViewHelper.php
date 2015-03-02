@@ -69,7 +69,8 @@ class Tx_Aloha_ViewHelpers_EditableViewHelper extends Tx_Fluid_Core_ViewHelper_A
 				// @todo maybe a caching is good
 			$record = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', $table, 'uid=' . (int)$uid);
 
-			$cObj = t3lib_div::makeInstance('tslib_cObj');
+			/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj */
+			$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
 			$cObj->start($record, $table);
 
 			$content = $cObj->stdWrap($content, $finalConfiguration);

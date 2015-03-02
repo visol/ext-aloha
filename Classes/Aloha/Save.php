@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Save the changes by using TCEmain
@@ -31,14 +32,14 @@
 class Tx_Aloha_Aloha_Save {
 
 	/**
-	 * @var t3lib_tcemain
+	 * @var \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
 	protected $tce;
 
 	/**
-	 * @var t3lib_frontendedit
+	 * @var \TYPO3\CMS\Core\FrontendEditing\FrontendEditingController
 	 */
-	protected $t3lib_frontendedit;
+	protected $frontendEditingController;
 
 	/**
 	 * If set, a javascript reload is added to the response
@@ -58,10 +59,10 @@ class Tx_Aloha_Aloha_Save {
 	protected $saveMethod;
 
 	public function __construct() {
-		$this->tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$this->tce = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
 		$this->tce->stripslashes_values = 0;
 
-		$this->t3lib_frontendedit = t3lib_div::makeInstance('t3lib_frontendedit');
+		$this->frontendEditingController = GeneralUtility::makeInstance('TYPO3\CMS\Core\FrontendEditing\FrontendEditingController');
 
 		$configurationArray = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aloha']);
 		$this->saveMethod = $configurationArray['saveMethod'];
@@ -76,7 +77,7 @@ class Tx_Aloha_Aloha_Save {
 	 * @return sring
 	 */
 	public function start($content, $conf) {
-		$request = t3lib_div::_POST();
+		$request = GeneralUtility::_POST();
 		$response = '';
 
 			// aborting save
@@ -226,10 +227,10 @@ class Tx_Aloha_Aloha_Save {
 		$this->forceReload = TRUE;
 
 		if ($visibility == 0) {
-			$this->t3lib_frontendedit->doUnhide($this->table, $this->uid);
+			$this->frontendEditingController->doUnhide($this->table, $this->uid);
 			return Tx_Aloha_Utility_Helper::ll('response.action.unhide');
 		} elseif ($visibility == 1) {
-			$this->t3lib_frontendedit->doHide($this->table, $this->uid);
+			$this->frontendEditingController->doHide($this->table, $this->uid);
 			return Tx_Aloha_Utility_Helper::ll('response.action.hide');
 		}
 	}
@@ -241,7 +242,7 @@ class Tx_Aloha_Aloha_Save {
 	 */
 	private function delete() {
 		$this->forceReload = TRUE;
-		$this->t3lib_frontendedit->doDelete($this->table, $this->uid);
+		$this->frontendEditingController->doDelete($this->table, $this->uid);
 
 		return Tx_Aloha_Utility_Helper::ll('response.action.delete');
 	}
@@ -256,10 +257,10 @@ class Tx_Aloha_Aloha_Save {
 		$this->forceReload = TRUE;
 
 		if ($direction === 'down') {
-			$this->t3lib_frontendedit->doDown($this->table, $this->uid);
+			$this->frontendEditingController->doDown($this->table, $this->uid);
 			return Tx_Aloha_Utility_Helper::ll('response.action.moveDown');
 		} elseif($direction === 'up') {
-			$this->t3lib_frontendedit->doUp($this->table, $this->uid);
+			$this->frontendEditingController->doUp($this->table, $this->uid);
 			return Tx_Aloha_Utility_Helper::ll('response.action.moveUp');
 		} else {
 			throw new Exception(sprintf(Tx_Aloha_Utility_Helper::ll('error.move-action.wrong-direction'), htmlspecialchars($direction)));
@@ -284,7 +285,7 @@ class Tx_Aloha_Aloha_Save {
 			$finished = FALSE;
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'] as $classData) {
 				if (!$finished) {
-					$hookObject = t3lib_div::getUserObj($classData);
+					$hookObject = GeneralUtility::getUserObj($classData);
 					if (!($hookObject instanceof Tx_Aloha_Interfaces_RequestPreProcess)) {
 						throw new UnexpectedValueException(
 							$classData . ' must implement interface Tx_Aloha_Interfaces_RequestPreProcess',
