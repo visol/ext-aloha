@@ -44,17 +44,18 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeRteLinks implements Tx_Aloha_Interfaces
 	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
 		$record = $parentObject->getRecord();
 
-			// only allowed for text and textpic element (at least for now)
+		// only allowed for text and textpic element (at least for now)
 		if ($parentObject->getTable() === 'tt_content'
-				&& $parentObject->getField() == 'bodytext'
-				&& ( $record['CType'] === 'text' || $record['CType'] === 'textpic' ) ) {
+			&& $parentObject->getField() == 'bodytext'
+			&& ($record['CType'] === 'text' || $record['CType'] === 'textpic')
+		) {
 
 			$content = $this->removeUnwantedLinkVars($request['content']);
-				// Send links thru RteHtmlParser
+			// Send links thru RteHtmlParser
 			$parseHTML = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Html\\RteHtmlParser');
 			$content = $parseHTML->TS_links_db($content);
 			$content = $parseHTML->TS_links_rte($content);
-			
+
 			$request['content'] = $content;
 		}
 
@@ -69,27 +70,27 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeRteLinks implements Tx_Aloha_Interfaces
 		$anchorCollection = $domDocument->getElementsByTagName('a');
 
 		foreach ($anchorCollection as $anchor) {
-				// Fetch "original" url and divide into parts
+			// Fetch "original" url and divide into parts
 			$originalUrl = $anchor->getAttribute('href');
 			$parts = parse_url($originalUrl);
 			parse_str($parts['query'], $query);
 
-			if ( is_array($query) && count($query) > 0 ) {	
-					// Clear unwanted parts
+			if (is_array($query) && count($query) > 0) {
+				// Clear unwanted parts
 				$unwantedLinkVars = array_flip(explode(",", $GLOBALS['TSFE']->config['config']['linkVars']));
-					// Remove unwanted LinkVars from parts
+				// Remove unwanted LinkVars from parts
 				$cleanedQuery = array_diff_key($query, $unwantedLinkVars);
-					// Set the new query part
+				// Set the new query part
 				$parts['query'] = http_build_query($cleanedQuery);
-					// Build replacement url
-				$replacementUrl =  \TYPO3\CMS\Core\Utility\HttpUtility::buildUrl($parts);
-					// Remove questionmark from url if last
+				// Build replacement url
+				$replacementUrl = \TYPO3\CMS\Core\Utility\HttpUtility::buildUrl($parts);
+				// Remove questionmark from url if last
 				$replacementUrl = rtrim($replacementUrl, '?');
-					// Replace links if they dont match
-				if ( $replacementUrl !== $originalUrl && strlen($replacementUrl) > 0 ) {
-					$content = str_replace( htmlspecialchars($originalUrl), $replacementUrl, $content );
+				// Replace links if they dont match
+				if ($replacementUrl !== $originalUrl && strlen($replacementUrl) > 0) {
+					$content = str_replace(htmlspecialchars($originalUrl), $replacementUrl, $content);
 				}
-				
+
 			}
 		}
 		return $content;

@@ -44,10 +44,11 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeBullets implements Tx_Aloha_Interfaces_
 	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
 		$record = $parentObject->getRecord();
 
-			// only allowed for bullet element
+		// only allowed for bullet element
 		if ($parentObject->getTable() === 'tt_content'
-				&& $parentObject->getField() == 'bodytext'
-				&& $record['CType'] === 'bullets') {
+			&& $parentObject->getField() == 'bodytext'
+			&& $record['CType'] === 'bullets'
+		) {
 
 			$finished = TRUE;
 

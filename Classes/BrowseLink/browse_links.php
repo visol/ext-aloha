@@ -24,7 +24,7 @@
  * ************************************************************* */
 
 define('TYPO3_MOD_PATH', '../typo3conf/ext/aloha/Classes/BrowseLink/');
-$BACK_PATH='../../../../../typo3/';
+$BACK_PATH = '../../../../../typo3/';
 require_once($BACK_PATH . 'init.php');
 $LANG->includeLLFile('EXT:lang/locallang_browse_links.xlf');
 require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('recordlist') . 'Classes/Browser/ElementBrowser.php';
@@ -32,11 +32,12 @@ require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('record
 
 class BrowseLinks extends \TYPO3\CMS\Recordlist\Controller\ElementBrowserController {
 	/**
-	 * 
+	 *
 	 *
 	 * @var string
 	 */
 	public $content;
+
 	/**
 	 * Modified to use rte only with disabled removeLink
 	 *
@@ -101,14 +102,15 @@ class BrowseLinks extends \TYPO3\CMS\Recordlist\Controller\ElementBrowserControl
 			$this->content = $this->browser->main_rte(1);
 		}
 	}
+
 	/**
 	 * Add Js handler
 	 *
 	 * @return void
 	 */
 	public function addJsWrap() {
-	$needle = '</body>';
-	$replace = '
+		$needle = '</body>';
+		$replace = '
 	<script type="text/javascript">
 		function renderPopup_addLink(theLink, cur_target, cur_class, cur_title) {
 			window.opener.Aloha.trigger("aloha-typolink-created", {
@@ -122,8 +124,8 @@ class BrowseLinks extends \TYPO3\CMS\Recordlist\Controller\ElementBrowserControl
 			self.close();
 		}
 	</script></body>';
-	$pos = strripos($this->content, $needle);
-	$this->content = substr_replace($this->content,$replace,$pos,strlen($needle));
+		$pos = strripos($this->content, $needle);
+		$this->content = substr_replace($this->content, $replace, $pos, strlen($needle));
 	}
 }
 

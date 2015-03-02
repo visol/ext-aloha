@@ -44,27 +44,28 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeFluidContent implements Tx_Aloha_Interf
 	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
 		$record = $parentObject->getRecord();
 
-			// when storing fluidcontent flexform fields, field is set by pi_flexform-flexformfieldname.
+		// when storing fluidcontent flexform fields, field is set by pi_flexform-flexformfieldname.
 		list($field, $flexformField) = explode('-', $parentObject->getField(), 2);
 
-			// only allowed for element "fluidcontent"
+		// only allowed for element "fluidcontent"
 		if ($parentObject->getTable() === 'tt_content'
-				&& $field == 'pi_flexform'
-				&& $record['CType'] === 'fluidcontent_content') {
+			&& $field == 'pi_flexform'
+			&& $record['CType'] === 'fluidcontent_content'
+		) {
 
 			$parentObject->setField($field);
 
 			$xml = new SimpleXMLElement($record['pi_flexform']);
 
-				// @TODO: Maybe give possibility for fields to have html tags
+			// @TODO: Maybe give possibility for fields to have html tags
 			$fieldAllowedTags = '<sup><sub>';
-			foreach ( $xml->xpath('//T3FlexForms/data/sheet/language/field[@index = "' . $flexformField . '"]') as $entry ) {
+			foreach ($xml->xpath('//T3FlexForms/data/sheet/language/field[@index = "' . $flexformField . '"]') as $entry) {
 				$content = trim($request['content']);
 				$content = strip_tags(urldecode($content), $fieldAllowedTags);
 
-					// Try to remove invalid characters so save won't break xml if there are invalid characters in string
+				// Try to remove invalid characters so save won't break xml if there are invalid characters in string
 				$content = iconv("UTF-8", "UTF-8//IGNORE", $content);
-	
+
 				$node = dom_import_simplexml($entry->value);
 				$node->nodeValue = "";
 				$node->appendChild($node->ownerDocument->createCDATASection($content));

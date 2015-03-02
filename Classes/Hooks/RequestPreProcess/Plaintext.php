@@ -42,9 +42,9 @@ class Tx_Aloha_Hooks_RequestPreProcess_Plaintext implements Tx_Aloha_Interfaces_
 	 * @return array
 	 */
 	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
-			// only allowed for "special" field "bodytext-plaintext"
+		// only allowed for "special" field "bodytext-plaintext"
 		if ($parentObject->getTable() === 'tt_content' && $parentObject->getField() == 'bodytext-plaintext') {
-			
+
 			$request['content'] = $this->modifyContent($request['content']);
 			$parentObject->setField('bodytext');
 
@@ -60,14 +60,15 @@ class Tx_Aloha_Hooks_RequestPreProcess_Plaintext implements Tx_Aloha_Interfaces_
 	 * @return string
 	 */
 	private function modifyContent($content) {
-		
-			// @TODO: Maybe give possibility for fields to have html tags
+
+		// @TODO: Maybe give possibility for fields to have html tags
 		$fieldAllowedTags = '';
-		
+
 		$content = trim($content);
 		$content = strip_tags(urldecode(html_entity_decode($content)), $fieldAllowedTags);
 
 		return $content;
 	}
 }
+
 ?>

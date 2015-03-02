@@ -75,7 +75,7 @@ class Tx_Aloha_Utility_Integration {
 		$attributesAsString = '';
 		foreach ($attributes as $attributeKey => $value) {
 			if (!empty($value)) {
-				$attributesAsString.= ' ' . $attributeKey . '="' . htmlspecialchars($value) . '"';
+				$attributesAsString .= ' ' . $attributeKey . '="' . htmlspecialchars($value) . '"';
 			}
 		}
 		return '<' . $tag . $attributesAsString . '>' . $content . '</' . $tag . '>';
@@ -112,14 +112,14 @@ class Tx_Aloha_Utility_Integration {
 			$RTEsetup = $GLOBALS['BE_USER']->getTSConfig('RTE', BackendUtility::getPagesTSconfig($pageId));
 			$thisConfig = BackendUtility::RTEsetup($RTEsetup['properties'], $table, $vconf['field'], $theTypeString);
 
-				// @todo check that
+			// @todo check that
 			$RTErelPath = is_array($eFile) ? dirname($eFile['relEditFile']) : '';
 
 			$RTEobj = BackendUtility::RTEgetObj();
 			if (is_object($RTEobj)) {
 				$fieldContent = $RTEobj->transformContent('db', $fieldContent, $table, $vconf['field'], $currentRecord, $vconf['spec'], $thisConfig, $RTErelPath, $currentRecord['pid']);
 			} else {
-					// @todo
+				// @todo
 				debug('NO RTE OBJECT FOUND!');
 			}
 		}
@@ -131,10 +131,10 @@ class Tx_Aloha_Utility_Integration {
 	 * Returns the row of a record given by $table and $id and $fieldList (list of fields, may be '*')
 	 * NOTICE: No check for deleted or access!
 	 *
-	 * @param	string		Table name
-	 * @param	integer		UID of the record from $table
-	 * @param	string		Field list for the SELECT query, eg. "*" or "uid,pid,..."
-	 * @return	mixed		Returns the selected record on success, otherwise FALSE.
+	 * @param    string        Table name
+	 * @param    integer        UID of the record from $table
+	 * @param    string        Field list for the SELECT query, eg. "*" or "uid,pid,..."
+	 * @return    mixed        Returns the selected record on success, otherwise FALSE.
 	 */
 	private function recordInfo($table, $id, $fieldList = '*') {
 		if (is_array($GLOBALS['TCA'][$table])) {

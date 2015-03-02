@@ -37,20 +37,20 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 * @return void
 	 */
 	public function main(array $params, \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $parentObject) {
-	
-		if ( Tx_Aloha_Utility_Access::isEnabled() && $parentObject->type == 0 && !$this->httpRefererIsFromT3BackendViewModule() ) {
+
+		if (Tx_Aloha_Utility_Access::isEnabled() && $parentObject->type == 0 && !$this->httpRefererIsFromT3BackendViewModule()) {
 
 			$this->typoScriptFrontendController = $parentObject;
 
 			$this->settings = $this->typoScriptFrontendController->config['config']['tx_aloha.'];
 
-				// Load head parts
+			// Load head parts
 			$this->loadResources();
 
-				// Clear staged elements
+			// Clear staged elements
 			Tx_Aloha_Utility_Integration::removeStagedElements($GLOBALS['TSFE']->id);
 
-				// Generate output
+			// Generate output
 			$output = ' <div id="aloha-not-loaded" style="display:none"></div>
 						<div id="aloha-top-bar" style="display:none"><div id="aloha-topbar-inner">
 								<div class="aloha-top-bar-left">' . $this->getToolbarLeft() . '</div><!-- end ToolBarLeft -->
@@ -81,13 +81,13 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 * @return void
 	 */
 	private function loadResources() {
-			// Needed variables for ajax requests
+		// Needed variables for ajax requests
 		$styles = '<script type="text/javascript">' . LF .
 			TAB . 'var alohaUrl = "' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'index.php?id=' . $this->typoScriptFrontendController->id . '&type=661' . '";' . LF .
 			TAB . 'var typo3BackendUrl = "' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . '";' . LF .
 			'</script>' . LF;
 
-			// Load template from given path (set in EM settings)
+		// Load template from given path (set in EM settings)
 		$configurationArray = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aloha']);
 		if (is_array($configurationArray) && !empty($configurationArray['headerTemplate'])) {
 			$styles .= GeneralUtility::getUrl($configurationArray['headerTemplate']);
@@ -97,10 +97,10 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			<script type="text/javascript">
 				(function( p, undefined ) {
 				    (function( v, undefined ) {
-						v.styleDesktop = "' . ($this->settings['responsiveView.']['buttons.']['desktop.']['minWidth'] ? 'min-width:'.$this->settings['responsiveView.']['buttons.']['desktop.']['minWidth'].';' : '' ) . ($this->settings['responsiveView.']['buttons.']['desktop.']['maxWidth'] ? 'max-width:'.$this->settings['responsiveView.']['buttons.']['desktop.']['maxWidth'].';' : '' ) .'";
-						v.styleLaptop = "' . ($this->settings['responsiveView.']['buttons.']['laptop.']['minWidth'] ? 'min-width:'.$this->settings['responsiveView.']['buttons.']['laptop.']['minWidth'].';' : '' ) . ($this->settings['responsiveView.']['buttons.']['laptop.']['maxWidth'] ? 'max-width:'.$this->settings['responsiveView.']['buttons.']['laptop.']['maxWidth'].';' : '' ) .'";
-						v.styleTablet = "' . ($this->settings['responsiveView.']['buttons.']['tablet.']['minWidth'] ? 'min-width:'.$this->settings['responsiveView.']['buttons.']['tablet.']['minWidth'].';' : '' ) . ($this->settings['responsiveView.']['buttons.']['tablet.']['maxWidth'] ? 'max-width:'.$this->settings['responsiveView.']['buttons.']['tablet.']['maxWidth'].';' : '' ) .'";
-						v.styleMobile = "' . ($this->settings['responsiveView.']['buttons.']['mobile.']['minWidth'] ? 'min-width:'.$this->settings['responsiveView.']['buttons.']['mobile.']['minWidth'].';' : '' ) . ($this->settings['responsiveView.']['buttons.']['mobile.']['maxWidth'] ? 'max-width:'.$this->settings['responsiveView.']['buttons.']['mobile.']['maxWidth'].';' : '' ) .'";
+						v.styleDesktop = "' . ($this->settings['responsiveView.']['buttons.']['desktop.']['minWidth'] ? 'min-width:' . $this->settings['responsiveView.']['buttons.']['desktop.']['minWidth'] . ';' : '') . ($this->settings['responsiveView.']['buttons.']['desktop.']['maxWidth'] ? 'max-width:' . $this->settings['responsiveView.']['buttons.']['desktop.']['maxWidth'] . ';' : '') . '";
+						v.styleLaptop = "' . ($this->settings['responsiveView.']['buttons.']['laptop.']['minWidth'] ? 'min-width:' . $this->settings['responsiveView.']['buttons.']['laptop.']['minWidth'] . ';' : '') . ($this->settings['responsiveView.']['buttons.']['laptop.']['maxWidth'] ? 'max-width:' . $this->settings['responsiveView.']['buttons.']['laptop.']['maxWidth'] . ';' : '') . '";
+						v.styleTablet = "' . ($this->settings['responsiveView.']['buttons.']['tablet.']['minWidth'] ? 'min-width:' . $this->settings['responsiveView.']['buttons.']['tablet.']['minWidth'] . ';' : '') . ($this->settings['responsiveView.']['buttons.']['tablet.']['maxWidth'] ? 'max-width:' . $this->settings['responsiveView.']['buttons.']['tablet.']['maxWidth'] . ';' : '') . '";
+						v.styleMobile = "' . ($this->settings['responsiveView.']['buttons.']['mobile.']['minWidth'] ? 'min-width:' . $this->settings['responsiveView.']['buttons.']['mobile.']['minWidth'] . ';' : '') . ($this->settings['responsiveView.']['buttons.']['mobile.']['maxWidth'] ? 'max-width:' . $this->settings['responsiveView.']['buttons.']['mobile.']['maxWidth'] . ';' : '') . '";
 					}( p.viewpage = p.viewpage || {} ));
 				}( window.pxa = window.pxa || {} ));
 			</script>
@@ -108,8 +108,8 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		$styles .= '
 			<script type="text/javascript" src="/typo3conf/ext/aloha/Resources/Public/js/viewpage.js"></script>';
 
-			// Wrap it all in a comment for infos when looking at sources
-			// #aloha-resources is used in pxa.aloha.resizeViewFrame so it doesn't remove the resources when changing preview resolutions
+		// Wrap it all in a comment for infos when looking at sources
+		// #aloha-resources is used in pxa.aloha.resizeViewFrame so it doesn't remove the resources when changing preview resolutions
 		$styles = LF . '<!-- Begin Aloha Files --><div id="aloha-resources">' . LF . $styles . LF . '</div><!-- End Aloha Files -->' . LF . LF;
 
 		$this->typoScriptFrontendController->content = str_ireplace('</body>', $styles . '</body>', $this->typoScriptFrontendController->content);
@@ -124,16 +124,16 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		$countOfElements = Tx_Aloha_Utility_Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
 
 		$countMessage = sprintf(
-							$this->sL(self::ll . 'headerbar.count'),
-							'<span id="count" class="' . ($countOfElements > 0 ? 'tobesaved' : '') . '">' . $countOfElements . '</span>'
-						);
+			$this->sL(self::ll . 'headerbar.count'),
+			'<span id="count" class="' . ($countOfElements > 0 ? 'tobesaved' : '') . '">' . $countOfElements . '</span>'
+		);
 
 		$content = '<div id="alohaeditor-welcome" class="welcome">' . $this->getMenu() . '</div>';
 
 		// Get responsive buttons
 		$content .= $this->getResponsiveButtons();
 
-			// Output depends on selected save method
+		// Output depends on selected save method
 		if ($this->configuration['saveMethod'] === 'intermediate') {
 			$content .= '<span class="count-holder">' . $countMessage . '</span>
 					<span class="button-holder">
@@ -161,7 +161,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		$perms = $GLOBALS['BE_USER']->calcPerms($GLOBALS['TSFE']->page);
 		$langAllowed = $GLOBALS['BE_USER']->checkLanguageAccess($GLOBALS['TSFE']->sys_language_uid);
 
-			//  If mod.web_list.newContentWiz.overrideWithExtension is set, use that extension's create new content wizard instead:
+		//  If mod.web_list.newContentWiz.overrideWithExtension is set, use that extension's create new content wizard instead:
 		$tsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig($this->pageinfo['uid'], 'mod.web_list');
 		$tsConfig = $tsConfig['properties']['newContentWiz.']['overrideWithExtension'];
 		$newContentWizScriptPath = ExtensionManagementUtility::isLoaded($tsConfig) ? (ExtensionManagementUtility::extRelPath($tsConfig) . 'mod1/db_new_content_el.php') : (TYPO3_mainDir . 'sysext/cms/layout/db_new_content_el.php');
@@ -169,7 +169,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 
 		$id = $GLOBALS['TSFE']->id;
 
-			// Edit page properties
+		// Edit page properties
 		if (($perms & 2) && (!$this->settings['topBar.']['pageButtons.']['edit.']['disable'])) {
 			$params = '&edit[pages][' . $GLOBALS['TSFE']->id . ']=edit&noView=1';
 			$url = TYPO3_mainDir . 'alt_doc.php?' . $params . $this->getReturnUrl();
@@ -189,17 +189,17 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			}
 		}
 
-			// @todo: add some permissions for that
+		// @todo: add some permissions for that
 		if (TRUE && (!$this->settings['topBar.']['pageButtons.']['history.']['disable'])) {
-				// Record history
+			// Record history
 			$url = TYPO3_mainDir . 'show_rechis.php?element=' . rawurlencode('pages:' . $id) . $this->getReturnUrl();
 
 			$content .= '<a onclick="' . $this->lightboxUrl($url) . '" href="' . htmlspecialchars($url) . '">
 					<img ' . $this->getIcon('history2.gif') .
-					' title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:recordHistory') . '" alt="" /></a>';
+				' title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:recordHistory') . '" alt="" /></a>';
 		}
 
-			// New record
+		// New record
 		if (($perms & 16) && $langAllowed && (!$this->settings['topBar.']['pageButtons.']['newContentElement.']['disable'])) {
 			$params = '';
 			if ($GLOBALS['TSFE']->sys_language_uid) {
@@ -211,7 +211,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 					<img ' . $this->getIcon('new_record.gif') . '  title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:newContentElement') . '" alt="" /></a>';
 		}
 
-			// Move
+		// Move
 		if (($perms & 2) && (!$this->settings['topBar.']['pageButtons.']['move.']['disable'])) {
 			$url = TYPO3_mainDir . 'move_el.php?table=pages&uid=' . $GLOBALS['TSFE']->id . $this->getReturnUrl();
 
@@ -219,18 +219,18 @@ class Tx_Aloha_Hooks_ContentPostProc {
 					<img ' . $this->getIcon('move_page.gif') . ' title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:move_page') . '" alt="" /></a>';
 		}
 
-			// New Page
+		// New Page
 		if (($perms & 8) && (!$this->settings['topBar.']['pageButtons.']['newPage.']['disable'])) {
 			$url = TYPO3_mainDir . 'db_new.php?id=' . $id . '&pagesOnly=1' . $this->getReturnUrl();
 			$content .= '<a onclick="' . $this->lightboxUrl($url) . '" href="' . htmlspecialchars($url) . '">
 					<img ' . $this->getIcon('new_page.gif') . ' title="' . $this->sL('LLL:EXT:cms/layout/locallang.xml:newPage') . '" alt="" /></a>';
 		}
 
-			// Wrap title and classes around
+		// Wrap title and classes around
 		if (!empty($content)) {
 			$content = '<span class="page-edit-header">' .
-							$this->sL('LLL:EXT:lang/locallang_tca.php:pages') .
-						':</span>
+				$this->sL('LLL:EXT:lang/locallang_tca.php:pages') .
+				':</span>
 						<span class="page-edit-buttons">' . $content . '</span>';
 		}
 
@@ -243,16 +243,16 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 * @return string
 	 */
 	public function getResponsiveButtons() {
-		$responsiveItemsControlArray = array('desktop','laptop','tablet','mobile');
+		$responsiveItemsControlArray = array('desktop', 'laptop', 'tablet', 'mobile');
 
 		$output = '';
 
 		foreach ($responsiveItemsControlArray as $key => $button) {
-			if (!$this->settings['responsiveView.']['buttons.'][$button.'.']['disable']) {
+			if (!$this->settings['responsiveView.']['buttons.'][$button . '.']['disable']) {
 				$classOfButton = $button == 'mobile' ? 'mobile-phone' : $button;
 				$output .= '
-					<a title="'.ucfirst($button).' view" onclick="pxa.aloha.resizeViewFrame(\''.$button.'\'); return false;" href="#">
-						<i class="alohaicon-'.$classOfButton.' alohaicon-large"></i>
+					<a title="' . ucfirst($button) . ' view" onclick="pxa.aloha.resizeViewFrame(\'' . $button . '\'); return false;" href="#">
+						<i class="alohaicon-' . $classOfButton . ' alohaicon-large"></i>
 					</a>';
 			}
 		}
@@ -265,7 +265,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return string
 	 * @todo make items configurable by TsConfig
 	 */
@@ -281,7 +281,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		$backendUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir;
 		$content .= '<a target="_top" href="' . htmlspecialchars($backendUrl) . '" class="btn btn-success">' . $this->sL('LLL:EXT:lang/locallang_login.xml:interface.backend') . '</a>';
 
-		if(!empty($content)) {
+		if (!empty($content)) {
 			$content = '<div class="aloha-menu-wrap">' . $content . '</div>';
 		}
 
@@ -318,7 +318,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 * @param boolean $hsc htmlspecialchars by default
 	 */
 	public function sL($key, $hsc = TRUE) {
-			// it can happen that this is null, no wonder why
+		// it can happen that this is null, no wonder why
 		if (is_null($GLOBALS['LANG'])) {
 			$GLOBALS['LANG'] = GeneralUtility::makeInstance('language');
 			$GLOBALS['LANG']->init($GLOBALS['BE_USER']->uc['lang']);
@@ -333,7 +333,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 * @return string
 	 */
 	public function lightboxUrl($url) {
-		return 'Shadowbox.open({ content: \'' . htmlspecialchars($url) .'\', player:\'iframe\' }); return false;';
+		return 'Shadowbox.open({ content: \'' . htmlspecialchars($url) . '\', player:\'iframe\' }); return false;';
 	}
 
 	/**
@@ -345,17 +345,17 @@ class Tx_Aloha_Hooks_ContentPostProc {
 		return '&returnUrl=' . TYPO3_mainDir . '../../typo3conf/ext/aloha/Resources/Public/Contrib/shadowbox/close.html';
 	}
 
-	/** 
-	* Determine if page is loaded from BE
-	* 
-	* @return bool
-	*/
+	/**
+	 * Determine if page is loaded from BE
+	 *
+	 * @return bool
+	 */
 	protected function httpRefererIsFromT3BackendViewModule() {
 
 		$parsedReferer = parse_url($_SERVER['HTTP_REFERER']);
-		$pathArray = explode("/" , $parsedReferer['path']);
+		$pathArray = explode("/", $parsedReferer['path']);
 		$viewPageView = preg_match("/web_ViewpageView/i", $parsedReferer['query']);
-		return ( strtolower($pathArray[1]) == "typo3" && $viewPageView );
+		return (strtolower($pathArray[1]) == "typo3" && $viewPageView);
 	}
 }
 

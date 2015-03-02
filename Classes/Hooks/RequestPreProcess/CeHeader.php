@@ -42,15 +42,15 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeHeader implements Tx_Aloha_Interfaces_R
 	 * @return array
 	 */
 	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
-	
-			// only allowed for field header
-		if ( $parentObject->getTable() === 'tt_content' && $parentObject->getField() == 'header' ) {
 
-				// Check if we need to update header-type field
-			if ( substr( $request['content'], 0, 2 ) === "<h" ) {
+		// only allowed for field header
+		if ($parentObject->getTable() === 'tt_content' && $parentObject->getField() == 'header') {
+
+			// Check if we need to update header-type field
+			if (substr($request['content'], 0, 2) === "<h") {
 				$headerTypeRequest = $request;
 
-				switch ( substr($request['content'], 0, 3) ) {
+				switch (substr($request['content'], 0, 3)) {
 					case '<h1':
 						$headerTypeRequest['content'] = 1;
 						break;
@@ -72,15 +72,15 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeHeader implements Tx_Aloha_Interfaces_R
 					default:
 						$headerTypeRequest['content'] = 0;
 						break;
-					}
-						// Do a direct save for the header-type field. 
-					$headerTypeRequest['identifier'] = $parentObject->getTable() . '--header_layout--' . $parentObject->getUid();
-					$parentObject->directSave($headerTypeRequest,TRUE);
+				}
+				// Do a direct save for the header-type field.
+				$headerTypeRequest['identifier'] = $parentObject->getTable() . '--header_layout--' . $parentObject->getUid();
+				$parentObject->directSave($headerTypeRequest, TRUE);
 
-					$parentObject->setField('header');
+				$parentObject->setField('header');
 			}
 
-				// Remove tags so we only have the plaint text.
+			// Remove tags so we only have the plaint text.
 			$request['content'] = urldecode(strip_tags($request['content']));
 		}
 		return $request;

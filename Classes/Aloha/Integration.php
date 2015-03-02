@@ -80,19 +80,19 @@ class Tx_Aloha_Aloha_Integration {
 	private function getAllowedActions(array $alohaConfig, array &$classList) {
 		$allowedActions = array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $alohaConfig['allow']));
 
-			// Hiding in workspaces because implementation is incomplete
-			// @todo: check that
+		// Hiding in workspaces because implementation is incomplete
+		// @todo: check that
 		if ((isset($allowedActions['all']) || isset($allowedActions['move'])) && $GLOBALS['TCA'][$this->table]['ctrl']['sortby'] && $GLOBALS['BE_USER']->workspace === 0) {
 			array_push($classList, 'action-up');
 			array_push($classList, 'action-down');
 			array_push($classList, 'action-move');
 		}
-			// edit action
+		// edit action
 		if ($this->checkAccess($allowedActions, 'edit')) {
 			array_push($classList, 'action-edit');
 		}
 
-			// link action
+		// link action
 		if ($this->checkAccess($allowedActions, 'link')) {
 			array_push($classList, 'action-link');
 		}
@@ -106,23 +106,23 @@ class Tx_Aloha_Aloha_Integration {
 			}
 		}
 
-			// Add new content elements underneath
+		// Add new content elements underneath
 		if ($this->checkAccess($allowedActions, 'newContentElementBelow')) {
 			array_push($classList, 'action-newContentElementBelow');
 		}
 
-			// @todo: && $GLOBALS['BE_USER']->workspace === 0 && !$dataArr['_LOCALIZED_UID']
-			// still true, check that
+		// @todo: && $GLOBALS['BE_USER']->workspace === 0 && !$dataArr['_LOCALIZED_UID']
+		// still true, check that
 		if ($this->checkAccess($allowedActions, 'delete')) {
 			array_push($classList, 'action-delete');
 		}
 
-			// Additional class by TS
+		// Additional class by TS
 		if (isset($alohaConfig['class'])) {
 			array_push($classList, htmlspecialchars($alohaConfig['class']));
 		}
 
-			// Restrict editor by removing all styles
+		// Restrict editor by removing all styles
 		if ($alohaConfig['nostyles'] == 1) {
 			array_push($classList, 'nostyles');
 		}
@@ -139,12 +139,12 @@ class Tx_Aloha_Aloha_Integration {
 	private function init(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject, array $alohaConfig) {
 		list($table, $id) = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $parentObject->currentRecord);
 		$currentRecord = $parentObject->data;
-		
-		if ( empty($parentObject->currentRecord) ) {
-			return false;
+
+		if (empty($parentObject->currentRecord)) {
+			return FALSE;
 		}
 
-		if(isset($currentRecord['_LOCALIZED_UID']))	{
+		if (isset($currentRecord['_LOCALIZED_UID'])) {
 			$id = $currentRecord['_LOCALIZED_UID'];
 		}
 		if (empty($table)) {

@@ -58,14 +58,14 @@ class Tx_Aloha_Hooks_RequestPreProcess_Cleanup implements Tx_Aloha_Interfaces_Re
 		$lengthOfContent = strlen($content);
 		$cleanUpWords = array('<br />', '<br>', '<br/>', '<br style="">');
 
-		foreach($cleanUpWords as $cleanupWord) {
+		foreach ($cleanUpWords as $cleanupWord) {
 			$length = strlen($cleanupWord);
 
-				// Clean from the beginning
+			// Clean from the beginning
 			if (substr($content, 0, $length) === $cleanupWord) {
 				$content = substr($content, $length + 1, $lengthOfContent);
 			}
-				// Clean from the end
+			// Clean from the end
 			if (substr($content, 0, ($length * -1)) === $cleanupWord) {
 				$newLengthOfContent = $lengthOfContent - $length;
 				$content = substr($content, 0, $newLengthOfContent);

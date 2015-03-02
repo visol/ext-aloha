@@ -46,8 +46,9 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeTable implements Tx_Aloha_Interfaces_Re
 
 		// only allowed for element "table"
 		if ($parentObject->getTable() === 'tt_content'
-				&& $parentObject->getField() == 'bodytext'
-				&& $record['CType'] === 'table') {
+			&& $parentObject->getField() == 'bodytext'
+			&& $record['CType'] === 'table'
+		) {
 
 			$finished = TRUE;
 
@@ -84,8 +85,6 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeTable implements Tx_Aloha_Interfaces_Re
 //echo $captionValue;
 
 			$flexformTableSettings = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($record['pi_flexform']);
-
-
 
 
 // ------------------------------------
