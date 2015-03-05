@@ -1,4 +1,6 @@
 <?php
+namespace Pixelant\Aloha\Utility;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -28,7 +30,7 @@
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Utility_Helper {
+class Helper {
 
 	/**
 	 * Get a unique string by given arguments

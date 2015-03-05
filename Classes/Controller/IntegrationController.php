@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Controller;
 
 /* **************************************************************
  *  Copyright notice
@@ -22,6 +23,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
+use Pixelant\Aloha\Utility\Helper;
 
 /**
  * Integration class of aloha into TYPO3
@@ -29,7 +31,7 @@
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Aloha_Integration {
+class IntegrationController {
 
 	protected $table = NULL;
 	protected $field = NULL;
@@ -38,11 +40,12 @@ class Tx_Aloha_Aloha_Integration {
 	protected $alohaConfig = array();
 
 	public function start($content, array $configuration, \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
+
 		try {
 			$alohaConfig = $configuration;
 			$this->init($parentObject, $alohaConfig);
 
-			$access = Tx_Aloha_Utility_Access::checkAccess($this->table, $this->dataArray, $this->alohaConfig);
+			$access = \Pixelant\Aloha\Utility\Access::checkAccess($this->table, $this->dataArray, $this->alohaConfig);
 			if ($access) {
 				if (empty($content)) {
 					$alohaConfig['class'] .= 'aloha-empty-content';
@@ -55,14 +58,14 @@ class Tx_Aloha_Aloha_Integration {
 				$this->getAllowedActions($alohaConfig, $classList);
 
 				$attributes = array(
-					'id' => Tx_Aloha_Utility_Helper::getUniqueId($this->table, $this->field, $this->uid),
+					'id' => Helper::getUniqueId($this->table, $this->field, $this->uid),
 					'class' => implode(' ', $classList),
 					'style' => $alohaConfig['style']
 				);
 
-				$content = Tx_Aloha_Utility_Integration::renderAlohaWrap($content, $attributes, $alohaConfig['tag']);
+				$content = \Pixelant\Aloha\Utility\Integration::renderAlohaWrap($content, $attributes, $alohaConfig['tag']);
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$errorMsg = sprintf('Error with AlohaEditor: %s', $e->getMessage());
 			$content .= '<div style="color:red;padding:2px;margin:2px;font-weight:bold;">' . htmlspecialchars($errorMsg) . '</div>';
 		}
@@ -133,7 +136,7 @@ class Tx_Aloha_Aloha_Integration {
 	 *
 	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject
 	 * @param array $alohaConfig
-	 * @throws Exception
+	 * @throws \Exception
 	 * @return void
 	 */
 	private function init(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject, array $alohaConfig) {
@@ -148,11 +151,11 @@ class Tx_Aloha_Aloha_Integration {
 			$id = $currentRecord['_LOCALIZED_UID'];
 		}
 		if (empty($table)) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.integration.table'));
+			throw new \Exception(Helper::ll('error.integration.table'));
 		} elseif (empty($id)) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.integration.uid'));
+			throw new \Exception(Helper::ll('error.integration.uid'));
 		} elseif (empty($alohaConfig['field'])) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.integration.field'));
+			throw new \Exception(Helper::ll('error.integration.field'));
 		}
 
 		$this->table = $table;

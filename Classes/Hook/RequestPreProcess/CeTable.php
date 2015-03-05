@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Hook\RequestPreProcess;
 
 /* * *************************************************************
  *  Copyright notice
@@ -23,25 +24,23 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('aloha') . 'Classes/Interfaces/RequestPreProcess.php');
-
 /**
  * Hook for saving content element "table"
  *
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Hooks_RequestPreProcess_CeTable implements Tx_Aloha_Interfaces_RequestPreProcess {
+class CeTable implements \Pixelant\Aloha\Hook\RequestPreProcessInterface {
 
 	/**
 	 * Preprocess the request
 	 *
 	 * @param array $request save request
 	 * @param boolean $finished
-	 * @param Tx_Aloha_Aloha_Save $parentObject
+	 * @param \Pixelant\Aloha\Controller\SaveController $parentObject
 	 * @return array
 	 */
-	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
+	public function preProcess(array &$request, &$finished, \Pixelant\Aloha\Controller\SaveController &$parentObject) {
 		$record = $parentObject->getRecord();
 
 		// only allowed for element "table"
@@ -52,10 +51,10 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeTable implements Tx_Aloha_Interfaces_Re
 
 			$finished = TRUE;
 
-			$domDocument = new DOMDocument();
+			$domDocument = new \DOMDocument();
 			$domDocument->loadHTML('<?xml encoding="utf-8" ?>' . $request['content']);
 
-			$xPath = new DOMXpath($domDocument);
+			$xPath = new \DOMXpath($domDocument);
 
 			$trCollection = $xPath->query('//table/*/tr');
 			$tmpCollection = array();
@@ -90,13 +89,13 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeTable implements Tx_Aloha_Interfaces_Re
 // ------------------------------------
 
 
-			$doc = new DOMDOcument;
+			$doc = new \DOMDOcument;
 			$doc->loadxml($record['pi_flexform']);
 
 			$replacement = $doc->createDocumentFragment();
 			$replacement->appendXML('<value index="vDEF">' . $captionValue . '</value>');
 
-			$xpath = new DOMXpath($doc);
+			$xpath = new \DOMXpath($doc);
 
 			$oldNode = $xpath->query('//field[@index=\'acctables_caption\']//value')->item(0);
 			$oldNode->parentNode->replaceChild($replacement, $oldNode);

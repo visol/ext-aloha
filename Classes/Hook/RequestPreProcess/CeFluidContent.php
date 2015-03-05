@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Hook\RequestPreProcess;
 
 /* * *************************************************************
  *  Copyright notice
@@ -23,25 +24,23 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('aloha') . 'Classes/Interfaces/RequestPreProcess.php');
-
 /**
  * Hook for saving content element "table"
  *
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Hooks_RequestPreProcess_CeFluidContent implements Tx_Aloha_Interfaces_RequestPreProcess {
+class CeFluidContent implements \Pixelant\Aloha\Hook\RequestPreProcessInterface {
 
 	/**
 	 * Preprocess the request
 	 *
 	 * @param array $request save request
 	 * @param boolean $finished
-	 * @param Tx_Aloha_Aloha_Save $parentObject
+	 * @param \Pixelant\Aloha\Controller\SaveController $parentObject
 	 * @return array
 	 */
-	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
+	public function preProcess(array &$request, &$finished, \Pixelant\Aloha\Controller\SaveController &$parentObject) {
 		$record = $parentObject->getRecord();
 
 		// when storing fluidcontent flexform fields, field is set by pi_flexform-flexformfieldname.
@@ -55,7 +54,7 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeFluidContent implements Tx_Aloha_Interf
 
 			$parentObject->setField($field);
 
-			$xml = new SimpleXMLElement($record['pi_flexform']);
+			$xml = new \SimpleXMLElement($record['pi_flexform']);
 
 			// @TODO: Maybe give possibility for fields to have html tags
 			$fieldAllowedTags = '<sup><sub>';

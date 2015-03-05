@@ -1,4 +1,6 @@
 <?php
+namespace Pixelant\Aloha\Utility;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -29,7 +31,7 @@
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Utility_Access {
+class Access {
 
 	/**
 	 * Checks if aloha editor is enabled, checking UserTsConfig and TS

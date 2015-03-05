@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Hook\RequestPreProcess;
 
 /* **************************************************************
  *  Copyright notice
@@ -23,25 +24,23 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('aloha') . 'Classes/Interfaces/RequestPreProcess.php');
-
 /**
  * Hook for saving content element "rte with links"
  *
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Hooks_RequestPreProcess_CeRteLinks implements Tx_Aloha_Interfaces_RequestPreProcess {
+class CeRteLinks implements \Pixelant\Aloha\Hook\RequestPreProcessInterface {
 
 	/**
 	 * Preprocess the request
 	 *
 	 * @param array $request save request
 	 * @param boolean $finished
-	 * @param Tx_Aloha_Aloha_Save $parentObject
+	 * @param \Pixelant\Aloha\Controller\SaveController $parentObject
 	 * @return array
 	 */
-	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
+	public function preProcess(array &$request, &$finished, \Pixelant\Aloha\Controller\SaveController &$parentObject) {
 		$record = $parentObject->getRecord();
 
 		// only allowed for text and textpic element (at least for now)
@@ -52,19 +51,23 @@ class Tx_Aloha_Hooks_RequestPreProcess_CeRteLinks implements Tx_Aloha_Interfaces
 
 			$content = $this->removeUnwantedLinkVars($request['content']);
 			// Send links thru RteHtmlParser
+			/** @var \TYPO3\CMS\Core\Html\RteHtmlParser $parseHTML */
 			$parseHTML = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Html\\RteHtmlParser');
-			$content = $parseHTML->TS_links_db($content);
+			//$content = $parseHTML->TS_links_db($content);
 			$content = $parseHTML->TS_links_rte($content);
 
 			$request['content'] = $content;
 		}
+
+//		\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($request);
+//		die();
 
 		return $request;
 	}
 
 	protected function removeUnwantedLinkVars($content) {
 
-		$domDocument = new DOMDocument();
+		$domDocument = new \DOMDocument();
 		$domDocument->loadHTML('<?xml encoding="utf-8" ?>' . $content);
 
 		$anchorCollection = $domDocument->getElementsByTagName('a');

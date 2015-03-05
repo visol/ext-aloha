@@ -1,9 +1,10 @@
 <?php
+namespace Pixelant\Aloha\Hook;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Tx_Aloha_Hooks_ContentPostProc {
+class ContentPostProc {
 	const ll = 'LLL:EXT:aloha/Resources/Private/Language/locallang.xml:';
 
 	/**
@@ -34,11 +35,12 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 *
 	 * @param array $params
 	 * @param \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $parentObject
+	 * @throws \UnexpectedValueException
 	 * @return void
 	 */
 	public function main(array $params, \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $parentObject) {
 
-		if (Tx_Aloha_Utility_Access::isEnabled() && $parentObject->type == 0 && !$this->httpRefererIsFromT3BackendViewModule()) {
+		if (\Pixelant\Aloha\Utility\Access::isEnabled() && $parentObject->type == 0 && !$this->httpRefererIsFromT3BackendViewModule()) {
 
 			$this->typoScriptFrontendController = $parentObject;
 
@@ -48,7 +50,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			$this->loadResources();
 
 			// Clear staged elements
-			Tx_Aloha_Utility_Integration::removeStagedElements($GLOBALS['TSFE']->id);
+			\Pixelant\Aloha\Utility\Integration::removeStagedElements($GLOBALS['TSFE']->id);
 
 			// Generate output
 			$output = ' <div id="aloha-not-loaded" style="display:none"></div>
@@ -61,8 +63,8 @@ class Tx_Aloha_Hooks_ContentPostProc {
 				$finished = FALSE;
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Aloha/Integration.php']['toolbarPostProcess'] as $classData) {
 					$hookObject = GeneralUtility::getUserObj($classData);
-					if (!($hookObject instanceof Tx_Aloha_Interfaces_ToolbarPostProcess)) {
-						throw new UnexpectedValueException(
+					if (!($hookObject instanceof \Pixelant\Aloha\Hook\ToolbarPostProcessInterface)) {
+						throw new \UnexpectedValueException (
 							$classData . ' must implement interface Tx_Aloha_Interfaces_ToolbarPostProcess',
 							1274563549
 						);
@@ -123,7 +125,7 @@ class Tx_Aloha_Hooks_ContentPostProc {
 	 * @return string
 	 */
 	public function getToolbarLeft() {
-		$countOfElements = Tx_Aloha_Utility_Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
+		$countOfElements = \Pixelant\Aloha\Utility\Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
 
 		$countMessage = sprintf(
 			$this->sL(self::ll . 'headerbar.count'),

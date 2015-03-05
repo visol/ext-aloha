@@ -1,4 +1,6 @@
 <?php
+namespace Pixelant\Aloha\ViewHelpers;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -33,7 +35,7 @@
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_ViewHelpers_EditableViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+class EditableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
 	 * Render aloha integration for a single field
@@ -47,13 +49,13 @@ class Tx_Aloha_ViewHelpers_EditableViewHelper extends Tx_Fluid_Core_ViewHelper_A
 	public function render($table, $field, $uid, $configuration = array()) {
 		$content = $this->renderChildren();
 
-		if (Tx_Aloha_Utility_Access::isEnabled()) {
+		if (\Pixelant\Aloha\Utility\Access::isEnabled()) {
 			$finalConfiguration = array(
 				'alohaProcess' => 1,
 				'alohaProcess.' => array(
 					'field' => $field,
 				),
-				'stdWrapProcess' => 'Tx_Aloha_Hooks_Editicons->render',
+				'stdWrapProcess' => 'Pixelant\Aloha\Hook\EditIcons->render',
 			);
 
 			// add additional configuration
@@ -61,7 +63,7 @@ class Tx_Aloha_ViewHelpers_EditableViewHelper extends Tx_Fluid_Core_ViewHelper_A
 				$finalConfiguration['alohaProcess.'][$key] = $value;
 			}
 
-			// Since some templates don't have allow set, for backward compatibilty defaultly set allow 
+			// Since some templates don't have allow set, set allow by default for backward compatibility reasons
 			if (!isset($finalConfiguration['alohaProcess.']['allow'])) {
 				$finalConfiguration['alohaProcess.']['allow'] = 'all';
 			}
@@ -70,7 +72,7 @@ class Tx_Aloha_ViewHelpers_EditableViewHelper extends Tx_Fluid_Core_ViewHelper_A
 			$record = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', $table, 'uid=' . (int)$uid);
 
 			/** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj */
-			$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
+			$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
 			$cObj->start($record, $table);
 
 			$content = $cObj->stdWrap($content, $finalConfiguration);

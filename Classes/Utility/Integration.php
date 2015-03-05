@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Utility;
 
 /* * *************************************************************
  *  Copyright notice
@@ -31,7 +32,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Utility_Integration {
+class Integration {
 
 	/**
 	 * Get count of changed elements per page
@@ -54,7 +55,7 @@ class Tx_Aloha_Utility_Integration {
 	 * @return void
 	 */
 	public static function removeStagedElements($id) {
-		if (Tx_Aloha_Utility_Access::isEnabled()) {
+		if (\Pixelant\Aloha\Utility\Access::isEnabled()) {
 			$GLOBALS['BE_USER']->uc['aloha'][$id] = array();
 			$GLOBALS['BE_USER']->writeUC();
 		}

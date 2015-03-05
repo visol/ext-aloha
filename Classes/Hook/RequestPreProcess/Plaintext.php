@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Hook\RequestPreProcess;
 
 /* **************************************************************
  *  Copyright notice
@@ -23,55 +24,49 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('aloha') . 'Classes/Interfaces/RequestPreProcess.php');
-
 /**
- * Hook for saving content element "bullets"
+ * Hook for cleaning content
  *
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Hooks_RequestPreProcess_CeBullets implements Tx_Aloha_Interfaces_RequestPreProcess {
+class Plaintext implements \Pixelant\Aloha\Hook\RequestPreProcessInterface {
 
 	/**
 	 * Preprocess the request
 	 *
 	 * @param array $request save request
 	 * @param boolean $finished
-	 * @param Tx_Aloha_Aloha_Save $parentObject
+	 * @param \Pixelant\Aloha\Controller\SaveController $parentObject
 	 * @return array
 	 */
-	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
-		$record = $parentObject->getRecord();
+	public function preProcess(array &$request, &$finished, \Pixelant\Aloha\Controller\SaveController &$parentObject) {
+		// only allowed for "special" field "bodytext-plaintext"
+		if ($parentObject->getTable() === 'tt_content' && $parentObject->getField() == 'bodytext-plaintext') {
 
-		// only allowed for bullet element
-		if ($parentObject->getTable() === 'tt_content'
-			&& $parentObject->getField() == 'bodytext'
-			&& $record['CType'] === 'bullets'
-		) {
+			$request['content'] = $this->modifyContent($request['content']);
+			$parentObject->setField('bodytext');
 
-			$finished = TRUE;
-
-			$domDocument = new DOMDocument();
-			$domDocument->loadHTML('<?xml encoding="utf-8" ?>' . $request['content']);
-
-			// $xPath = new DOMXpath($domDocument);
-			// $liCollection = $xPath->query('//ul/li');
-
-			$liCollection = $domDocument->getElementsByTagName('li');
-			$tempLiElements = array();
-			foreach ($liCollection as $class) {
-				$value = trim($class->nodeValue);
-				if (!empty($value)) {
-					$tempLiElements[] = $value;
-				}
-			}
-			$request['content'] = implode(LF, $tempLiElements);
 		}
-
 		return $request;
 	}
 
+	/**
+	 * Cleanup
+	 *
+	 * @param string $content
+	 * @return string
+	 */
+	private function modifyContent($content) {
+
+		// @TODO: Maybe give possibility for fields to have html tags
+		$fieldAllowedTags = '';
+
+		$content = trim($content);
+		$content = strip_tags(urldecode(html_entity_decode($content)), $fieldAllowedTags);
+
+		return $content;
+	}
 }
 
 ?>
