@@ -87,10 +87,12 @@ class Tx_Aloha_Hooks_ContentPostProc {
 			TAB . 'var typo3BackendUrl = "' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . '";' . LF .
 			'</script>' . LF;
 
-		// Load template from given path (set in EM settings)
+		// Load template from given path (set in EM settings), fall back to shipped template if not specified
 		$configurationArray = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aloha']);
 		if (is_array($configurationArray) && !empty($configurationArray['headerTemplate'])) {
-			$styles .= GeneralUtility::getUrl($configurationArray['headerTemplate']);
+			$styles .= GeneralUtility::getUrl(GeneralUtility::getFileAbsFileName($configurationArray['headerTemplate']));
+		} else {
+			$styles .= GeneralUtility::getUrl(GeneralUtility::getFileAbsFileName('EXT:aloha/Configuration/Header/Default.html'));
 		}
 
 		$styles .= '
