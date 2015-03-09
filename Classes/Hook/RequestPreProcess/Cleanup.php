@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Hook\RequestPreProcess;
 
 /* **************************************************************
  *  Copyright notice
@@ -23,32 +24,24 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(t3lib_extMgm::extPath('aloha') . 'Classes/Interfaces/RequestPreProcess.php');
-
 /**
  * Hook for cleaning content
  *
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Hooks_RequestPreProcess_Plaintext implements Tx_Aloha_Interfaces_RequestPreProcess {
+class Cleanup implements \Pixelant\Aloha\Hook\RequestPreProcessInterface {
 
 	/**
 	 * Preprocess the request
 	 *
 	 * @param array $request save request
 	 * @param boolean $finished
-	 * @param Tx_Aloha_Aloha_Save $parentObject
+	 * @param \Pixelant\Aloha\Controller\SaveController $parentObject
 	 * @return array
 	 */
-	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
-			// only allowed for "special" field "bodytext-plaintext"
-		if ($parentObject->getTable() === 'tt_content' && $parentObject->getField() == 'bodytext-plaintext') {
-			
-			$request['content'] = $this->modifyContent($request['content']);
-			$parentObject->setField('bodytext');
-
-		}
+	public function preProcess(array &$request, &$finished, \Pixelant\Aloha\Controller\SaveController &$parentObject) {
+		$request['content'] = $this->modifyContent($request['content']);
 
 		return $request;
 	}
@@ -60,14 +53,28 @@ class Tx_Aloha_Hooks_RequestPreProcess_Plaintext implements Tx_Aloha_Interfaces_
 	 * @return string
 	 */
 	private function modifyContent($content) {
-		
-			// @TODO: Maybe give possibility for fields to have html tags
-		$fieldAllowedTags = '';
-		
 		$content = trim($content);
-		$content = strip_tags(urldecode(html_entity_decode($content)), $fieldAllowedTags);
+		$lengthOfContent = strlen($content);
+		$cleanUpWords = array('<br />', '<br>', '<br/>', '<br style="">');
+
+		foreach ($cleanUpWords as $cleanupWord) {
+			$length = strlen($cleanupWord);
+
+			// Clean from the beginning
+			if (substr($content, 0, $length) === $cleanupWord) {
+				$content = substr($content, $length + 1, $lengthOfContent);
+			}
+			// Clean from the end
+			if (substr($content, 0, ($length * -1)) === $cleanupWord) {
+				$newLengthOfContent = $lengthOfContent - $length;
+				$content = substr($content, 0, $newLengthOfContent);
+			}
+
+		}
 
 		return $content;
 	}
+
 }
+
 ?>

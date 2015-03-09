@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Controller;
 
 /* **************************************************************
  *  Copyright notice
@@ -22,6 +23,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
+use Pixelant\Aloha\Utility\Helper;
 
 /**
  * Integration class of aloha into TYPO3
@@ -29,7 +31,7 @@
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Aloha_Integration {
+class IntegrationController {
 
 	protected $table = NULL;
 	protected $field = NULL;
@@ -37,12 +39,13 @@ class Tx_Aloha_Aloha_Integration {
 	protected $dataArray = array();
 	protected $alohaConfig = array();
 
-	public function start($content, array $configuration, tslib_cObj &$parentObject) {
+	public function start($content, array $configuration, \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
+
 		try {
 			$alohaConfig = $configuration;
 			$this->init($parentObject, $alohaConfig);
 
-			$access = Tx_Aloha_Utility_Access::checkAccess($this->table, $this->dataArray, $this->alohaConfig);
+			$access = \Pixelant\Aloha\Utility\Access::checkAccess($this->table, $this->dataArray, $this->alohaConfig);
 			if ($access) {
 				if (empty($content)) {
 					$alohaConfig['class'] .= 'aloha-empty-content';
@@ -55,14 +58,14 @@ class Tx_Aloha_Aloha_Integration {
 				$this->getAllowedActions($alohaConfig, $classList);
 
 				$attributes = array(
-					'id' => Tx_Aloha_Utility_Helper::getUniqueId($this->table, $this->field, $this->uid),
+					'id' => Helper::getUniqueId($this->table, $this->field, $this->uid),
 					'class' => implode(' ', $classList),
 					'style' => $alohaConfig['style']
 				);
 
-				$content = Tx_Aloha_Utility_Integration::renderAlohaWrap($content, $attributes, $alohaConfig['tag']);
+				$content = \Pixelant\Aloha\Utility\Integration::renderAlohaWrap($content, $attributes, $alohaConfig['tag']);
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$errorMsg = sprintf('Error with AlohaEditor: %s', $e->getMessage());
 			$content .= '<div style="color:red;padding:2px;margin:2px;font-weight:bold;">' . htmlspecialchars($errorMsg) . '</div>';
 		}
@@ -78,21 +81,21 @@ class Tx_Aloha_Aloha_Integration {
 	 * @return void
 	 */
 	private function getAllowedActions(array $alohaConfig, array &$classList) {
-		$allowedActions = array_flip(t3lib_div::trimExplode(',', $alohaConfig['allow']));
+		$allowedActions = array_flip(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $alohaConfig['allow']));
 
-			// Hiding in workspaces because implementation is incomplete
-			// @todo: check that
+		// Hiding in workspaces because implementation is incomplete
+		// @todo: check that
 		if ((isset($allowedActions['all']) || isset($allowedActions['move'])) && $GLOBALS['TCA'][$this->table]['ctrl']['sortby'] && $GLOBALS['BE_USER']->workspace === 0) {
 			array_push($classList, 'action-up');
 			array_push($classList, 'action-down');
 			array_push($classList, 'action-move');
 		}
-			// edit action
+		// edit action
 		if ($this->checkAccess($allowedActions, 'edit')) {
 			array_push($classList, 'action-edit');
 		}
 
-			// link action
+		// link action
 		if ($this->checkAccess($allowedActions, 'link')) {
 			array_push($classList, 'action-link');
 		}
@@ -106,23 +109,23 @@ class Tx_Aloha_Aloha_Integration {
 			}
 		}
 
-			// Add new content elements underneath
+		// Add new content elements underneath
 		if ($this->checkAccess($allowedActions, 'newContentElementBelow')) {
 			array_push($classList, 'action-newContentElementBelow');
 		}
 
-			// @todo: && $GLOBALS['BE_USER']->workspace === 0 && !$dataArr['_LOCALIZED_UID']
-			// still true, check that
+		// @todo: && $GLOBALS['BE_USER']->workspace === 0 && !$dataArr['_LOCALIZED_UID']
+		// still true, check that
 		if ($this->checkAccess($allowedActions, 'delete')) {
 			array_push($classList, 'action-delete');
 		}
 
-			// Additional class by TS
+		// Additional class by TS
 		if (isset($alohaConfig['class'])) {
 			array_push($classList, htmlspecialchars($alohaConfig['class']));
 		}
 
-			// Restrict editor by removing all styles
+		// Restrict editor by removing all styles
 		if ($alohaConfig['nostyles'] == 1) {
 			array_push($classList, 'nostyles');
 		}
@@ -131,27 +134,28 @@ class Tx_Aloha_Aloha_Integration {
 	/**
 	 * Initialize the integration to get needed configs
 	 *
-	 * @param tslib_cObj $parentObject
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject
 	 * @param array $alohaConfig
+	 * @throws \Exception
 	 * @return void
 	 */
-	private function init(tslib_cObj $parentObject, array $alohaConfig) {
-		list($table, $id) = t3lib_div::trimExplode(':', $parentObject->currentRecord);
+	private function init(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject, array $alohaConfig) {
+		list($table, $id) = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $parentObject->currentRecord);
 		$currentRecord = $parentObject->data;
-		
-		if ( empty($parentObject->currentRecord) ) {
-			return false;
+
+		if (empty($parentObject->currentRecord)) {
+			return FALSE;
 		}
 
-		if(isset($currentRecord['_LOCALIZED_UID']))	{
+		if (isset($currentRecord['_LOCALIZED_UID'])) {
 			$id = $currentRecord['_LOCALIZED_UID'];
 		}
 		if (empty($table)) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.integration.table'));
+			throw new \Exception(Helper::ll('error.integration.table'));
 		} elseif (empty($id)) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.integration.uid'));
+			throw new \Exception(Helper::ll('error.integration.uid'));
 		} elseif (empty($alohaConfig['field'])) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.integration.field'));
+			throw new \Exception(Helper::ll('error.integration.field'));
 		}
 
 		$this->table = $table;

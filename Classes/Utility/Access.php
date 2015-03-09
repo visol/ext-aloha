@@ -1,4 +1,6 @@
 <?php
+namespace Pixelant\Aloha\Utility;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -29,7 +31,7 @@
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Utility_Access {
+class Access {
 
 	/**
 	 * Checks if aloha editor is enabled, checking UserTsConfig and TS
@@ -99,7 +101,7 @@ class Tx_Aloha_Utility_Access {
 				}
 			} elseif ($table === 'tt_content') {
 				// 16 = permission to edit content on the page
-				if ($GLOBALS['BE_USER']->isAdmin() || $GLOBALS['BE_USER']->doesUserHaveAccess(t3lib_BEfunc::getRecord('pages', $dataArray['pid']), 16)) {
+				if ($GLOBALS['BE_USER']->isAdmin() || $GLOBALS['BE_USER']->doesUserHaveAccess(\TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('pages', $dataArray['pid']), 16)) {
 					$mayEdit = TRUE;
 				}
 			} else {
@@ -110,7 +112,7 @@ class Tx_Aloha_Utility_Access {
 			if (!$conf['onlyCurrentPid'] || ($dataArray['pid'] == $GLOBALS['TSFE']->id)) {
 
 				// Permissions:
-				$types = t3lib_div::trimExplode(',', t3lib_div::strtolower($conf['allow']), 1);
+				$types = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', \TYPO3\CMS\Core\Utility\GeneralUtility::strtolower($conf['allow']), 1);
 				$allow = array_flip($types);
 
 				$perms = $GLOBALS['BE_USER']->calcPerms($GLOBALS['TSFE']->page);

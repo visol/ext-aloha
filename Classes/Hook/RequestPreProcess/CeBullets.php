@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Hook\RequestPreProcess;
 
 /* **************************************************************
  *  Copyright notice
@@ -23,57 +24,51 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(t3lib_extMgm::extPath('aloha') . 'Classes/Interfaces/RequestPreProcess.php');
-
 /**
- * Hook for cleaning content
+ * Hook for saving content element "bullets"
  *
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Hooks_RequestPreProcess_Cleanup implements Tx_Aloha_Interfaces_RequestPreProcess {
+class CeBullets implements \Pixelant\Aloha\Hook\RequestPreProcessInterface {
 
 	/**
 	 * Preprocess the request
 	 *
 	 * @param array $request save request
 	 * @param boolean $finished
-	 * @param Tx_Aloha_Aloha_Save $parentObject
+	 * @param \Pixelant\Aloha\Controller\SaveController $parentObject
 	 * @return array
 	 */
-	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
-		$request['content'] = $this->modifyContent($request['content']);
+	public function preProcess(array &$request, &$finished, \Pixelant\Aloha\Controller\SaveController &$parentObject) {
+		$record = $parentObject->getRecord();
 
-		return $request;
-	}
+		// only allowed for bullet element
+		if ($parentObject->getTable() === 'tt_content'
+			&& $parentObject->getField() == 'bodytext'
+			&& $record['CType'] === 'bullets'
+		) {
 
-	/**
-	 * Cleanup
-	 *
-	 * @param string $content
-	 * @return string
-	 */
-	private function modifyContent($content) {
-		$content = trim($content);
-		$lengthOfContent = strlen($content);
-		$cleanUpWords = array('<br />', '<br>', '<br/>', '<br style="">');
+			$finished = TRUE;
 
-		foreach($cleanUpWords as $cleanupWord) {
-			$length = strlen($cleanupWord);
+			$domDocument = new \DOMDocument();
+			$domDocument->loadHTML('<?xml encoding="utf-8" ?>' . $request['content']);
 
-				// Clean from the beginning
-			if (substr($content, 0, $length) === $cleanupWord) {
-				$content = substr($content, $length + 1, $lengthOfContent);
+			// $xPath = new DOMXpath($domDocument);
+			// $liCollection = $xPath->query('//ul/li');
+
+			$liCollection = $domDocument->getElementsByTagName('li');
+			$tempLiElements = array();
+			foreach ($liCollection as $class) {
+				$value = trim($class->nodeValue);
+				if (!empty($value)) {
+					$tempLiElements[] = $value;
+				}
 			}
-				// Clean from the end
-			if (substr($content, 0, ($length * -1)) === $cleanupWord) {
-				$newLengthOfContent = $lengthOfContent - $length;
-				$content = substr($content, 0, $newLengthOfContent);
-			}
-
+			$request['content'] = implode(LF, $tempLiElements);
 		}
 
-		return $content;
+		return $request;
 	}
 
 }

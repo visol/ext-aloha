@@ -1,26 +1,30 @@
 <?php
+namespace Pixelant\Aloha\Controller;
+
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2011 Georg Ringer <typo3@ringerge.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2011 Georg Ringer <typo3@ringerge.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+use Pixelant\Aloha\Utility\Helper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Save the changes by using TCEmain
@@ -28,17 +32,17 @@
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Aloha_Save {
+class SaveController {
 
 	/**
-	 * @var t3lib_tcemain
+	 * @var \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
 	protected $tce;
 
 	/**
-	 * @var t3lib_frontendedit
+	 * @var \TYPO3\CMS\Core\FrontendEditing\FrontendEditingController
 	 */
-	protected $t3lib_frontendedit;
+	protected $frontendEditingController;
 
 	/**
 	 * If set, a javascript reload is added to the response
@@ -58,10 +62,10 @@ class Tx_Aloha_Aloha_Save {
 	protected $saveMethod;
 
 	public function __construct() {
-		$this->tce = t3lib_div::makeInstance('t3lib_TCEmain');
+		$this->tce = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
 		$this->tce->stripslashes_values = 0;
 
-		$this->t3lib_frontendedit = t3lib_div::makeInstance('t3lib_frontendedit');
+		$this->frontendEditingController = GeneralUtility::makeInstance('TYPO3\CMS\Core\FrontendEditing\FrontendEditingController');
 
 		$configurationArray = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['aloha']);
 		$this->saveMethod = $configurationArray['saveMethod'];
@@ -73,27 +77,27 @@ class Tx_Aloha_Aloha_Save {
 	 *
 	 * @param string $content
 	 * @param array $conf plugin configuration
-	 * @return sring
+	 * @return string
 	 */
 	public function start($content, $conf) {
-		$request = t3lib_div::_POST();
+		$request = GeneralUtility::_POST();
 		$response = '';
 
-			// aborting save
+		// aborting save
 		if ($this->saveMethod === 'none') {
-			return Tx_Aloha_Utility_Helper::ll('response.action.save-method-none');
+			return Helper::ll('response.action.save-method-none');
 		}
 
 		try {
-				// @todo check if this workaround can be solved differently
+			// @todo check if this workaround can be solved differently
 			$GLOBALS['PAGES_TYPES']['default']['allowedTables'] = 'pages,tt_content';
 
 			if ($request['action'] === 'discardSavings') {
 				$response = $this->discardSavings();
-			} elseif($request['action'] === 'commitSavings') {
+			} elseif ($request['action'] === 'commitSavings') {
 				$response = $this->commitSavings();
-			} elseif($request['action'] === 'updateSaveState') {
-				$response =  $this->updateSaveState();
+			} elseif ($request['action'] === 'updateSaveState') {
+				$response = $this->updateSaveState();
 			} else {
 				$this->init($request);
 
@@ -104,7 +108,7 @@ class Tx_Aloha_Aloha_Save {
 						} elseif ($this->saveMethod == 'intermediate') {
 							$response = $this->intermediateSave($request);
 						} else {
-							throw new Exception(Tx_Aloha_Utility_Helper::ll('error.saveMethod'));
+							throw new \Exception(Helper::ll('error.saveMethod'));
 						}
 						break;
 					case 'up':
@@ -123,17 +127,17 @@ class Tx_Aloha_Aloha_Save {
 						$response = $this->delete();
 						break;
 					default:
-						$errorMsg = sprintf(Tx_Aloha_Utility_Helper::ll('error.response-action'), $request['action']);
-						throw new Exception($errorMsg);
+						$errorMsg = sprintf(Helper::ll('error.response-action'), $request['action']);
+						throw new \Exception($errorMsg);
 				}
 			}
 
-				// Add JS reload if needed
+			// Add JS reload if needed
 			if ($this->forceReload) {
 				$response .= '<script type="text/javascript">window.location.reload();</script>';
 			}
 
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$response = $e->getMessage();
 			header('HTTP/1.1 404 Not Found');
 		}
@@ -145,17 +149,17 @@ class Tx_Aloha_Aloha_Save {
 		$elements = $GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id];
 
 		if (!is_array($elements) || count($elements) == 0) {
-			$response = Tx_Aloha_Utility_Helper::ll('response.action.nothing-to-save');
+			$response = Helper::ll('response.action.nothing-to-save');
 		} else {
 
-			foreach($elements as $element) {
+			foreach ($elements as $element) {
 				$this->directSave(unserialize($element), TRUE);
 			}
 
 			$GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id] = array();
 			$GLOBALS['BE_USER']->writeUC();
 
-			$response = Tx_Aloha_Utility_Helper::ll('response.action.save') . '
+			$response = Helper::ll('response.action.save') . '
 						<script>
 							window.alohaQuery("#count").text("0").removeClass("tobesaved");
 							window.parent.alohaQuery("#count").text("0").removeClass("tobesaved");
@@ -167,11 +171,11 @@ class Tx_Aloha_Aloha_Save {
 
 	private function updateSaveState() {
 
-		$countOfElements = Tx_Aloha_Utility_Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
+		$countOfElements = \Pixelant\Aloha\Utility\Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
 		$response = '<script>
-						window.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
+						window.alohaQuery("#count").text("' . $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
 						window.alohaQuery("#aloha-saveButton").show();
-						window.parent.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
+						window.parent.alohaQuery("#count").text("' . $test . $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
 						window.parent.alohaQuery("#aloha-saveButton").show();
 					</script>';
 		return $response;
@@ -182,13 +186,13 @@ class Tx_Aloha_Aloha_Save {
 		$GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id][$request['identifier']] = serialize($request);
 		$GLOBALS['BE_USER']->writeUC();
 
-		$countOfElements = Tx_Aloha_Utility_Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
+		$countOfElements = \Pixelant\Aloha\Utility\Integration::getCountOfUnsavedElements($GLOBALS['TSFE']->id);
 
-		$response = Tx_Aloha_Utility_Helper::ll('response.action.intermediate-save') .
+		$response = Helper::ll('response.action.intermediate-save') .
 			'<script>
-				window.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
+				window.alohaQuery("#count").text("' . $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
 				window.alohaQuery("#aloha-saveButton").show();
-				window.parent.alohaQuery("#count").text("' . $test. $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
+				window.parent.alohaQuery("#count").text("' . $test . $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
 				window.parent.alohaQuery("#aloha-saveButton").show();
 			</script>';
 		return $response;
@@ -197,7 +201,7 @@ class Tx_Aloha_Aloha_Save {
 	private function discardSavings() {
 		$elements = $GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id];
 		if (!is_array($elements) || count($elements) == 0) {
-			$response = Tx_Aloha_Utility_Helper::ll('response.action.discard-savings-nothing-to-save');
+			$response = Helper::ll('response.action.discard-savings-nothing-to-save');
 		} else {
 
 			$GLOBALS['BE_USER']->uc['aloha'][$GLOBALS['TSFE']->id] = array();
@@ -205,7 +209,7 @@ class Tx_Aloha_Aloha_Save {
 
 			$this->forceReload = TRUE;
 
-			$response = Tx_Aloha_Utility_Helper::ll('response.action.discard-savings') . '<script>
+			$response = Helper::ll('response.action.discard-savings') . '<script>
 							window.alohaQuery("#count").text("0").removeClass("tobesaved");
 							window.parent.alohaQuery("#count").text("0").removeClass("tobesaved");
 							</script>';
@@ -213,7 +217,6 @@ class Tx_Aloha_Aloha_Save {
 
 		return $response;
 	}
-
 
 
 	/**
@@ -226,11 +229,11 @@ class Tx_Aloha_Aloha_Save {
 		$this->forceReload = TRUE;
 
 		if ($visibility == 0) {
-			$this->t3lib_frontendedit->doUnhide($this->table, $this->uid);
-			return Tx_Aloha_Utility_Helper::ll('response.action.unhide');
+			$this->frontendEditingController->doUnhide($this->table, $this->uid);
+			return Helper::ll('response.action.unhide');
 		} elseif ($visibility == 1) {
-			$this->t3lib_frontendedit->doHide($this->table, $this->uid);
-			return Tx_Aloha_Utility_Helper::ll('response.action.hide');
+			$this->frontendEditingController->doHide($this->table, $this->uid);
+			return Helper::ll('response.action.hide');
 		}
 	}
 
@@ -241,28 +244,29 @@ class Tx_Aloha_Aloha_Save {
 	 */
 	private function delete() {
 		$this->forceReload = TRUE;
-		$this->t3lib_frontendedit->doDelete($this->table, $this->uid);
+		$this->frontendEditingController->doDelete($this->table, $this->uid);
 
-		return Tx_Aloha_Utility_Helper::ll('response.action.delete');
+		return Helper::ll('response.action.delete');
 	}
 
 	/**
 	 * Move a table, either up or down (set in $direction)
 	 *
 	 * @param string $direction
+	 * @throws \Exception
 	 * @return string
 	 */
 	private function move($direction) {
 		$this->forceReload = TRUE;
 
 		if ($direction === 'down') {
-			$this->t3lib_frontendedit->doDown($this->table, $this->uid);
-			return Tx_Aloha_Utility_Helper::ll('response.action.moveDown');
-		} elseif($direction === 'up') {
-			$this->t3lib_frontendedit->doUp($this->table, $this->uid);
-			return Tx_Aloha_Utility_Helper::ll('response.action.moveUp');
+			$this->frontendEditingController->doDown($this->table, $this->uid);
+			return Helper::ll('response.action.moveDown');
+		} elseif ($direction === 'up') {
+			$this->frontendEditingController->doUp($this->table, $this->uid);
+			return Helper::ll('response.action.moveUp');
 		} else {
-			throw new Exception(sprintf(Tx_Aloha_Utility_Helper::ll('error.move-action.wrong-direction'), htmlspecialchars($direction)));
+			throw new \Exception(sprintf(Helper::ll('error.move-action.wrong-direction'), htmlspecialchars($direction)));
 		}
 	}
 
@@ -273,8 +277,8 @@ class Tx_Aloha_Aloha_Save {
 	 * @return string
 	 */
 	public function directSave(array $request, $initAgain = FALSE) {
-// PIXELANT HACK - this function needs to be public
-			// @todo do that nice again
+		// PIXELANT HACK - this function needs to be public
+		// @todo do that nice again
 
 		if ($initAgain) {
 			$this->init($request);
@@ -284,10 +288,10 @@ class Tx_Aloha_Aloha_Save {
 			$finished = FALSE;
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'] as $classData) {
 				if (!$finished) {
-					$hookObject = t3lib_div::getUserObj($classData);
-					if (!($hookObject instanceof Tx_Aloha_Interfaces_RequestPreProcess)) {
-						throw new UnexpectedValueException(
-							$classData . ' must implement interface Tx_Aloha_Interfaces_RequestPreProcess',
+					$hookObject = GeneralUtility::getUserObj($classData);
+					if (!($hookObject instanceof \Pixelant\Aloha\Hook\RequestPreProcessInterface)) {
+						throw new \UnexpectedValueException(
+							$classData . ' must implement interface \Pixelant\Aloha\Hook\RequestPreProcessInterface',
 							1274563549
 						);
 					}
@@ -301,13 +305,13 @@ class Tx_Aloha_Aloha_Save {
 		so we have to decode them from Aloha otherwise we would encode twice.
 		CHANGED from html_entity_decode to urldecode, after problem with encoding on some servers which broke content and flexform.
 		*/
-		$htmlEntityDecode = true;
+		$htmlEntityDecode = TRUE;
 
-		$request['content'] = Tx_Aloha_Utility_Integration::rteModification($this->table, $this->field, $this->uid, $GLOBALS['TSFE']->id, $request['content']);
+		$request['content'] = \Pixelant\Aloha\Utility\Integration::rteModification($this->table, $this->field, $this->uid, $GLOBALS['TSFE']->id, $request['content']);
 
 		if ($htmlEntityDecode) {
 			$request['content'] = urldecode($request['content']);
-				// Try to remove invalid utf-8 characters so content won't break if there are invalid characters in content
+			// Try to remove invalid utf-8 characters so content won't break if there are invalid characters in content
 			$request['content'] = iconv("UTF-8", "UTF-8//IGNORE", $request['content']);
 		}
 
@@ -324,33 +328,34 @@ class Tx_Aloha_Aloha_Save {
 		$this->tce->start($data, array());
 		$this->tce->process_datamap();
 
-		return Tx_Aloha_Utility_Helper::ll('response.action.save');
+		return Helper::ll('response.action.save');
 	}
 
 	/**
 	 * Initialize everything
 	 *
 	 * @param array $request POST request
+	 * @throws \Exception
 	 * @return void
 	 */
 	private function init(array $request) {
-			// request is only allowed for POST request and a BE_USER is available
+		// request is only allowed for POST request and a BE_USER is available
 		if (empty($request)) {
-			throw new BadFunctionCallException(Tx_Aloha_Utility_Helper::ll('error.request.no-post'));
-		} elseif (!Tx_Aloha_Utility_Access::isEnabled()) {
-			throw new BadFunctionCallException(Tx_Aloha_Utility_Helper::ll('error.request.not-allowed'));
+			throw new \BadFunctionCallException(Helper::ll('error.request.no-post'));
+		} elseif (!\Pixelant\Aloha\Utility\Access::isEnabled()) {
+			throw new \BadFunctionCallException(Helper::ll('error.request.not-allowed'));
 		}
 
 		$split = explode('--', $request['identifier']);
 
 		if (count($split) != 3) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.request.identifier'));
-		} elseif(empty($split[0])) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.request.table'));
-		} elseif(empty($split[1])) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.request.field'));
+			throw new \Exception(Helper::ll('error.request.identifier'));
+		} elseif (empty($split[0])) {
+			throw new \Exception(Helper::ll('error.request.table'));
+		} elseif (empty($split[1])) {
+			throw new \Exception(Helper::ll('error.request.field'));
 		} elseif (!ctype_digit($split[2])) {
-			throw new Exception(Tx_Aloha_Utility_Helper::ll('error.request.uid'));
+			throw new \Exception(Helper::ll('error.request.uid'));
 		}
 
 		$this->table = $split[0];
@@ -380,7 +385,7 @@ class Tx_Aloha_Aloha_Save {
 
 	/**
 	 * Wrapper function to set field name
-	 * 
+	 *
 	 * @param string $field
 	 * @return void
 	 */
@@ -405,4 +410,5 @@ class Tx_Aloha_Aloha_Save {
 		return $this->record;
 	}
 }
+
 ?>

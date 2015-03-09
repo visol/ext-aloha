@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Utility;
 
 /* * *************************************************************
  *  Copyright notice
@@ -22,6 +23,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Check access of the user to display only those actions which are allowed
@@ -30,7 +32,7 @@
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Utility_Integration {
+class Integration {
 
 	/**
 	 * Get count of changed elements per page
@@ -53,7 +55,7 @@ class Tx_Aloha_Utility_Integration {
 	 * @return void
 	 */
 	public static function removeStagedElements($id) {
-		if (Tx_Aloha_Utility_Access::isEnabled()) {
+		if (\Pixelant\Aloha\Utility\Access::isEnabled()) {
 			$GLOBALS['BE_USER']->uc['aloha'][$id] = array();
 			$GLOBALS['BE_USER']->writeUC();
 		}
@@ -74,7 +76,7 @@ class Tx_Aloha_Utility_Integration {
 		$attributesAsString = '';
 		foreach ($attributes as $attributeKey => $value) {
 			if (!empty($value)) {
-				$attributesAsString.= ' ' . $attributeKey . '="' . htmlspecialchars($value) . '"';
+				$attributesAsString .= ' ' . $attributeKey . '="' . htmlspecialchars($value) . '"';
 			}
 		}
 		return '<' . $tag . $attributesAsString . '>' . $content . '</' . $tag . '>';
@@ -92,16 +94,15 @@ class Tx_Aloha_Utility_Integration {
 	 * @return string
 	 */
 	public static function rteModification($table, $field, $id, $pageId, $fieldContent) {
-		t3lib_div::loadTCA($table);
 		$fieldConfig = $GLOBALS['TCA'][$table]['columns'][$field]['config']['wizards'];
 		if (isset($fieldConfig['RTE'])) {
 			$currentRecord = self::recordInfo($table, $id);
 
-			$RTEsetup = $GLOBALS['BE_USER']->getTSConfig('RTE', t3lib_BEfunc::getPagesTSconfig($pageId));
+			$RTEsetup = $GLOBALS['BE_USER']->getTSConfig('RTE', BackendUtility::getPagesTSconfig($pageId));
 
-			$theTypeString = t3lib_BEfunc::getTCAtypeValue($table, $currentRecord);
+			$theTypeString = BackendUtility::getTCAtypeValue($table, $currentRecord);
 
-			$types_fieldConfig2 = t3lib_BEfunc::getTCAtypes($table, $currentRecord);
+			$types_fieldConfig2 = BackendUtility::getTCAtypes($table, $currentRecord);
 			$vconf = Array();
 			foreach ($types_fieldConfig2 as $config) {
 				if ($config['field'] == $field) {
@@ -109,17 +110,17 @@ class Tx_Aloha_Utility_Integration {
 				}
 			}
 
-			$RTEsetup = $GLOBALS['BE_USER']->getTSConfig('RTE', t3lib_BEfunc::getPagesTSconfig($pageId));
-			$thisConfig = t3lib_BEfunc::RTEsetup($RTEsetup['properties'], $table, $vconf['field'], $theTypeString);
+			$RTEsetup = $GLOBALS['BE_USER']->getTSConfig('RTE', BackendUtility::getPagesTSconfig($pageId));
+			$thisConfig = BackendUtility::RTEsetup($RTEsetup['properties'], $table, $vconf['field'], $theTypeString);
 
-				// @todo check that
+			// @todo check that
 			$RTErelPath = is_array($eFile) ? dirname($eFile['relEditFile']) : '';
 
-			$RTEobj = t3lib_BEfunc::RTEgetObj();
+			$RTEobj = BackendUtility::RTEgetObj();
 			if (is_object($RTEobj)) {
 				$fieldContent = $RTEobj->transformContent('db', $fieldContent, $table, $vconf['field'], $currentRecord, $vconf['spec'], $thisConfig, $RTErelPath, $currentRecord['pid']);
 			} else {
-					// @todo
+				// @todo
 				debug('NO RTE OBJECT FOUND!');
 			}
 		}
@@ -131,10 +132,10 @@ class Tx_Aloha_Utility_Integration {
 	 * Returns the row of a record given by $table and $id and $fieldList (list of fields, may be '*')
 	 * NOTICE: No check for deleted or access!
 	 *
-	 * @param	string		Table name
-	 * @param	integer		UID of the record from $table
-	 * @param	string		Field list for the SELECT query, eg. "*" or "uid,pid,..."
-	 * @return	mixed		Returns the selected record on success, otherwise FALSE.
+	 * @param    string        Table name
+	 * @param    integer        UID of the record from $table
+	 * @param    string        Field list for the SELECT query, eg. "*" or "uid,pid,..."
+	 * @return    mixed        Returns the selected record on success, otherwise FALSE.
 	 */
 	private function recordInfo($table, $id, $fieldList = '*') {
 		if (is_array($GLOBALS['TCA'][$table])) {

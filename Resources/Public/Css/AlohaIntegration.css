@@ -843,11 +843,11 @@ input[type="submit"].btn.btn-mini {
 
 @font-face {
 	font-family: 'alohaicons';
-	src:url('fonts/alohaicons.eot?-pt4411');
-	src:url('fonts/alohaicons.eot?#iefix-pt4411') format('embedded-opentype'),
-		url('fonts/alohaicons.woff?-pt4411') format('woff'),
-		url('fonts/alohaicons.ttf?-pt4411') format('truetype'),
-		url('fonts/alohaicons.svg?-pt4411#alohaicons') format('svg');
+	src:url('../AlohaIcons/fonts/alohaicons.eot?-pt4411');
+	src:url('../AlohaIcons/fonts/alohaicons.eot?#iefix-pt4411') format('embedded-opentype'),
+		url('../AlohaIcons/fonts/alohaicons.woff?-pt4411') format('woff'),
+		url('../AlohaIcons/fonts/alohaicons.ttf?-pt4411') format('truetype'),
+		url('../AlohaIcons/fonts/alohaicons.svg?-pt4411#alohaicons') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }

@@ -1,4 +1,5 @@
 <?php
+namespace Pixelant\Aloha\Hook\RequestPreProcess;
 
 /* * *************************************************************
  *  Copyright notice
@@ -23,48 +24,47 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(t3lib_extMgm::extPath('aloha') . 'Classes/Interfaces/RequestPreProcess.php');
-
 /**
  * Hook for saving content element "table"
  *
  * @package TYPO3
  * @subpackage tx_aloha
  */
-class Tx_Aloha_Hooks_RequestPreProcess_CeFluidContent implements Tx_Aloha_Interfaces_RequestPreProcess {
+class CeFluidContent implements \Pixelant\Aloha\Hook\RequestPreProcessInterface {
 
 	/**
 	 * Preprocess the request
 	 *
 	 * @param array $request save request
 	 * @param boolean $finished
-	 * @param Tx_Aloha_Aloha_Save $parentObject
+	 * @param \Pixelant\Aloha\Controller\SaveController $parentObject
 	 * @return array
 	 */
-	public function preProcess(array &$request, &$finished, Tx_Aloha_Aloha_Save &$parentObject) {
+	public function preProcess(array &$request, &$finished, \Pixelant\Aloha\Controller\SaveController &$parentObject) {
 		$record = $parentObject->getRecord();
 
-			// when storing fluidcontent flexform fields, field is set by pi_flexform-flexformfieldname.
+		// when storing fluidcontent flexform fields, field is set by pi_flexform-flexformfieldname.
 		list($field, $flexformField) = explode('-', $parentObject->getField(), 2);
 
-			// only allowed for element "fluidcontent"
+		// only allowed for element "fluidcontent"
 		if ($parentObject->getTable() === 'tt_content'
-				&& $field == 'pi_flexform'
-				&& $record['CType'] === 'fluidcontent_content') {
+			&& $field == 'pi_flexform'
+			&& $record['CType'] === 'fluidcontent_content'
+		) {
 
 			$parentObject->setField($field);
 
-			$xml = new SimpleXMLElement($record['pi_flexform']);
+			$xml = new \SimpleXMLElement($record['pi_flexform']);
 
-				// @TODO: Maybe give possibility for fields to have html tags
+			// @TODO: Maybe give possibility for fields to have html tags
 			$fieldAllowedTags = '<sup><sub>';
-			foreach ( $xml->xpath('//T3FlexForms/data/sheet/language/field[@index = "' . $flexformField . '"]') as $entry ) {
+			foreach ($xml->xpath('//T3FlexForms/data/sheet/language/field[@index = "' . $flexformField . '"]') as $entry) {
 				$content = trim($request['content']);
 				$content = strip_tags(urldecode($content), $fieldAllowedTags);
 
-					// Try to remove invalid characters so save won't break xml if there are invalid characters in string
+				// Try to remove invalid characters so save won't break xml if there are invalid characters in string
 				$content = iconv("UTF-8", "UTF-8//IGNORE", $content);
-	
+
 				$node = dom_import_simplexml($entry->value);
 				$node->nodeValue = "";
 				$node->appendChild($node->ownerDocument->createCDATASection($content));
