@@ -1,0 +1,6 @@
+﻿.. |img-9|      image:: ../../Images/manual_html_m54126f5.jpg
+   :height: 103
+   :width: 429
+.. :align: left
+.. :border: 0
+.. :name: Grafik8
