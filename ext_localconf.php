@@ -49,6 +49,12 @@ if (!function_exists('isAlohaEnabledForUser')) {
 	}
 }
 
+// Allow BackendUserSettings to be accessed through ExtDirect
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent('TYPO3.BackendUserSettings.ExtDirect', 'TYPO3\\CMS\\Backend\\User\\ExtDirect\\BackendUserSettingsDataProvider');
+
+// Use pageRenderer hook to pass BackendUserSettings to the Frontend
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['aloha'] = 'Pixelant\\Aloha\\Hook\\PageRenderer->preProcessPageRenderer';
+
 // Add our user ts config
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:aloha/Configuration/TypoScript/userTsConfig.ts">');
 
