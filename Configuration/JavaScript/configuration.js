@@ -31,6 +31,13 @@
 			// or set current on server side to be in sync with your backend system
 			"current": "en"
 		},
+		contentHandler: {
+			allows: {
+				attributes: {
+					'a' : ['href', 'data-typolinkoriginalparameter', 'target']
+				}
+			}
+		},
 		toolbar: {
 			tabs: [
 				// Format Tab
