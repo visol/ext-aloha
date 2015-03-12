@@ -3,6 +3,7 @@
 	window.Aloha = window.Aloha || {};
 	// Manually set the version of jQuery for aloha and free the namespace
 	var jQuery = window.jQuery.noConflict(true);
+
 	// Hack, so that page edit doesn't throw js error
 	window.TS = {
 		PATH_typo3: ' '
@@ -134,4 +135,18 @@
 			}
 		}
 	};
+
 })(window);
+
+$(function() {
+	Aloha.ready( function() {
+		jQuery('.alohaeditable a').click(function(e){
+			e.preventDefault();
+			var isCtrlKeyPressed = e.ctrlKey;
+			if (isCtrlKeyPressed) {
+				url = jQuery(e.target).attr('href');
+				window.open(url, '_blank');
+			}
+		});
+	});
+});
