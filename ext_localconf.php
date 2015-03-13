@@ -4,15 +4,11 @@ if (!defined("TYPO3_MODE")) {
 	die("Access denied.");
 }
 
-	// Add additional stdWrap properties
+// Add additional stdWrap properties
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['stdWrap'][$_EXTKEY] =
 	'Pixelant\\Aloha\\Hook\\EditIcons';
 
-	// Override locallang file of admin panel to get own elements into it
-//$GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']['EXT:lang/locallang_tsfe.php'][$_EXTKEY] =
-//	'EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml';
-
-	// Hook to render menu panel
+// Hook to render menu panel
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][$_EXTKEY] =
 	'Pixelant\\Aloha\\Hook\\ContentPostProc->main';
 
@@ -20,26 +16,26 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-outp
  * Hooks to change content before saving back into DB
  */
 
-	// Cleanup
+// Cleanup
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-cleanup'] =
 	'Pixelant\\Aloha\\Hook\\RequestPreProcess\\Cleanup';
-	// Save core content element "Bullets"
+// Save core content element "Bullets"
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-cobjbullets'] =
 	'Pixelant\\Aloha\\Hook\\RequestPreProcess\\CeBullets';
-	// Save core content element "Table"
+// Save core content element "Table"
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-cobjtable'] =
 	'Pixelant\\Aloha\\Hook\\RequestPreProcess\\CeTable';
-	// Save core content special element "Plaintext"
-	// Activated by setting field to to bodytext-plaintext, which in hook will be restored to bodytext
+// Save core content special element "Plaintext"
+// Activated by setting field to to bodytext-plaintext, which will be restored to bodytext in the hook
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-Plaintext'] =
 	'Pixelant\\Aloha\\Hook\\RequestPreProcess\\Plaintext';
-	// Save fluidcontent , field is targeted by pi_flexform-flexformfieldname
+// Save Fluid content, field is targeted by pi_flexform-flexformfieldname
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeFluidContent'] =
 	'Pixelant\\Aloha\\Hook\\RequestPreProcess\\CeFluidContent';
-	// Save headers, field header, will also affect field header_layout
+// Save headers, field header, will also affect field header_layout
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeHeader'] =
 	'Pixelant\\Aloha\\Hook\\RequestPreProcess\\CeHeader';
-	// Check link params in rte of text and textpic content elements
+// Save RTE content (CEs "Text", "Text with Images") respecting typolinks
 $GLOBALS['TYPO3_CONF_VARS']['Aloha']['Classes/Save/Save.php']['requestPreProcess'][$_EXTKEY . '-CeRteLinks'] =
 	'Pixelant\\Aloha\\Hook\\RequestPreProcess\\CeRteLinks';
 
@@ -55,7 +51,7 @@ if (!function_exists('isAlohaEnabledForUser')) {
 // Use pageRenderer hook to pass BackendUserSettings to the Frontend
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['aloha'] = 'Pixelant\\Aloha\\Hook\\PageRenderer->preProcessPageRenderer';
 
-// Add our user ts config
+// Add our UserTSConfig
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:aloha/Configuration/TypoScript/userTsConfig.ts">');
 
 ?>
