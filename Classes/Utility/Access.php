@@ -39,13 +39,18 @@ class Access {
 	 * @return boolean
 	 */
 	public static function isEnabled() {
+		$isEnabled = FALSE;
 		// aloha needs to be enabled also by admins
-		// this is the only way how to temporarly turn on/off the editor
+		// this is the only way how to temporarily turn on/off the editor
 		if (isset($GLOBALS['BE_USER']) && $GLOBALS['TSFE']->config['config']['aloha'] == 1) {
-			return ($GLOBALS['BE_USER']->uc['tx_aloha_enable'] == 1);
+			$isEnabled = ($GLOBALS['BE_USER']->uc['tx_aloha_enable'] == 1);
 		}
-
-		return FALSE;
+		// Aloha is not compatible with the Workspaces preview in Frontend, so it is deactivated in this context
+		$isWorkspacePreview = (bool)\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('ADMCMD_previewWS');
+		if ($isWorkspacePreview) {
+			$isEnabled = FALSE;
+		}
+		return $isEnabled;
 	}
 
 
