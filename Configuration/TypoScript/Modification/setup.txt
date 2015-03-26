@@ -29,7 +29,7 @@ config.tx_aloha {
 lib.stdheader.10.setCurrent.typolink >
 
 #header
-lib.stdheader.10.1.stdWrapProcess = Tx_Aloha_hooks_editicons->render
+lib.stdheader.10.1.stdWrapProcess = Pixelant\Aloha\Hook\EditIcons->render
 lib.stdheader.10.1.alohaProcess = 1
 lib.stdheader.10.1.alohaProcess {
 	tag = div

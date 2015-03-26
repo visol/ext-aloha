@@ -3,6 +3,7 @@
 	window.Aloha = window.Aloha || {};
 	// Manually set the version of jQuery for aloha and free the namespace
 	var jQuery = window.jQuery.noConflict(true);
+
 	// Hack, so that page edit doesn't throw js error
 	window.TS = {
 		PATH_typo3: ' '
@@ -30,6 +31,13 @@
 			// "acceptLanguage": 'de-de,de;q=0.8,it;q=0.6,en-us;q=0.7,en;q=0.2'
 			// or set current on server side to be in sync with your backend system
 			"current": "en"
+		},
+		contentHandler: {
+			allows: {
+				attributes: {
+					'a' : ['href', 'data-typolinkoriginalparameter', 'target']
+				}
+			}
 		},
 		toolbar: {
 			tabs: [
@@ -127,4 +135,18 @@
 			}
 		}
 	};
+
 })(window);
+
+$(function() {
+	Aloha.ready( function() {
+		jQuery('.alohaeditable a').click(function(e){
+			e.preventDefault();
+			var isCtrlKeyPressed = e.ctrlKey;
+			if (isCtrlKeyPressed) {
+				url = jQuery(e.target).attr('href');
+				window.open(url, '_blank');
+			}
+		});
+	});
+});

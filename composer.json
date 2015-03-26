@@ -1,0 +1,12 @@
+{
+	"name": "pixelant/aloha",
+	"type": "typo3-cms-extension",
+	"description": "Aloha Frontend Editing for TYPO3 CMS",
+	"homepage": "https://forge.typo3.org/projects/extension-aloha",
+	"license": ["GPL-2.0+"],
+	"keywords": ["TYPO3 CMS", "Frontend Editing"],
+	"support": {
+		"issues": "https://forge.typo3.org/projects/extension-aloha"
+	},
+	"version": "0.3.0"
+}

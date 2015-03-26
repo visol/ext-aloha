@@ -1,5 +1,5 @@
-	# cat=basic/enable/100; type=input; label=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.headerTemplate
-headerTemplate = typo3conf/ext/aloha/Configuration/Header/Default.html
+# cat=basic/enable/100; type=input; label=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.headerTemplate
+headerTemplate = EXT:aloha/Configuration/Header/Default.html
 
-	# cat=basic/enable/101; type=options[LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.saveMethode.none=none,LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.saveMethode.direct=direct,LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.saveMethode.intermediate=intermediate]; label=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.saveMethode
+# cat=basic/enable/101; type=options[LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.saveMethod.none=none,LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.saveMethod.direct=direct,LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.saveMethod.intermediate=intermediate]; label=LLL:EXT:aloha/Resources/Private/Language/locallang.xml:extmng.saveMethod
 saveMethod = none

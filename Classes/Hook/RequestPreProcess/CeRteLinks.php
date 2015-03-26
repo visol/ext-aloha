@@ -49,55 +49,53 @@ class CeRteLinks implements \Pixelant\Aloha\Hook\RequestPreProcessInterface {
 			&& ($record['CType'] === 'text' || $record['CType'] === 'textpic')
 		) {
 
-			$content = $this->removeUnwantedLinkVars($request['content']);
+			// Transform links to typolinks
+			$content = $this->transformLinksToTypolinks($request['content']);
 			// Send links thru RteHtmlParser
 			/** @var \TYPO3\CMS\Core\Html\RteHtmlParser $parseHTML */
 			$parseHTML = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Html\\RteHtmlParser');
-			//$content = $parseHTML->TS_links_db($content);
+			// Parse links back to TYPO3 internal "<a href" format to save content with DataHandler
 			$content = $parseHTML->TS_links_rte($content);
-
 			$request['content'] = $content;
 		}
-
-//		\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($request);
-//		die();
 
 		return $request;
 	}
 
-	protected function removeUnwantedLinkVars($content) {
+	/**
+	 * All incoming typolinks have the original typolink configuration in attribute "date-typolinkoriginalparameter".
+	 * All <a> Links are replaced by typolinks in the proprietary <link 123>Link to internal page</link> format.
+	 *
+	 * @param string $content
+	 * @return mixed
+	 */
+	protected function transformLinksToTypolinks($content) {
 
 		$domDocument = new \DOMDocument();
 		$domDocument->loadHTML('<?xml encoding="utf-8" ?>' . $content);
 
+		/** @var \DOMNodeList $anchorCollection */
 		$anchorCollection = $domDocument->getElementsByTagName('a');
 
 		foreach ($anchorCollection as $anchor) {
-			// Fetch "original" url and divide into parts
-			$originalUrl = $anchor->getAttribute('href');
-			$parts = parse_url($originalUrl);
-			parse_str($parts['query'], $query);
+			/** @var \DomElement $anchor */
+			// Get the HTML of the link sent from Aloha
+			$oldLink = $anchor->ownerDocument->saveHTML($anchor);
 
-			if (is_array($query) && count($query) > 0) {
-				// Clear unwanted parts
-				$unwantedLinkVars = array_flip(explode(",", $GLOBALS['TSFE']->config['config']['linkVars']));
-				// Remove unwanted LinkVars from parts
-				$cleanedQuery = array_diff_key($query, $unwantedLinkVars);
-				// Set the new query part
-				$parts['query'] = http_build_query($cleanedQuery);
-				// Build replacement url
-				$replacementUrl = \TYPO3\CMS\Core\Utility\HttpUtility::buildUrl($parts);
-				// Remove questionmark from url if last
-				$replacementUrl = rtrim($replacementUrl, '?');
-				// Replace links if they dont match
-				if ($replacementUrl !== $originalUrl && strlen($replacementUrl) > 0) {
-					$content = str_replace(htmlspecialchars($originalUrl), $replacementUrl, $content);
-				}
-
+			$typolinkOriginalParameter = $anchor->getAttribute('data-typolinkoriginalparameter');
+			if (!empty($typolinkOriginalParameter)) {
+				// Link was a typolink before, so we add a typolink in source code format
+				$newLink = '<link ' . $typolinkOriginalParameter . '>' . $anchor->nodeValue . '</link>';
+			} else {
+				// Link was a non-TYPO3 link, we add rtekeep="1"
+				$anchor->setAttribute('rtekeep', '1');
+				$newLink = $anchor->ownerDocument->saveHTML($anchor);
 			}
+			$content = str_replace($oldLink, $newLink, $content);
 		}
 		return $content;
 	}
+
 }
 
 ?>

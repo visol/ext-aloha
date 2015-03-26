@@ -6,16 +6,16 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="extmng.headerTemplate">Define header template:Set path to a file whose content is loaded in the header and defines who Aloha editing looks like.</label>
-			<label index="extmng.saveMethode">
-				Define the save method:There are different ways how content is saved into the database.
-				None: Nothing will be saved into the datbase. Use this for demonstrations.
-				Direct: Ever change will be directly saved into the database.
+			<label index="extmng.headerTemplate">Define header template: Set path to a file whose content is loaded in the header and defines how Aloha editing looks like and works.</label>
+			<label index="extmng.saveMethod">
+				Define the save method: There are different ways how content is saved into the database.
+				None: Nothing will be saved into the database. Use this for demonstrations.
+				Direct: Every change will be directly saved into the database.
 				Intermediate: Changes will be saved when pressing the save button.
 			</label>
-			<label index="extmng.saveMethode.none">None</label>
-			<label index="extmng.saveMethode.direct">Direct</label>
-			<label index="extmng.saveMethode.intermediate">Intermediate</label>
+			<label index="extmng.saveMethod.none">None</label>
+			<label index="extmng.saveMethod.direct">Direct</label>
+			<label index="extmng.saveMethod.intermediate">Intermediate</label>
 
 			<label index="constants.disablePageButtons">Page Buttons Settings</label>
 			<label index="constants.topBar.pageButtons.edit.disable">Disable Page Edit Button</label>
@@ -26,7 +26,7 @@
 
 			<label index="aloha">Aloha Editor</label>
 			<label index="response.action.save">Changes have been saved!</label>
-			<label index="response.action.save-method-none">This is like saving (No save method choosen)</label>
+			<label index="response.action.save-method-none">This is like saving (no save method chosen)</label>
 			<label index="response.action.unhide">The record has been unhidden, reload to see the result.</label>
 			<label index="response.action.hide">The record has been hidden, reload to see the result.</label>
 			<label index="response.action.delete">The record has been deleted, reload to see the result.</label>

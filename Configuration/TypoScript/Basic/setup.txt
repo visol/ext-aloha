@@ -13,10 +13,9 @@
 			no_cache = 1
 		}
 
-		includeLibs.aloha = EXT:aloha/Classes/Aloha/Save.php
 		10 = USER
 		10 {
-			userFunc = Tx_Aloha_Aloha_Save->start
+			userFunc = Pixelant\Aloha\Controller\SaveController->start
 		}
 	}
 [global]
@@ -25,15 +24,13 @@
 # Check if aloha is enabled, need to make some changes in ts
 [globalVar = TSFE : beUserLogin > 0] && [userFunc = isAlohaEnabledForUser]
 
-	# Disable realurl we don't break links in bodytext
-	# TODO: see if we can disable realurl only for rtehtmlarea when aloha edit is enabled
-	config.tx_realurl_enable = 0
-		
 	# Make sure no_cache is set
 	config.no_cache = 1
-	
-	# Disable spamProtectEmailAddresses so we don't break email links
-	config.spamProtectEmailAddresses = 0
+
+	# Add the original typolink parameters to all links passed through the RTE parseFunc
+	lib.parseFunc_RTE.tags.link {
+		typolink.ATagParams.dataWrap = data-typolinkoriginalparameter="{parameters : allParams}"
+	}
 
 	# Tell browser to not cache if alohaEdit is set
 	page.headerData.2014 = TEXT

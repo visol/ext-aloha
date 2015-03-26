@@ -83,6 +83,7 @@ class ContentPostProc {
 	 * @return void
 	 */
 	private function loadResources() {
+
 		// Needed variables for ajax requests
 		$styles = '<script type="text/javascript">' . LF .
 			TAB . 'var alohaUrl = "' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'index.php?id=' . $this->typoScriptFrontendController->id . '&type=661' . '";' . LF .

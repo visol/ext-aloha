@@ -1,0 +1,7 @@
+﻿.. |img-8|      image:: ../../Images/manual_html_78be295b.gif
+   :height: 344
+   :width: 597
+.. :align: left
+.. :border: 0
+.. :name: Grafik1
+
