@@ -11,6 +11,10 @@ window.Aloha.ready( function() {
 
 	$('.alohaeditable').aloha();
 
+	// Hide save and discard buttons on loading because there is nothing to save yet
+	jQuery('#aloha-saveButton').hide();
+	jQuery('#aloha-discardButton').hide();
+
 		// If not in iframe, show topbar and hide loader, hide in iframe
 	setTimeout(function () {
 		if(self==top) {

@@ -162,7 +162,9 @@ class SaveController {
 			$response = Helper::ll('response.action.save') . '
 						<script>
 							window.alohaQuery("#count").text("0").removeClass("tobesaved");
+							window.alohaQuery("#aloha-discardButton").hide();
 							window.parent.alohaQuery("#count").text("0").removeClass("tobesaved");
+							window.parent.alohaQuery("#aloha-discardButton").hide();
 						</script>';
 		}
 
@@ -175,8 +177,10 @@ class SaveController {
 		$response = '<script>
 						window.alohaQuery("#count").text("' . $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
 						window.alohaQuery("#aloha-saveButton").show();
+						window.alohaQuery("#aloha-discardButton").show();
 						window.parent.alohaQuery("#count").text("' . $test . $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
 						window.parent.alohaQuery("#aloha-saveButton").show();
+						window.parent.alohaQuery("#aloha-discardButton").show();
 					</script>';
 		return $response;
 	}
@@ -190,10 +194,13 @@ class SaveController {
 
 		$response = Helper::ll('response.action.intermediate-save') .
 			'<script>
+				window.countOfElements = ' . $countOfElements . ';
 				window.alohaQuery("#count").text("' . $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
 				window.alohaQuery("#aloha-saveButton").show();
+				window.alohaQuery("#aloha-discardButton").show();
 				window.parent.alohaQuery("#count").text("' . $test . $countOfElements . '").' . ($countOfElements > 0 ? 'add' : 'remove') . 'Class("tobesaved");
 				window.parent.alohaQuery("#aloha-saveButton").show();
+				window.parent.alohaQuery("#aloha-discardButton").show();
 			</script>';
 		return $response;
 	}
