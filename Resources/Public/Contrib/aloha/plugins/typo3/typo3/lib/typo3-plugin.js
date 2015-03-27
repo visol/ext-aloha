@@ -199,8 +199,9 @@ function(
 			var that = this;
 			Aloha.bind(
 				'aloha-editable-activated', function (jEvent, params) {
-					that.disableSaveButton();
-
+					if (typeof window.countOfElements == 'undefined') {
+						that.disableSaveButton();
+					}
 					jQuery.each(that.buttons, function(index, button) {
 						if (jQuery(params.editable.obj).hasClass('action-' + index)) {
 							that.buttons[index].show();
