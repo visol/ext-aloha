@@ -60,6 +60,14 @@ tt_content.text.20.alohaProcess {
 	allow = edit
 }
 
+tt_content.uploads.20.editIcons.beforeLastTag = 0
+tt_content.uploads.20.alohaProcess = 1
+tt_content.uploads.20.alohaProcess {
+	class = alohaeditable-block
+	field = bodytext
+	allow = edit
+}
+
 
 # content element "bullets"
 tt_content.bullets.20.editIcons >
