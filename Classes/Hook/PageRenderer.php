@@ -26,10 +26,12 @@ class PageRenderer {
 	 * @param $parentObject \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer
 	 */
 	public function preProcessPageRenderer($params, $parentObject) {
-		$parentObject->loadExtJS();
-		$parentObject->addExtDirectCode(array(
-			'TYPO3.BackendUserSettings',
-		));
+		if (\Pixelant\Aloha\Utility\Access::isEnabled()) {
+			$parentObject->loadExtJS();
+			$parentObject->addExtDirectCode(array(
+				'TYPO3.BackendUserSettings',
+			));
+		}
 	}
 
 }
